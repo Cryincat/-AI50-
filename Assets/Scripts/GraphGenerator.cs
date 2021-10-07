@@ -14,6 +14,7 @@ public class GraphGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        print("Start");
         Generate();
         isGenerated = true;
     }
