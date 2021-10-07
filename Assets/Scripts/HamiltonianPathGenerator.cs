@@ -15,7 +15,7 @@ public class HamiltonianPathGenerator : MonoBehaviour
     private GraphGenerator graphGeneratorInstance;
     private bool ready = false;
     // Start is called before the first frame update
-
+    // ceci est un changement de grande envergure
     IEnumerator Start()
     {
         dicoVoisin = new Dictionary<Node, List<Node>>();
