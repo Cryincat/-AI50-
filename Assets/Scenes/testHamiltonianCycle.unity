@@ -1280,6 +1280,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da651f22d9e33ad4eab4446ba6f1bab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sol: {fileID: 1552096181}
+  isGenerated: 0
 --- !u!4 &1552096183
 Transform:
   m_ObjectHideFlags: 0
@@ -1305,8 +1307,8 @@ Transform:
   - {fileID: 1049522867}
   - {fileID: 865290607}
   - {fileID: 530451639}
-  - {fileID: 1005566891}
   - {fileID: 405578088}
+  - {fileID: 1005566891}
   - {fileID: 1352063936}
   - {fileID: 1020760140}
   - {fileID: 407198763}
@@ -1464,6 +1466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf25f90dcfb37b6439cacaad5cdf8a8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  recup: 0
   cylindre: {fileID: 1738725240}
 --- !u!4 &1738725240 stripped
 Transform:

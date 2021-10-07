@@ -9,10 +9,13 @@ public class GraphGenerator : MonoBehaviour
 {
     public GameObject sol;
     public Graph graph;
+    public bool isGenerated = false;
+
     // Start is called before the first frame update
     void Start()
     {
         Generate();
+        isGenerated = true;
     }
 
     private void Generate()
@@ -36,7 +39,7 @@ public class GraphGenerator : MonoBehaviour
             }
             catch (Exception e)
             {
-                throw;
+                throw e;
             }
         }
         //Case where the map is already existing
