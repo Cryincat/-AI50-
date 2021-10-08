@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+
 public class Graph : Dictionary<(int, int), Node>
 {
     public Dictionary<(int, int), Node> nodes;
@@ -28,15 +30,20 @@ public class Graph : Dictionary<(int, int), Node>
     }
 }
 
+[Serializable]
 public class Node
 {
+    public new string name;
     public (int, int) pos;
     public List<Edge> neighs;
+    [SerializeField] public float timeSinceLastVisit;
 
     public Node((int, int) pos)
     {
         this.pos = pos;
+        timeSinceLastVisit = 0f;
         neighs = new List<Edge>();
+        name = pos.ToString();
     }
 }
 public class Edge

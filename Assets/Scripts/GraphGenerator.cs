@@ -1,15 +1,19 @@
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using MiscUtil.IO;
+using System.Linq;
 
 public class GraphGenerator : MonoBehaviour
 {
+    private Dictionary<Node, NodeComponent> nodeComponentDict;
+    public List<Agent> agents;
     public GameObject sol;
     public Graph graph;
-    public bool isGenerated = false;
+    public bool isGenerated;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +26,8 @@ public class GraphGenerator : MonoBehaviour
     private void Generate()
     {
         graph = new Graph();
+        nodeComponentDict = new Dictionary<Node, NodeComponent>();
+        agents = FindObjectsOfType<Agent>().ToList();
         if (transform.childCount == 0)
         {
             try
@@ -46,13 +52,15 @@ public class GraphGenerator : MonoBehaviour
         //Case where the map is already existing
         foreach (Transform item in transform)
         {
-            if (item.GetComponent<NodeComponent>())
+            var nc = item.GetComponent<NodeComponent>();
+            if (nc)
             {
                 //If the object has a NodeComponent, we generate a node in the graph at its position
                 (int, int) pos = ((int)item.position.x, (int)item.position.z);
                 Node node = new Node(pos);
                 graph.nodes.Add(pos, node);
-                item.GetComponent<NodeComponent>().node = new Node(pos);
+                nc.node = node;
+                nodeComponentDict.Add(node, nc);
             }
         }
 
@@ -90,7 +98,27 @@ public class GraphGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        foreach(var node in graph.nodes.Values)
+        {
+            node.timeSinceLastVisit += Time.deltaTime;
+        }
+        foreach(var agent in agents)
+        {
+            agent.node.timeSinceLastVisit = 0f;
+        }
 
+        foreach (var nc in nodeComponentDict.Values)
+        {
+            float value = Math.Max(0, 1 - .1f * nc.node.timeSinceLastVisit);
+            Color color = new Color(1, value, value, 1);
+            List<Color> colors = new List<Color>();
+
+            foreach (var v in nc.meshFilter.mesh.vertices)
+            {
+                colors.Add(color);
+            }
+            nc.meshFilter.mesh.colors = colors.ToArray();
+        }
     }
 }
 
