@@ -46,6 +46,10 @@ public class HamiltonianPathGenerator : MonoBehaviour
         sw.Start();
         print("Recherche de path hamiltonien");
         hamiltonianPath = findHamiltonianPath(graph, startNode, new List<Node>(), startNode);
+        foreach (Node node in hamiltonianPath)
+        {
+
+        }
         sw.Stop();
         printTime(sw);
         ready = true;
@@ -64,12 +68,12 @@ public class HamiltonianPathGenerator : MonoBehaviour
                 
                 setupUpdate = false;
             }
+            
             Vector3 diffTest = nextPosition - cylindre.transform.position;
             cylindre.transform.Translate(diff * Time.deltaTime * vitesse);
             if (diffTest.x <= step && diffTest.x >= -step && diffTest.z <= step && diffTest.z >= -step)
             {
                 iteration++;
-
                 if (iteration >= hamiltonianPath.Count())
                 {
                     iteration = 0;
