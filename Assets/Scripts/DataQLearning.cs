@@ -7,7 +7,7 @@ using System.IO;
 public class DataQLearning : MonoBehaviour
 {
 
-    private string path = "C:/Users/bestk/OneDrive/Bureau/Dossier/Etudes/SEMESTRE 05/Projet UNITY IA50/-AI50-/Assets/Data/";
+    private string path = Directory.GetCurrentDirectory() + "/Assets/Data/";
     public string textFileName = "QLearning.txt";
     private GraphGenerator graphGeneratorInstance;
     public Dictionary<(Node, int), float> Q;

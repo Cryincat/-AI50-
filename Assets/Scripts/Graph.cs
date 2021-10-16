@@ -41,7 +41,7 @@ public class Node
     public Node((int, int) pos)
     {
         this.pos = pos;
-        timeSinceLastVisit = 0f;
+        timeSinceLastVisit = 50f;
         neighs = new List<Edge>();
         name = pos.ToString();
     }
