@@ -107,19 +107,6 @@ public class QLearningPatrolling : MonoBehaviour
         }
         return false;
     }
-
-    // Method that initiate each couple (node,action) to 0
-    void setQToZero()
-    {
-        foreach(Node node in graph.nodes.Values)
-        {
-            Q.Add((node,0), 0f);
-            Q.Add((node, 1), 0f);
-            Q.Add((node, 2), 0f);
-            Q.Add((node, 3), 0f);
-        }
-
-    }
     
     // The reward function : check if the nextState has the best value in "timeSinceLastVisit". If yes, reward = rewardValue, if no, reward  = -10
     float getReward(Node state, int bestAction, Node nextState, Graph graph)
@@ -139,11 +126,74 @@ public class QLearningPatrolling : MonoBehaviour
         {
             if (lastVisitedValueWithBestAction < neighbour.timeSinceLastVisit)
             {
-                return -1;
+                return -2;
             }
         }
         return rewardValue;
 
+    }
+
+    int getBestAction_2(Node state, float epsilonRange)
+    {
+        print("NEXT");
+        print("Actual state : (" + state.pos.Item1 + "," + state.pos.Item2 + ")");
+        // Random choice with epsilon
+        if (random.NextDouble() < epsilonRange)
+        {
+            return listAction[0];
+        }
+
+        // If not random, check the best action to do with the timeSinceLastVisit value
+        // Get all neighbours of actual state, check which one has the best timeSincelastUpdate value, and the action that lead to this state for nextState
+        List<Node> neighbours = new List<Node>();
+        for (int i = 0; i <= 4; i++)
+        {
+            Node temp = getNextState(state, i, graph);
+            if (!temp.Equals(state))
+            {
+                neighbours.Add(temp);
+            }
+        }
+
+        Node neighbourSelected = neighbours[0];
+        foreach (Node neighbour in neighbours)
+        {
+            print("Neighbour Value (" + neighbour.pos.Item1 + "," + neighbour.pos.Item2 + ") : " + neighbour.timeSinceLastVisit);
+            if (neighbour.timeSinceLastVisit > neighbourSelected.timeSinceLastVisit)
+            {
+                neighbourSelected = neighbour;
+            }
+        }
+        print("Value choosen : " + neighbourSelected.timeSinceLastVisit);
+
+        return getActionWithTwoState(state, neighbourSelected);
+    }
+
+    int getActionWithTwoState(Node state, Node neighbour)
+    {
+        print("Nouveau get");
+        print("State : (" + state.pos.Item1 + "," + state.pos.Item2 + ")" + " and neighbours : (" + neighbour.pos.Item1 + "," + neighbour.pos.Item2);
+        // UP
+        if (state.pos.Item2 == neighbour.pos.Item2 - 1 && state.pos.Item1 == neighbour.pos.Item1)
+        {
+            print ("Action : UP");
+            return 0;
+        }
+        // Down
+        if (state.pos.Item2 == neighbour.pos.Item2 + 1 && state.pos.Item1 == neighbour.pos.Item1)
+        {
+            print("Action : DOWN");
+            return 1;
+        }
+        // Left
+        if (state.pos.Item1 == neighbour.pos.Item1 + 1)
+        {
+            print("Action : LEFT");
+            return 2;
+        }
+        // Right
+        print("Action : RIGHT");
+        return 3;
     }
 
     // Method that return the next node after doing this action in actual node
@@ -151,28 +201,28 @@ public class QLearningPatrolling : MonoBehaviour
     Node getNextState(Node state, int action, Graph graph)
     {
         int x = state.pos.Item1;
-        int y = state.pos.Item2;
+        int z = state.pos.Item2;
 
         if (action == 0)
         {
-            x = x + 1;
+            z = z + 1;
         }
         else if (action == 1)
         {
-            x = x - 1;
+            z = z - 1;
         }
         else if (action == 2)
         {
-            y = y - 1;
+            x = x - 1;
         }
         else if (action == 3)
         {
-            y = y + 1;
+            x = x + 1;
         }
 
-        if (graph.nodes.ContainsKey((x, y)))
+        if (graph.nodes.ContainsKey((x, z)))
         {
-            return graph.nodes[(x, y)];
+            return graph.nodes[(x, z)];
         }
         return state;
  
@@ -180,7 +230,9 @@ public class QLearningPatrolling : MonoBehaviour
 
     Node runQLearning(Node state,float gamma, float epsilonRange, List<int> listAction, Graph graph)
     {
-        int bestAction = getBestAction(state, epsilonRange);
+        // getBestAction(state,epsilonRange) give best action due to Q, getBestActio_2 give best action due to the best neighbour timeSinceLastVisit value
+        int bestAction = getBestAction_2(state, epsilonRange);
+        print("Best action : " + bestAction);
         Node nextState = getNextState(state, bestAction, graph);
         float reward = getReward(state, bestAction, nextState, graph);
         Q[(state, bestAction)] = (1 - gamma) * Q[(state, bestAction)] + gamma * (reward + gamma * getMaxNextState(state,listAction));
