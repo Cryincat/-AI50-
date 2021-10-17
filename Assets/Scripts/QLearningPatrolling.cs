@@ -26,6 +26,8 @@ public class QLearningPatrolling : MonoBehaviour
     public float epsilonRange = 0.3f;
     public float vitesse = 4.0f;
     private bool isSaving = false;
+    private float rewardValue = 1;
+
 
     // Start is called before the first frame update
     IEnumerator Start()
@@ -55,8 +57,6 @@ public class QLearningPatrolling : MonoBehaviour
     {
         if (ready == true)
         {
-            saveIterator++;
-
             // Permet d'avoir un désordre dans les actions (0,1,2,3 => 1,2,3,0 => 2,3,0,1 => 3,0,1,2 => ...)
             listAction.Add(listAction[0]);
             listAction.RemoveAt(0);          
@@ -65,8 +65,8 @@ public class QLearningPatrolling : MonoBehaviour
             if (isPositionReach(agent.transform.position, newPosition))
             {
                 // Run d'une itération du Q learning
-                firstState = runQLearning(firstState, gamma, epsilonRange, listAction);
-                print("Next state = (" + firstState.pos.Item1 + ";" + firstState.pos.Item2 + ")");
+                firstState = runQLearning(firstState, gamma, epsilonRange, listAction, graph);
+                saveIterator++;
                 // Calcul de la nouvelle position vers laquelle se diriger pour l'agent
                 newPosition.Set(firstState.pos.Item1, agent.transform.position.y, firstState.pos.Item2);
                 diff = newPosition - agent.transform.position;
@@ -78,13 +78,24 @@ public class QLearningPatrolling : MonoBehaviour
             agent.transform.Translate(diff * Time.deltaTime * vitesse);
 
             // Toutes les 200 itérations, on save Q dans via le script DataQLearning dans le fichier text dédié à celà.
-            if (saveIterator > 1000)
+            if (saveIterator > 200)
             {
                 print("Save Q");
                 saveIterator = 0;
+
+                // On met en pause le script en question le temps que la sauvegarde se fasse
+                //Time.timeScale = 0;
+                dataQLearningInstance.isSaved = false;
                 dataQLearningInstance.save();
+                StartCoroutine(pauseUntilSaveIsDone());
+
             }
         }
+    }
+
+    IEnumerator pauseUntilSaveIsDone()
+    {
+        yield return new WaitUntil(() => dataQLearningInstance.isSaved);
     }
 
     bool isPositionReach(Vector3 agentPosition, Vector3 positionToReach)
@@ -110,14 +121,29 @@ public class QLearningPatrolling : MonoBehaviour
 
     }
     
-    // The reward function 
-    float getReward(Node state, int action, float gamma)
+    // The reward function : check if the nextState has the best value in "timeSinceLastVisit". If yes, reward = rewardValue, if no, reward  = -10
+    float getReward(Node state, int bestAction, Node nextState, Graph graph)
     {
-        if (state.timeSinceLastVisit > 120)
+        List<Node> neighbours = new List<Node>();
+        for (int i = 0; i <= 4; i++)
         {
-            return state.timeSinceLastVisit;
+            Node temp = getNextState(state, i, graph);
+            if (!temp.Equals(state))
+            {
+                neighbours.Add(temp);
+            }
         }
-        return -120;
+
+        float lastVisitedValueWithBestAction = nextState.timeSinceLastVisit;
+        foreach(Node neighbour in neighbours)
+        {
+            if (lastVisitedValueWithBestAction < neighbour.timeSinceLastVisit)
+            {
+                return -1;
+            }
+        }
+        return rewardValue;
+
     }
 
     // Method that return the next node after doing this action in actual node
@@ -152,27 +178,11 @@ public class QLearningPatrolling : MonoBehaviour
  
     }
 
-    void setTimeSinceLastVisit(Graph graph)
-    {
-        foreach (Node node in graph.nodes.Values)
-        {
-            node.timeSinceLastVisit = 0;
-        }
-    }
-
-    void updateTimeSinceLastVisit(Graph graph, float time)
-    {
-        foreach (Node node in graph.nodes.Values)
-        {
-            node.timeSinceLastVisit += time;
-        }
-    }
-
-    Node runQLearning(Node state,float gamma, float epsilonRange, List<int> listAction)
+    Node runQLearning(Node state,float gamma, float epsilonRange, List<int> listAction, Graph graph)
     {
         int bestAction = getBestAction(state, epsilonRange);
-        float reward = getReward(state,bestAction,gamma);
         Node nextState = getNextState(state, bestAction, graph);
+        float reward = getReward(state, bestAction, nextState, graph);
         Q[(state, bestAction)] = (1 - gamma) * Q[(state, bestAction)] + gamma * (reward + gamma * getMaxNextState(state,listAction));
         state.timeSinceLastVisit = 0;
         return nextState;
@@ -198,6 +208,7 @@ public class QLearningPatrolling : MonoBehaviour
         return bestAction;
     }
 
+    // Return the max value in Q for a given state and all his possible action
     float getMaxNextState(Node state, List<int> listAction)
     {
         List<float> listValue = new List<float>();
@@ -209,6 +220,4 @@ public class QLearningPatrolling : MonoBehaviour
 
         return listValue.Max();
     }
-
-
 }
