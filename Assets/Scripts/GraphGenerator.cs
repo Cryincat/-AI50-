@@ -114,7 +114,6 @@ public class GraphGenerator : MonoBehaviour
                 foreach (var e in agent.node.neighs)
                 {
                     e.to.timeSinceLastVisit = 0f;
-                    Debug.Log(e.to._name);
                 }
             }
 

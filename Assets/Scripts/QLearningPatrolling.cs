@@ -17,16 +17,16 @@ public class QLearningPatrolling : MonoBehaviour
     private bool ready = false;
     private System.Random random;
     private Vector3 newPosition;
-    private float[] factor;
     private int saveIterator = 0;
     private Vector3 diff;
-    public int nbAction;
+    private float rewardValue = 1;
+
+    public int nbAction = 8;
     public Component agent;
     public float gamma = 0.9f;
     public float epsilonRange = 0.3f;
     public float vitesse = 4.0f;
-    private bool isSaving = false;
-    private float rewardValue = 1;
+    public int range = 2;
 
 
     // Start is called before the first frame update
@@ -41,7 +41,7 @@ public class QLearningPatrolling : MonoBehaviour
         yield return new WaitUntil(() => dataQLearningInstance.isGenerated);
         print("Ca y est on peut commencer à apprendre !");
         Q = dataQLearningInstance.Q;
-        listAction = new List<int> { 0,1,2,3 };
+        listAction = new List<int> { 0,1,2,3,4,5,6,7 };
         graph = graphGeneratorInstance.graph;
         //nbState = graph.nodes.Count;
         //setQToZero();
@@ -109,16 +109,12 @@ public class QLearningPatrolling : MonoBehaviour
     }
     
     // The reward function : check if the nextState has the best value in "timeSinceLastVisit". If yes, reward = rewardValue, if no, reward  = -10
-    float getReward(Node state, int bestAction, Node nextState, Graph graph)
+    float getReward(Node state, Node nextState, Graph graph)
     {
         List<Node> neighbours = new List<Node>();
-        for (int i = 0; i <= 4; i++)
+        foreach (Edge edge in state.neighs)
         {
-            Node temp = getNextState(state, i, graph);
-            if (!temp.Equals(state))
-            {
-                neighbours.Add(temp);
-            }
+            neighbours.Add(edge.to);
         }
 
         float lastVisitedValueWithBestAction = nextState.timeSinceLastVisit;
@@ -135,8 +131,7 @@ public class QLearningPatrolling : MonoBehaviour
 
     int getBestAction_2(Node state, float epsilonRange)
     {
-        print("NEXT");
-        print("Actual state : (" + state.pos.Item1 + "," + state.pos.Item2 + ")");
+        print("New bestAction");
         // Random choice with epsilon
         if (random.NextDouble() < epsilonRange)
         {
@@ -146,54 +141,160 @@ public class QLearningPatrolling : MonoBehaviour
         // If not random, check the best action to do with the timeSinceLastVisit value
         // Get all neighbours of actual state, check which one has the best timeSincelastUpdate value, and the action that lead to this state for nextState
         List<Node> neighbours = new List<Node>();
-        for (int i = 0; i <= 4; i++)
-        {
-            Node temp = getNextState(state, i, graph);
-            if (!temp.Equals(state))
-            {
-                neighbours.Add(temp);
-            }
-        }
+        neighbours = getAllNeighboursByRange(state, range);
 
         Node neighbourSelected = neighbours[0];
         foreach (Node neighbour in neighbours)
         {
-            print("Neighbour Value (" + neighbour.pos.Item1 + "," + neighbour.pos.Item2 + ") : " + neighbour.timeSinceLastVisit);
             if (neighbour.timeSinceLastVisit > neighbourSelected.timeSinceLastVisit)
             {
                 neighbourSelected = neighbour;
             }
         }
-        print("Value choosen : " + neighbourSelected.timeSinceLastVisit);
-
         return getActionWithTwoState(state, neighbourSelected);
+    }
+
+    List<Node> getAllNeighboursByRange(Node state, int range)
+    {
+        List<Node> neighbours = new List<Node>();
+        List<Node> neighboursSub = new List<Node>();
+
+        // Get all first neighbours of the state
+        foreach (Edge edge in state.neighs)
+        {
+            neighbours.Add(edge.to);
+        }
+
+        // Get all neighbours that are not already in the list (every time you do a for iteration, it will add neighbours for next range)
+        for (int i = 1 ; i <= range ; i++)
+        {
+            print("Iteration : " + i);
+            foreach (Node node in neighbours)
+            {
+                foreach (Edge edge in node.neighs)
+                {
+                    if (!neighbours.Contains(edge.to) && !edge.to.Equals(state))
+                    {
+                        neighboursSub.Add(edge.to);
+                    }
+                }
+            }
+            neighbours.AddRange(neighboursSub);
+        }
+        return neighbours;
     }
 
     int getActionWithTwoState(Node state, Node neighbour)
     {
-        print("Nouveau get");
-        print("State : (" + state.pos.Item1 + "," + state.pos.Item2 + ")" + " and neighbours : (" + neighbour.pos.Item1 + "," + neighbour.pos.Item2);
+        print("state 1 : (" + state.pos.Item1 + "," + state.pos.Item2 + ") and neigh (" + neighbour.pos.Item1 + "," + neighbour.pos.Item2 + ")");
+        bool isRealNeighbour = false;
+        bool setup = false;
+        bool isBreak = false;
+        List<Node> potentialNeighbours = new List<Node>();
+        List<Node> potentialNeighboursSub = new List<Node>();
+
+        foreach (Edge edge in neighbour.neighs)
+        {
+            if (edge.to.Equals(state))
+            {
+                isRealNeighbour = true;
+            }
+        }
+
+        while (!isRealNeighbour)
+        {
+            if (!setup)
+            {
+                
+                foreach (Edge edge in neighbour.neighs)
+                {
+                    potentialNeighbours.Add(edge.to);
+                    print("Adding (" + edge.to.pos.Item1 + "," + edge.to.pos.Item2 + ") to potentialNeighbours.");
+                }
+                setup = true;
+                print("SetUpDone");
+            }
+
+            foreach(Node node in potentialNeighbours)
+            {
+                if (isBreak)
+                {
+                    break;
+                }
+                foreach(Edge edge in node.neighs)
+                {
+                    if (edge.to.Equals(state))
+                    {
+                        neighbour = node;
+                        isRealNeighbour = true;
+                        print("IsReal == true");
+                        isBreak = true;
+                        break;
+                        
+                    }
+                    else
+                    {
+                        if (!potentialNeighbours.Contains(edge.to))
+                        {
+                            print("Adding (" + edge.to.pos.Item1 + "," + edge.to.pos.Item2 + ") to potentialNeighbours.");
+                            potentialNeighboursSub.Add(edge.to);
+                        }
+                    }
+                }
+            }
+            potentialNeighbours.AddRange(potentialNeighboursSub);
+            print("Tour de while");
+        }
+
+        print("Check finito, on a récup notre voisin le plus proche");
+        print("State : (" + state.pos.Item1 + "," + state.pos.Item2 + ") ; neighbour : (" + neighbour.pos.Item1 + "," + neighbour.pos.Item2 + ")");
+
         // UP
         if (state.pos.Item2 == neighbour.pos.Item2 - 1 && state.pos.Item1 == neighbour.pos.Item1)
         {
-            print ("Action : UP");
             return 0;
         }
         // Down
         if (state.pos.Item2 == neighbour.pos.Item2 + 1 && state.pos.Item1 == neighbour.pos.Item1)
         {
-            print("Action : DOWN");
+
             return 1;
         }
         // Left
-        if (state.pos.Item1 == neighbour.pos.Item1 + 1)
+        if (state.pos.Item1 == neighbour.pos.Item1 + 1 && state.pos.Item2 == neighbour.pos.Item2)
         {
-            print("Action : LEFT");
+
             return 2;
         }
         // Right
-        print("Action : RIGHT");
-        return 3;
+        if (state.pos.Item1 == neighbour.pos.Item1 - 1 && state.pos.Item2 == neighbour.pos.Item2)
+        {
+
+            return 3;
+        }
+        // TOP LEFT
+        if (state.pos.Item1 == neighbour.pos.Item1 + 1 && state.pos.Item2 == neighbour.pos.Item2 - 1)
+        {
+            return 4;
+        }
+        // TOP RIGHT
+        if (state.pos.Item1 == neighbour.pos.Item1 - 1 && state.pos.Item2 == neighbour.pos.Item2 - 1)
+        {
+            return 4;
+        }
+        // BOT LEFT
+        if (state.pos.Item1 == neighbour.pos.Item1 + 1 && state.pos.Item2 == neighbour.pos.Item2 + 1)
+        {
+            return 4;
+        }
+        // BOT RIGHT
+        if (state.pos.Item1 == neighbour.pos.Item1 - 1 && state.pos.Item2 == neighbour.pos.Item2 + 1)
+        {
+            return 4;
+        }
+
+        print("Aucune best action trouvé");
+        return -1;
     }
 
     // Method that return the next node after doing this action in actual node
@@ -219,6 +320,26 @@ public class QLearningPatrolling : MonoBehaviour
         {
             x = x + 1;
         }
+        else if (action == 4)
+        {
+            x = x + 1;
+            z = z - 1;
+        }
+        else if (action == 5)
+        {
+            x = x + 1;
+            z = z + 1;
+        }
+        else if (action == 6)
+        {
+            x = x - 1;
+            z = z - 1;
+        }
+        else if (action == 7)
+        {
+            x = x - 1;
+            z = z + 1;
+        }
 
         if (graph.nodes.ContainsKey((x, z)))
         {
@@ -232,9 +353,9 @@ public class QLearningPatrolling : MonoBehaviour
     {
         // getBestAction(state,epsilonRange) give best action due to Q, getBestActio_2 give best action due to the best neighbour timeSinceLastVisit value
         int bestAction = getBestAction_2(state, epsilonRange);
-        print("Best action : " + bestAction);
         Node nextState = getNextState(state, bestAction, graph);
-        float reward = getReward(state, bestAction, nextState, graph);
+        float reward = getReward(state, nextState, graph);
+        print("Action : " + bestAction + " ; nextState : (" + nextState.pos.Item1 + "," + nextState.pos.Item2 + ")");
         Q[(state, bestAction)] = (1 - gamma) * Q[(state, bestAction)] + gamma * (reward + gamma * getMaxNextState(state,listAction));
         state.timeSinceLastVisit = 0;
         return nextState;

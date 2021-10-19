@@ -52,6 +52,10 @@ public class DataQLearning : MonoBehaviour
             Q.Add((node, 1), 0f);
             Q.Add((node, 2), 0f);
             Q.Add((node, 3), 0f);
+            Q.Add((node, 4), 0f);
+            Q.Add((node, 5), 0f);
+            Q.Add((node, 6), 0f);
+            Q.Add((node, 7), 0f);
         }
     }
 

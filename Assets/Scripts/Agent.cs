@@ -36,7 +36,6 @@ public class Agent : MonoBehaviour
             {
                 oldPos = transform.position;
                 node = graphGenerator.graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
-                print(node._name + "changing node");
             }
         }
         catch (Exception)
