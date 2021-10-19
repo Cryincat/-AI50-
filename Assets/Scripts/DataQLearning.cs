@@ -13,6 +13,8 @@ public class DataQLearning : MonoBehaviour
     public Dictionary<(Node, int), float> Q;
     private Graph graph;
     public bool isGenerated = false;
+    public bool isSaved = true;
+    public bool hasToReset = false;
 
     // Start is called before the first frame update
     IEnumerator Start()
@@ -23,7 +25,14 @@ public class DataQLearning : MonoBehaviour
         graphGeneratorInstance = GameObject.Find("Sols").GetComponent<GraphGenerator>();
         yield return new WaitUntil(() => graphGeneratorInstance.isGenerated);
         graph = graphGeneratorInstance.graph;
-        Q = loadQ(path);
+        if (hasToReset)
+        {
+            generateQ();
+        }
+        else
+        {
+            Q = loadQ(path);
+        }
         print("Le dictionnaire Q est prêt.");
         isGenerated = true;
     }
@@ -49,7 +58,8 @@ public class DataQLearning : MonoBehaviour
     // Save in file each element in Q, as following model : x,y,action,value
     public void saveQ(string path, Dictionary<(Node, int), float> Q)
     {
-        File.WriteAllLines(path, Q.Select(kvp => string.Format("{0},{1},{2},{3}", kvp.Key.Item1.pos.Item1 , kvp.Key.Item1.pos.Item2,kvp.Key.Item2,kvp.Value)));
+        File.WriteAllLines(path, Q.Select(kvp => string.Format("{0}|{1}|{2}|{3}", kvp.Key.Item1.pos.Item1 , kvp.Key.Item1.pos.Item2,kvp.Key.Item2,kvp.Value)));
+        isSaved = true;
     }
 
     // Rebuild Q with the given txt file (Every line is a element, and each line is like : x,y,action,value)
@@ -63,7 +73,7 @@ public class DataQLearning : MonoBehaviour
         
         foreach(string element in lines)
         {
-            string[] splittedLines = element.Split(',');
+            string[] splittedLines = element.Split('|');
             x = int.Parse(splittedLines[0]);
             y = int.Parse(splittedLines[1]);
             action = int.Parse(splittedLines[2]);
@@ -78,5 +88,12 @@ public class DataQLearning : MonoBehaviour
     public void save()
     {
         saveQ(path, Q);
+    }
+
+
+    void generateQ()
+    {
+        setQToZero();
+        save();
     }
 }
