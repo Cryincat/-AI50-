@@ -109,7 +109,6 @@ public class QLearningPatrolling : MonoBehaviour
     }
     
     // The reward function : check if the nextState has the best value in "timeSinceLastVisit". If yes, reward = rewardValue, if no, reward  = -10
-<<<<<<< Updated upstream
     float getReward(Node state, Node nextState, Graph graph)
     {
         List<Node> neighbours = new List<Node>();
@@ -156,9 +155,6 @@ public class QLearningPatrolling : MonoBehaviour
     }
 
     List<Node> getAllNeighboursByRange(Node state, int range)
-=======
-    float getReward(Node state, int bestAction, Node nextState, Graph graph)
->>>>>>> Stashed changes
     {
         List<Node> neighbours = new List<Node>();
         List<Node> neighboursSub = new List<Node>();
@@ -201,11 +197,7 @@ public class QLearningPatrolling : MonoBehaviour
         {
             if (edge.to.Equals(state))
             {
-<<<<<<< Updated upstream
                 isRealNeighbour = true;
-=======
-                return -2;
->>>>>>> Stashed changes
             }
         }
 
@@ -305,69 +297,6 @@ public class QLearningPatrolling : MonoBehaviour
         return -1;
     }
 
-    int getBestAction_2(Node state, float epsilonRange)
-    {
-        print("NEXT");
-        print("Actual state : (" + state.pos.Item1 + "," + state.pos.Item2 + ")");
-        // Random choice with epsilon
-        if (random.NextDouble() < epsilonRange)
-        {
-            return listAction[0];
-        }
-
-        // If not random, check the best action to do with the timeSinceLastVisit value
-        // Get all neighbours of actual state, check which one has the best timeSincelastUpdate value, and the action that lead to this state for nextState
-        List<Node> neighbours = new List<Node>();
-        for (int i = 0; i <= 4; i++)
-        {
-            Node temp = getNextState(state, i, graph);
-            if (!temp.Equals(state))
-            {
-                neighbours.Add(temp);
-            }
-        }
-
-        Node neighbourSelected = neighbours[0];
-        foreach (Node neighbour in neighbours)
-        {
-            print("Neighbour Value (" + neighbour.pos.Item1 + "," + neighbour.pos.Item2 + ") : " + neighbour.timeSinceLastVisit);
-            if (neighbour.timeSinceLastVisit > neighbourSelected.timeSinceLastVisit)
-            {
-                neighbourSelected = neighbour;
-            }
-        }
-        print("Value choosen : " + neighbourSelected.timeSinceLastVisit);
-
-        return getActionWithTwoState(state, neighbourSelected);
-    }
-
-    int getActionWithTwoState(Node state, Node neighbour)
-    {
-        print("Nouveau get");
-        print("State : (" + state.pos.Item1 + "," + state.pos.Item2 + ")" + " and neighbours : (" + neighbour.pos.Item1 + "," + neighbour.pos.Item2);
-        // UP
-        if (state.pos.Item2 == neighbour.pos.Item2 - 1 && state.pos.Item1 == neighbour.pos.Item1)
-        {
-            print ("Action : UP");
-            return 0;
-        }
-        // Down
-        if (state.pos.Item2 == neighbour.pos.Item2 + 1 && state.pos.Item1 == neighbour.pos.Item1)
-        {
-            print("Action : DOWN");
-            return 1;
-        }
-        // Left
-        if (state.pos.Item1 == neighbour.pos.Item1 + 1)
-        {
-            print("Action : LEFT");
-            return 2;
-        }
-        // Right
-        print("Action : RIGHT");
-        return 3;
-    }
-
     // Method that return the next node after doing this action in actual node
     // Actions are corresponding to : 0 = UP, 1 = DOWN, 2 = LEFT, 3 = RIGHT
     Node getNextState(Node state, int action, Graph graph)
@@ -390,7 +319,6 @@ public class QLearningPatrolling : MonoBehaviour
         else if (action == 3)
         {
             x = x + 1;
-<<<<<<< Updated upstream
         }
         else if (action == 4)
         {
@@ -411,8 +339,6 @@ public class QLearningPatrolling : MonoBehaviour
         {
             x = x - 1;
             z = z + 1;
-=======
->>>>>>> Stashed changes
         }
 
         if (graph.nodes.ContainsKey((x, z)))
@@ -427,10 +353,6 @@ public class QLearningPatrolling : MonoBehaviour
     {
         // getBestAction(state,epsilonRange) give best action due to Q, getBestActio_2 give best action due to the best neighbour timeSinceLastVisit value
         int bestAction = getBestAction_2(state, epsilonRange);
-<<<<<<< Updated upstream
-=======
-        print("Best action : " + bestAction);
->>>>>>> Stashed changes
         Node nextState = getNextState(state, bestAction, graph);
         float reward = getReward(state, nextState, graph);
         print("Action : " + bestAction + " ; nextState : (" + nextState.pos.Item1 + "," + nextState.pos.Item2 + ")");
