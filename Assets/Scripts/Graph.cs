@@ -33,7 +33,7 @@ public class Graph : Dictionary<(int, int), Node>
 [Serializable]
 public class Node
 {
-    public new string name;
+    public new string _name;
     public (int, int) pos;
     public List<Edge> neighs;
     [SerializeField] public float timeSinceLastVisit;
@@ -43,7 +43,7 @@ public class Node
         this.pos = pos;
         timeSinceLastVisit = 50f;
         neighs = new List<Edge>();
-        name = pos.ToString();
+        _name = pos.ToString();
     }
 }
 public class Edge

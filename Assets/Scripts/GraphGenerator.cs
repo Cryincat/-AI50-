@@ -17,7 +17,6 @@ public class GraphGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         Generate();
         isGenerated = true;
         print("Start");
@@ -84,11 +83,16 @@ public class GraphGenerator : MonoBehaviour
 
             List<Node> neighs = new List<Node>() { leftNeigh, rightNeigh, topNeigh, bottomNeigh, topLeftNeigh, topRightNeigh, bottomLeftNeigh, bottomRightNeigh };
             neighs.RemoveAll(item => item == null);
+
             foreach (Node to in neighs)
             {
                 Edge edge = new Edge(node, to, new Vector2(node.pos.Item1 - to.pos.Item1, node.pos.Item2 - to.pos.Item2).magnitude);
                 node.neighs.Add(edge);
                 graph.edges.Add(edge);
+            }
+            foreach (var agent in agents)
+            {
+                agent.node = graph.nodes.Values.OrderBy(x => Vector3.Distance(agent.transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
             }
         }
         //Debug.Log("Saving...");
@@ -98,26 +102,34 @@ public class GraphGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach(var node in graph.nodes.Values)
+        if (isGenerated)
         {
-            node.timeSinceLastVisit += Time.deltaTime;
-        }
-        foreach(var agent in agents)
-        {
-            agent.node.timeSinceLastVisit = 0f;
-        }
-
-        foreach (var nc in nodeComponentDict.Values)
-        {
-            float value = Math.Max(0, 1 - .01f * nc.node.timeSinceLastVisit);
-            Color color = new Color(1, value, value, 1);
-            List<Color> colors = new List<Color>();
-
-            foreach (var v in nc.meshFilter.mesh.vertices)
+            foreach (var node in graph.nodes.Values)
             {
-                colors.Add(color);
+                node.timeSinceLastVisit += Time.deltaTime;
             }
-            nc.meshFilter.mesh.colors = colors.ToArray();
+            foreach (var agent in agents)
+            {
+                //agent.node.timeSinceLastVisit = 0f;
+                foreach (var e in agent.node.neighs)
+                {
+                    e.to.timeSinceLastVisit = 0f;
+                    Debug.Log(e.to._name);
+                }
+            }
+
+            foreach (var nc in nodeComponentDict.Values)
+            {
+                float value = Math.Max(0, 1 - .01f * nc.node.timeSinceLastVisit);
+                Color color = new Color(1, value, value, 1);
+                List<Color> colors = new List<Color>();
+
+                foreach (var v in nc.meshFilter.mesh.vertices)
+                {
+                    colors.Add(color);
+                }
+                nc.meshFilter.mesh.colors = colors.ToArray();
+            }
         }
     }
 }

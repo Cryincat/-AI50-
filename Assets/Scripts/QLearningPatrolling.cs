@@ -66,7 +66,7 @@ public class QLearningPatrolling : MonoBehaviour
             {
                 // Run d'une itération du Q learning
                 firstState = runQLearning(firstState, gamma, epsilonRange, listAction);
-                print("Next state = (" + firstState.pos.Item1 + ";" + firstState.pos.Item2 + ")");
+                //print("Next state = (" + firstState.pos.Item1 + ";" + firstState.pos.Item2 + ")");
                 // Calcul de la nouvelle position vers laquelle se diriger pour l'agent
                 newPosition.Set(firstState.pos.Item1, agent.transform.position.y, firstState.pos.Item2);
                 diff = newPosition - agent.transform.position;
@@ -152,7 +152,7 @@ public class QLearningPatrolling : MonoBehaviour
  
     }
 
-    void setTimeSinceLastVisit(Graph graph)
+    /*void setTimeSinceLastVisit(Graph graph)
     {
         foreach (Node node in graph.nodes.Values)
         {
@@ -166,7 +166,7 @@ public class QLearningPatrolling : MonoBehaviour
         {
             node.timeSinceLastVisit += time;
         }
-    }
+    }*/
 
     Node runQLearning(Node state,float gamma, float epsilonRange, List<int> listAction)
     {
@@ -209,6 +209,4 @@ public class QLearningPatrolling : MonoBehaviour
 
         return listValue.Max();
     }
-
-
 }

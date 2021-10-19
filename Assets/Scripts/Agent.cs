@@ -18,14 +18,14 @@ public class Agent : MonoBehaviour
         while (!graphGenerator.isGenerated)
         {
             yield return null;
-        }
-        try
-        {
-            node = graphGenerator.graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
-        }
-        catch (Exception)
-        {
-            throw;
+            try
+            {
+                node = graphGenerator.graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
     private void Update()
@@ -36,11 +36,11 @@ public class Agent : MonoBehaviour
             {
                 oldPos = transform.position;
                 node = graphGenerator.graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
+                print(node._name + "changing node");
             }
         }
         catch (Exception)
         {
-
             throw;
         }
     }
