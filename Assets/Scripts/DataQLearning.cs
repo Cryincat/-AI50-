@@ -40,7 +40,7 @@ public class DataQLearning : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     // Set each element of Q to value = 0
@@ -62,7 +62,7 @@ public class DataQLearning : MonoBehaviour
     // Save in file each element in Q, as following model : x,y,action,value
     public void saveQ(string path, Dictionary<(Node, int), float> Q)
     {
-        File.WriteAllLines(path, Q.Select(kvp => string.Format("{0}|{1}|{2}|{3}", kvp.Key.Item1.pos.Item1 , kvp.Key.Item1.pos.Item2,kvp.Key.Item2,kvp.Value)));
+        File.WriteAllLines(path, Q.Select(kvp => string.Format("{0}|{1}|{2}|{3}", kvp.Key.Item1.pos.Item1, kvp.Key.Item1.pos.Item2, kvp.Key.Item2, kvp.Value)));
         isSaved = true;
     }
 
@@ -74,16 +74,23 @@ public class DataQLearning : MonoBehaviour
         int x, y, action;
         float value;
         Node node;
-        
-        foreach(string element in lines)
+
+        foreach (string element in lines)
         {
-            string[] splittedLines = element.Split('|');
-            x = int.Parse(splittedLines[0]);
-            y = int.Parse(splittedLines[1]);
-            action = int.Parse(splittedLines[2]);
-            value = float.Parse(splittedLines[3]);
-            node = graph.nodes[(x, y)];
-            Q.Add((node, action), value);
+            var firstLetter = element[0];
+            if (firstLetter != '<' && firstLetter != '>' && firstLetter != '=')
+            {
+                string[] splittedLines = element.Split('|');
+                x = int.Parse(splittedLines[0]);
+                y = int.Parse(splittedLines[1]);
+                action = int.Parse(splittedLines[2]);
+                value = float.Parse(splittedLines[3]);
+                if (!graph.nodes.ContainsKey((x, y)))
+                {
+                    node = graph.nodes[(x, y)];
+                    Q.Add((node, action), value);
+                }
+            }
         }
 
         return Q;
