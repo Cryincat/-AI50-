@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Graph : Dictionary<(int, int), Node>
+public class Graph
 {
     public Dictionary<(int, int), Node> nodes;
     public List<Edge> edges;
@@ -12,6 +12,19 @@ public class Graph : Dictionary<(int, int), Node>
     {
         nodes = new Dictionary<(int, int), Node>();
         edges = new List<Edge>();
+    }
+    public Graph(Graph g)
+    {
+        nodes = new Dictionary<(int, int), Node>();
+        edges = new List<Edge>();
+        foreach (var n in g.nodes.Values)
+        {
+            nodes.Add(n.pos, new Node(n));
+        }
+        foreach(var e in g.edges)
+        {
+            edges.Add(new Edge(nodes[e.from.pos], nodes[e.to.pos], e.cost));
+        }
     }
 
     public string SaveAsString()
@@ -33,17 +46,35 @@ public class Graph : Dictionary<(int, int), Node>
 [Serializable]
 public class Node
 {
-    public new string _name;
     public (int, int) pos;
     public List<Edge> neighs;
+    public Vector3 realPos;
+    public Vector3 realPosFromagentHeights;
     [SerializeField] public float timeSinceLastVisit;
+    public bool agentPresence;
 
     public Node((int, int) pos)
     {
         this.pos = pos;
         timeSinceLastVisit = 50f;
         neighs = new List<Edge>();
-        _name = pos.ToString();
+        realPos = new Vector3(pos.Item1, 0, pos.Item2);
+        realPosFromagentHeights = realPos + Vector3.up;
+    }
+    public Node(Node n) : this(n.pos)
+    {
+        //COPY CONSTRUCTOR
+        agentPresence = n.agentPresence;
+    }
+
+    internal void WarnAgentVisit()
+    {
+        agentPresence = true;
+        timeSinceLastVisit = 0;
+        foreach(var e in neighs)
+        {
+            e.to.timeSinceLastVisit = 0;
+        }
     }
 }
 public class Edge

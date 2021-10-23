@@ -90,10 +90,10 @@ public class GraphGenerator : MonoBehaviour
                 node.neighs.Add(edge);
                 graph.edges.Add(edge);
             }
-            foreach (var agent in agents)
+            /*foreach (var agent in agents)
             {
                 agent.node = graph.nodes.Values.OrderBy(x => Vector3.Distance(agent.transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
-            }
+            }*/
         }
         //Debug.Log("Saving...");
         //File.WriteAllText("test.txt", graph.SaveAsString());
@@ -108,14 +108,14 @@ public class GraphGenerator : MonoBehaviour
             {
                 node.timeSinceLastVisit += Time.deltaTime;
             }
-            foreach (var agent in agents)
+            /*foreach (var agent in agents)
             {
                 //agent.node.timeSinceLastVisit = 0f;
                 foreach (var e in agent.node.neighs)
                 {
                     e.to.timeSinceLastVisit = 0f;
                 }
-            }
+            }*/
 
             foreach (var nc in nodeComponentDict.Values)
             {
