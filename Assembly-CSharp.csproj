@@ -67,8 +67,9 @@
     <Compile Include="Assets\Scripts\HamiltonianPathGenerator.cs" />
     <Compile Include="Assets\Scripts\Graph.cs" />
     <Compile Include="Assets\Scripts\Agent.cs" />
-    <Compile Include="Assets\Scripts\GraphGenerator.cs" />
     <Compile Include="Assets\Scripts\ServerClient.cs" />
+    <Compile Include="Assets\Scripts\GraphGenerator.cs" />
+    <Compile Include="Assets\SimplifiedGraphGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

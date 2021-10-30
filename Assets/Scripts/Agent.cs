@@ -29,7 +29,6 @@ public class Agent : MonoBehaviour
         foreach (MDP.Action action in Enum.GetValues(typeof(MDP.Action)))
         {
             var t = MDP.Transition(new MDP.State(graphGenerator.graph, node.pos), action);
-            print(t.graph.nodes.Values.Sum(x => x.timeSinceLastVisit) / t.graph.nodes.Values.Count);
         }
     }
     private void Update()

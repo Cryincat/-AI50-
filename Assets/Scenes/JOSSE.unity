@@ -13158,7 +13158,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &629559958
 Transform:
   m_ObjectHideFlags: 0
@@ -16502,6 +16502,7 @@ GameObject:
   - component: {fileID: 756115015}
   - component: {fileID: 756115016}
   - component: {fileID: 756115017}
+  - component: {fileID: 756115018}
   m_Layer: 0
   m_Name: Sols
   m_TagString: Untagged
@@ -17328,9 +17329,21 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 756115014}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6788e5314eac9643b155b450471ba15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &756115018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756115014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4848a3a02134bc45a682a150bbd68c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &757722827
