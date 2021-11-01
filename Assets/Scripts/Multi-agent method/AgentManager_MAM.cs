@@ -49,7 +49,7 @@ public class AgentManager_MAM : MonoBehaviour
 
     void CheckGraph()
     {
-        print("MANAGER / Checking for nodes...");
+        print("| MANAGER | Checking for nodes...");
         foreach (Node node in graph.nodes.Values)
         {
             if (node.timeSinceLastVisit > threshold && !agentMarket.hasToBeVisited.Contains(node) && managerTool[node] == false)
