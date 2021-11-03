@@ -8,6 +8,7 @@ TagManager:
   - agentList
   - AgentList
   - Agent_MAM
+  - Capsule
   layers:
   - Default
   - TransparentFX

@@ -19,16 +19,16 @@ public class Agent_MAM : MonoBehaviour
     private List<Node> pathToNode;
     public bool isGenerated;
     private Graph graph;
-    private Node oldOnTheWay = null;
-    private bool isAStarPath = false;
     private bool isRandomDestination = false;
+
+    private GameObject capsule;
+    
 
     public IEnumerator Start()
     {
         graphGenerator = FindObjectOfType<GraphGenerator>();
         agentMarket = FindObjectOfType<AgentMarket_MAM>();
         agentManager = FindObjectOfType<AgentManager_MAM>();
-
         destination = null;
         priorityQueue = new List<Node>();
         pathToNode = new List<Node>();
@@ -48,15 +48,26 @@ public class Agent_MAM : MonoBehaviour
 
     private void Update()
     {
-        
         if (node != null && isGenerated)
         {
-
-            //priorityQueue.Sort();
+            var capsuleRenderer = GetComponentInChildren<Renderer>();
+            
+            if (priorityQueue.Count == 0)
+            {
+                Node temp = CheckForNode();
+                if (temp != null)
+                {
+                    priorityQueue.Add(temp);
+                    Agent_MAM toRemove = agentMarket.nodeAssignation[temp];
+                    agentMarket.nodeAssignation.TryRemove(temp, out toRemove);
+                }
+            }
             // Cas où aucun noeud particulier n'est à visiter
             if (priorityQueue.Count == 0)
             {
+                
                 isRandomDestination = true;
+                capsuleRenderer.material.SetColor("_Color", Color.green);
                 //print("| Agent | Aucune destination prévue. Je prend un de mes voisins.");
                 FindDestination();
             }
@@ -66,17 +77,16 @@ public class Agent_MAM : MonoBehaviour
                 // Cas où le chemin vers ce noeud n'est pas encore attribué
                 if (pathToNode.Count == 0)
                 {
-                    
+                    capsuleRenderer.material.SetColor("_Color", Color.red);
                     print("| Agent | Je cherche un nouveau chemin pour aller visiter au plus vide le node de priorité.");
-                    Node actualNode = graph.nodes[((int)transform.position.x, (int)transform.position.z)];
-                    pathToNode = PathFinding2(actualNode, priorityQueue[0]);
+                    pathToNode = PathFinding2(node, priorityQueue[0]);
                     destination = pathToNode[0];
                 }
                 // Cas où il y a un chemin en train d'être suivi
                 else
                 {
-                    
-                    print("| Agent | Je suis le chemin.");
+                    //var coef = Vector3.Distance(new Vector3(priorityQueue[0].pos.Item1,0,priorityQueue[0].pos.Item2),new Vector3(transform.position.x,0,transform.position.z)) / 255;
+                    capsuleRenderer.material.SetColor("_Color", Color.blue);
                     destination = pathToNode[0];
                     agentManager.SetNodeToTrue(destination);
                 }
@@ -89,6 +99,38 @@ public class Agent_MAM : MonoBehaviour
         }
     }
 
+    Node CheckForNode()
+    {
+        List<Node> temp = new List<Node>();
+        foreach(Node node in agentMarket.nodeAssignation.Keys)
+        {
+            print("AgentMArket : " + agentMarket.nodeAssignation[node].ToString() + ", this : " + this.ToString());
+            if (agentMarket.nodeAssignation[node].ToString() == this.ToString())
+            {
+                temp.Add(node);
+            }
+        }
+
+        if (temp.Count == 0)
+        {
+            return null;
+        }
+
+        Node bestNode = null;
+        float dist = Mathf.Infinity;
+        foreach(Node node in temp)
+        {
+            float distComp = Vector3.Distance(new Vector3(node.pos.Item1, 0, node.pos.Item2), transform.position);
+            if (dist > distComp)
+            {
+                bestNode = node;
+                dist = distComp;
+            }
+        }        
+        return bestNode;
+    }
+
+
     protected void FindDestination()
     {
         Node temp = null;
@@ -97,7 +139,7 @@ public class Agent_MAM : MonoBehaviour
         {
             var choice = 2;
             System.Random random = new System.Random();
-            choice = (int)random.Next(2);
+            //choice = (int)random.Next(3)-1;
             switch (choice)
             {
                 case 0:
@@ -140,10 +182,9 @@ public class Agent_MAM : MonoBehaviour
             transform.position = moveToward;
             if (Vector3.Distance(moveToward, destination.realPosFromagentHeights) < 0.01)
             {
-                agentMarket.CheckNeighbour(destination);
                 if (isRandomDestination)
                 {
-                    print("1");
+                    agentMarket.UpdateNodeAssignation(node);
                     node.agentPresence = false;
                     node = destination;
                     node.WarnAgentVisit();
@@ -153,18 +194,18 @@ public class Agent_MAM : MonoBehaviour
                 }
                 else
                 {
-                    print("2");
+                    agentMarket.UpdateNodeAssignation(node);
                     node.agentPresence = false;
                     node = destination;
                     node.WarnAgentVisit();
                     agentManager.SetNodeToFalse(node);
-                    UpdatePriorityQueue(node);
+                    //UpdatePriorityQueue(node);
                     destination = null;
                     pathToNode.RemoveAt(0);
                     if (pathToNode.Count == 0)
                     {
                         priorityQueue.Remove(node);
-                        print("Removed node because of visited.");
+                        print("| Agent | Removed node because of visited.");
                     }
                 }
                     
@@ -179,7 +220,7 @@ public class Agent_MAM : MonoBehaviour
             if (priorityQueue.Contains(edge.to))
             {
                 priorityQueue.Remove(edge.to);
-                print("Removed from priorityQueue : JUST VISITED ON PATH.");
+                print("| Agent | Removed from priorityQueue : JUST VISITED ON PATH.");
             }
         }
     }

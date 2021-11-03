@@ -52,11 +52,12 @@ public class AgentManager_MAM : MonoBehaviour
         print("| MANAGER | Checking for nodes...");
         foreach (Node node in graph.nodes.Values)
         {
-            if (node.timeSinceLastVisit > threshold && !agentMarket.hasToBeVisited.Contains(node) && managerTool[node] == false)
+            if (node.timeSinceLastVisit > threshold && !agentMarket.nodeAssignation.Keys.Contains(node) && managerTool[node] == false)
             {
                 SetNodeToTrue(node);
                 if (!hasNeighbourInList(node))
                 {
+                    print("| MANAGER | Adding node to market list.");
                     agentMarket.hasToBeVisited.Add(node);
                 }
             }
@@ -67,7 +68,7 @@ public class AgentManager_MAM : MonoBehaviour
     {
         foreach(Edge edge in node.neighs)
         {
-            if (agentMarket.hasToBeVisited.Contains(edge.to))
+            if (agentMarket.nodeAssignation.Keys.Contains(edge.to))
             {
                 return true;
             }
@@ -82,7 +83,6 @@ public class AgentManager_MAM : MonoBehaviour
         {
             managerTool[edge.to] = true;
         }
-        //print("MANAGER / Node (" + node.pos.Item1 + "," + node.pos.Item2 + " is going to be visited.");
     }
 
     public void SetNodeToFalse(Node node)
@@ -92,6 +92,5 @@ public class AgentManager_MAM : MonoBehaviour
         {
             managerTool[edge.to] = false;
         }
-        //print("MANAGER / Node (" + node.pos.Item1 + "," + node.pos.Item2 + " has been visited.");
     }
 }
