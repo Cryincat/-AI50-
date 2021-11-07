@@ -18,8 +18,6 @@ public class GraphGenerator : MonoBehaviour
     void Start()
     {
         Generate();
-        isGenerated = true;
-        print("Start");
     }
 
     private void Generate()
@@ -97,6 +95,7 @@ public class GraphGenerator : MonoBehaviour
         }
         //Debug.Log("Saving...");
         //File.WriteAllText("test.txt", graph.SaveAsString());
+        isGenerated = true;
     }
 
     // Update is called once per frame

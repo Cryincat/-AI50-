@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Sols
+  - agentList
+  - AgentList
+  - Agent_MAM
+  - Capsule
   layers:
   - Default
   - TransparentFX
