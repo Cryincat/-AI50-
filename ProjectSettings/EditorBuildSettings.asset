@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Load.unity
     guid: b1e70cbc3f8be2c44b3b45980b6a8b22
+  - enabled: 1
+    path: Assets/Scenes/Parameters.unity
+    guid: c9497f35e37bc2f4c9aa82420fda5fd5
+  - enabled: 1
+    path: Assets/Scenes/GILLIAN_HUD.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
