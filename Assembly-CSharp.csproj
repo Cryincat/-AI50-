@@ -54,22 +54,26 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\DataQLearning.cs" />
+    <Compile Include="Assets\Scripts\Multi-agent method\Agent_MAM.cs" />
     <Compile Include="Assets\Scripts\Utilities.cs" />
     <Compile Include="Assets\Scripts\LevelLoader.cs" />
     <Compile Include="Assets\Scripts\MDP.cs" />
+    <Compile Include="Assets\Scripts\Multi-agent method\AgentManager_MAM.cs" />
     <Compile Include="Assets\Scripts\Launcher.cs" />
     <Compile Include="Assets\Scripts\LoadScene.cs" />
     <Compile Include="Assets\Scripts\NodeComponent.cs" />
+    <Compile Include="Assets\Scripts\GeneticAlgorithmSimplifiedGraphGenerator.cs" />
     <Compile Include="Assets\NetMQExample\Scripts\HelloClient.cs" />
     <Compile Include="Assets\NetMQExample\Scripts\HelloRequester.cs" />
     <Compile Include="Assets\Scripts\QLearningPatrolling.cs" />
     <Compile Include="Assets\NetMQExample\Scripts\RunAbleThread.cs" />
     <Compile Include="Assets\Scripts\HamiltonianPathGenerator.cs" />
+    <Compile Include="Assets\Scripts\Multi-agent method\AgentMarket_MAM.cs" />
     <Compile Include="Assets\Scripts\Graph.cs" />
     <Compile Include="Assets\Scripts\Agent.cs" />
     <Compile Include="Assets\Scripts\ServerClient.cs" />
     <Compile Include="Assets\Scripts\GraphGenerator.cs" />
-    <Compile Include="Assets\SimplifiedGraphGenerator.cs" />
+    <Compile Include="Assets\GreedyAlgorithmSimplifiedGraphGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

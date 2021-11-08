@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-public class SimplifiedGraphGenerator : MonoBehaviour
+public class GeneticAlgorithmSimplifiedGraphGenerator : MonoBehaviour
 {
     GraphGenerator graphGenerator;
     // Start is called before the first frame update
@@ -15,7 +15,7 @@ public class SimplifiedGraphGenerator : MonoBehaviour
         while (!graphGenerator.isGenerated)
         {
             //yield return null;
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.1f);
         }
         StartCoroutine(Simplify());
     }
@@ -24,10 +24,12 @@ public class SimplifiedGraphGenerator : MonoBehaviour
     {
         System.Random random = new System.Random();
         Population population = new Population(100, graphGenerator.graph, random);
-        print(population.FitnessMax());
 
-        for(int i = 0; i< 100; i++)
+        for (int i = 0; i < 100; i++)
         {
+            print("------");
+            print("Selection");
+
             Profiler.BeginSample("Selection");
             population.Selection();
             Profiler.EndSample();
@@ -36,17 +38,23 @@ public class SimplifiedGraphGenerator : MonoBehaviour
             population.Crossover();
             Profiler.EndSample();
 
-            Profiler.BeginSample("Mutation");
-            population.Mutation(1/graphGenerator.graph.nodes.Count, random);
-            Profiler.EndSample();
-
-            print(population.FitnessMax());
+            print("MAX = " + population.FitnessMax() + " nb = " + population.members.First(m => m.fitness == population.FitnessMax()).genes.Count(g => g.Value));
             var max = population.members.First(m => m.fitness == population.FitnessMax()).genes;
-            foreach (var g in max.Where(x=>x.Value==true))
+            foreach (var g in max.Where(x => x.Value == true))
             {
                 print(g.Key + " -> " + true);
             }
-            print("------");
+            print("Mutation");
+            Profiler.BeginSample("Mutation");
+            population.Mutation(1f / graphGenerator.graph.nodes.Count, random);
+            Profiler.EndSample();
+
+            print("MAX = " + population.FitnessMax() + " nb = " + population.members.First(m => m.fitness == population.FitnessMax()).genes.Count(g => g.Value));
+            max = population.members.First(m => m.fitness == population.FitnessMax()).genes;
+            foreach (var g in max.Where(x => x.Value == true))
+            {
+                print(g.Key + " -> " + true);
+            }
             GC.Collect();
             yield return null;
         }
@@ -59,6 +67,7 @@ public class SimplifiedGraphGenerator : MonoBehaviour
         int size;
         public float fitness;
         public Dictionary<(int, int), bool> genes;
+        //public List<(int, int)> mutations;
 
         public DNA(Graph baseGraph, System.Random random, Dictionary<(int, int), bool> genes = null)
         {
@@ -88,7 +97,7 @@ public class SimplifiedGraphGenerator : MonoBehaviour
             Profiler.EndSample();
 
 
-            foreach (var kvp in genes.Where(x=>x.Value))
+            foreach (var kvp in genes.Where(x => x.Value))
             {
                 if (kvp.Value)
                 {
@@ -118,8 +127,8 @@ public class SimplifiedGraphGenerator : MonoBehaviour
             {
                 if (kvp.Value) visionScore++;
             }
-            visionScore = (visionScore-0.5f*vision.Values.Count(x=>x==true)) / vision.Count/* * genes.Values.Count(x=>x)*/;
-            fitness = visionScore;
+            visionScore = Mathf.Pow(visionScore / vision.Values.Count,3) - 0.01f * vision.Values.Count(x => x == true); // vision.Count/* * genes.Values.Count(x=>x)*/;
+            fitness = visionScore < 0 ? 0 : visionScore ;
             Profiler.EndSample();
 
         }
@@ -153,7 +162,7 @@ public class SimplifiedGraphGenerator : MonoBehaviour
         {
             for (int i = 0; i < members.Count; i++)
             {
-                members[i].fitness = Mathf.Pow(members[i].fitness,10000);
+                members[i].fitness = Mathf.Pow(members[i].fitness, 3);
             }
             var sum = members.Sum(x => x.fitness);
             for (int i = 0; i < members.Count; i++)
@@ -183,7 +192,8 @@ public class SimplifiedGraphGenerator : MonoBehaviour
                 var parent2 = members[random.Next(members.Count)];
                 var r = random.Next(parent1.genes.Count);
                 var newChildGenes = new Dictionary<(int, int), bool>();
-                for (int j = 0; j < r; j++) {
+                for (int j = 0; j < r; j++)
+                {
                     var kvp = parent1.genes.ElementAt(j);
                     newChildGenes.Add(kvp.Key, kvp.Value);
                 }
@@ -199,15 +209,16 @@ public class SimplifiedGraphGenerator : MonoBehaviour
         {
             foreach (var m in members)
             {
-                for(int i = 0; i<m.genes.Count; i++)
+                if (random.NextDouble() > 0.9) mutationRate *= 10; //SUPERMUTANT 
+                for (int i = 0; i < m.genes.Count; i++)
                 {
-                        if (random.NextDouble() > mutationRate)
-                            m.genes[m.genes.ElementAt(i).Key] = !m.genes[m.genes.ElementAt(i).Key];
+                    if (random.NextDouble() < mutationRate)
+                        m.genes[m.genes.ElementAt(i).Key] = !m.genes[m.genes.ElementAt(i).Key];
                     Profiler.BeginSample("CalculateFitness");
                     m.CalculateFitness();
                     Profiler.EndSample();
                 }
-                
+
             }
         }
         public float FitnessSum()
