@@ -70,12 +70,13 @@
     <Compile Include="Assets\GreedyAlgorithmSimplifiedGraphGenerator.cs" />
     <Compile Include="Assets\Scripts\HamiltonianPathGenerator.cs" />
     <Compile Include="Assets\Scripts\ACO\CompleteGraph.cs" />
+    <Compile Include="Assets\Scripts\ButtonsHUD.cs" />
     <Compile Include="Assets\Scripts\Multi-agent method\AgentMarket_MAM.cs" />
     <Compile Include="Assets\Scripts\Graph.cs" />
     <Compile Include="Assets\Scripts\Agent.cs" />
     <Compile Include="Assets\Scripts\ServerClient.cs" />
     <Compile Include="Assets\Scripts\GraphGenerator.cs" />
-    <Compile Include="Assets\Scripts\ButtonsHUD.cs" />
+    <Compile Include="Assets\Scripts\DataButtons.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
