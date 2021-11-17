@@ -56,7 +56,7 @@ public class Node
     public Node((int, int) pos)
     {
         this.pos = pos;
-        timeSinceLastVisit = 50f;
+        timeSinceLastVisit = 0f;
         neighs = new List<Edge>();
         realPos = new Vector3(pos.Item1, 0, pos.Item2);
         realPosFromagentHeights = realPos + Vector3.up;
@@ -69,10 +69,12 @@ public class Node
 
     internal void WarnAgentVisit()
     {
+        EventManager.current.NewNodeVisited(timeSinceLastVisit);
         agentPresence = true;
         timeSinceLastVisit = 0;
         foreach(var e in neighs)
         {
+            EventManager.current.NewNodeVisited(e.to.timeSinceLastVisit);
             e.to.timeSinceLastVisit = 0;
         }
     }
