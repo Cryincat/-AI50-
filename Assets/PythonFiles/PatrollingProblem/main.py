@@ -19,27 +19,41 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation, Flatten
 from tensorflow.keras.optimizers import Adam
 
-e = Environnement([(0,0),(1,0),(2,0),(3,0),(4,0),
-                (0,1),(1,1),(2,1),(4,1),
-                (0,2),(1,2),(2,2),(3,2),(4,2)])
-env = PatrollingProblemEnv(e)#gym.make('patrolling-v0')
+e = Environnement([(0,0),(1,0),(2,0),
+                (0,1),(1,1),(2,1),
+                (0,2),(1,2),(2,2)])
+# e = Environnement([(0,0),(1,0),(2,0),(3,0),(4,0),(5,0),
+#                 (0,1),(1,1),(2,1),(3,1),(4,1),(5,1),
+#                 (0,2),(1,2),(2,2),(3,2),(4,2),(5,2),
+#                 (0,3),(1,3),(2,3),(3,3),(4,3),(5,3),
+#                 (0,4),(1,4),(2,4),(3,4),(4,4),(5,4),
+#                 (0,5),(1,5),(2,5),(3,5),(4,5),(5,5)])
+posAgent = (0,0)
+# e = Environnement([(0,0),(1,0),(2,0),(3,0),(4,0),
+#                 (0,1),(1,1),(2,1),(4,1),
+#                 (0,2),(1,2),(2,2),(3,2),(4,2)])
+nbiter_per_episode = 100
+env = PatrollingProblemEnv(e,posAgent,nbiter_per_episode)#gym.make('patrolling-v0')
 all_states_DEBUG = []
 nb_actions = 8
 
 model = Sequential()
 print("Env shape : "+str(env.observation_space.shape))
-input_shape = (1,) + (len(e.nodes)+2,)#
+input_shape = (1,) + (e.Shape(),)
+#input_shape = (1,) + (len(e.nodes)+2,)#
 print("input_shape is "+str(input_shape))
 
 # model.add(Input(shape = input_shape))
 model.add(Flatten(input_shape = input_shape))
 # model.add(Dense(9))
 # model.add(Activation('relu'))
-model.add(Dense(24))
+# model.add(Dense(10))
+# model.add(Activation('sigmoid'))
+model.add(Dense((nb_actions+e.Shape())/2))
 model.add(Activation('relu'))
-model.add(Dense(24))
-model.add(Activation('relu'))
-# model.add(Dense(8))
+# model.add(Dense((nb_actions+e.Shape())/2))
+# model.add(Activation('relu'))
+# model.add(Dense(24))
 # model.add(Activation('relu'))
 model.add(Dense(nb_actions))
 model.add(Activation('relu'))
@@ -47,16 +61,24 @@ print(model.summary())
 
 def build_agent(model,actions):
     policy = LinearAnnealedPolicy(inner_policy=EpsGreedyQPolicy(), attr="eps", value_max=1.0,
-                                  value_min=0.1, value_test=0.2, nb_steps = 500)
+                                  value_min=0.1, value_test=0.2, nb_steps = 1000)
+    # policy = EpsGreedyQPolicy()
     memory = SequentialMemory(limit=1000, window_length=1)
     dqn = DQNAgent(model=model,memory=memory,policy=policy,enable_dueling_network=(True),
-                   dueling_type='avg',nb_actions=nb_actions,nb_steps_warmup=500)
+                    dueling_type='avg',nb_actions=nb_actions,nb_steps_warmup=1000)
+    # dqn = DQNAgent(model=model,memory=memory,policy=policy,nb_actions=nb_actions)
     return dqn
 
 dqn = build_agent(model, Environnement.actions)
-dqn.compile(Adam(learning_rate=0.1))
-dqn.fit(env, nb_steps=10000, visualize=False, verbose=1)
-# dqn.save_weights("weights-720k.h5f")
+dqn.compile(Adam(learning_rate=0.001))
+hist = dqn.fit(env, nb_steps=1000000, visualize=False, verbose=1)
+Y = [i / nbiter_per_episode for i in hist.history['episode_reward']]
+X = [x for x in range(len(Y))]
+
+from matplotlib import pyplot as plt
+plt.plot(X,Y)
+
+# dqn.save_weights("ev2-weights-500k.h5f")
 
 # test = [0,0,10,10,10,10,0,0,10,0,0]
 # test = np.asarray(test, dtype=np.float32)
@@ -68,34 +90,25 @@ dqn.fit(env, nb_steps=10000, visualize=False, verbose=1)
 # a = model.predict(test)
 # b = model.get_weights()
 
-# scores = dqn.test(env,nb_episodes=10,visualize = True)
+#scores = dqn.test(env,nb_episodes=1,visualize = True)
 # print(np.mean(scores.history['episode_reward']))
+
 
 for p in [(0,0)]:
     pos = p
-    for n in e.nodes:
-        e.nodesTimes[n] = 0
-    for i in range(30):
-        print("old pose : "+str(pos))
+    e.Reset()
+    e.Display()
+    for i in range(20):
+        print("old pos : "+str(pos))
         flt = e.Flatten(pos)
         flt = np.asarray(flt, dtype=np.float32)
         flt = np.expand_dims(flt, axis=0)
         flt = np.expand_dims(flt, axis=0)
         
-        a = Environnement.actions[np.argmax([model.predict(flt)])]
+        a = Environnement.actions[dqn.forward(e.Flatten(pos))]#Environnement.actions[np.argmax([model.predict(flt)])]
         pos = e.Transition(pos, a)
         
         e.Display()
-        # print("action : "+str(a))
-        # print("new pos : "+str(pos))
-        # l = e.nodesTimes
-        # for i in range(3):
-        #     s = ""
-        #     for j in range(3):
-        #         s = s + str(l[(j,i)]) + " | "
-        #         #+" "+str(l[i*3+1])+" "+str(l[i*3+2]))
-        #     print(s)
-        # print("-----------")
     print("===========")
     
 # print(plot_model(model))

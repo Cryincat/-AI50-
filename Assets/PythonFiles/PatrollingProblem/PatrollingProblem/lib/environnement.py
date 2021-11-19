@@ -15,12 +15,16 @@ class Environnement:
     
     def __init__(self,nodes):
         self.nbiter = 0
-        self.nodes = nodes
+        self.nodes = nodes.copy()
         self.nodesTimes = {}
         for n in nodes:
+            assert n not in self.nodesTimes
             self.nodesTimes[n] = 0
         self.dimX = (min(n[0] for n in nodes),max(n[0] for n in nodes))
         self.dimY = (min(n[1] for n in nodes),max(n[1] for n in nodes))
+        self.nbX = self.dimX[1]-self.dimX[0]+1
+        self.nbY = self.dimY[1]-self.dimY[0]+1
+
     
     def GetNeighs(self,pos):
         l = []
@@ -47,13 +51,20 @@ class Environnement:
         observation = []
         observation.append(posAgent[0])
         observation.append(posAgent[1])
-        # for i in self.nodes:
-        #     observation.append(self.nodesTimes[i])
+        for a in Environnement.actions:
+            n = (posAgent[0] + a[0],posAgent[1] + a[1])
+            observation.append(self.nodesTimes[n] if n in self.nodesTimes else -1)
         for y in range(self.dimY[0],self.dimY[1]+1):
             for x in range(self.dimX[0],self.dimX[1]+1):
                 if((x,y) in self.nodesTimes):
                     observation.append(self.nodesTimes[(x,y)])
+                else :
+                    observation.append(-1)
         return np.array(observation)
+    
+    def Reset(self):
+        for n in self.nodes:
+            self.nodesTimes[n] = 0
     
     def Display(self):
         for y in range(self.dimY[0],self.dimY[1]+1):
@@ -64,6 +75,9 @@ class Environnement:
                 else : ligne += " "
                 ligne += " | "
             print(ligne)
+    
+    def Shape(self):
+        return len(self.Flatten((0,0)))
     
 # environnement = Environnement([(0,0),(1,0),(2,0),(3,0),(4,0),
 #                 (0,1),(1,1),(2,1),(4,1),
