@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\DataQLearning.cs" />
+    <Compile Include="Assets\Scripts\DataButtons.cs" />
     <Compile Include="Assets\Scripts\Multi-agent method\Agent_MAM.cs" />
     <Compile Include="Assets\Scripts\Utilities.cs" />
     <Compile Include="Assets\Scripts\LevelLoader.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Assets\Scripts\Launcher.cs" />
     <Compile Include="Assets\Scripts\LoadScene.cs" />
     <Compile Include="Assets\Scripts\NodeComponent.cs" />
+    <Compile Include="Assets\Scripts\AStar.cs" />
     <Compile Include="Assets\Scripts\GeneticAlgorithmSimplifiedGraphGenerator.cs" />
     <Compile Include="Assets\NetMQExample\Scripts\HelloClient.cs" />
     <Compile Include="Assets\NetMQExample\Scripts\HelloRequester.cs" />
@@ -76,7 +78,6 @@
     <Compile Include="Assets\Scripts\Agent.cs" />
     <Compile Include="Assets\Scripts\ServerClient.cs" />
     <Compile Include="Assets\Scripts\GraphGenerator.cs" />
-    <Compile Include="Assets\Scripts\DataButtons.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

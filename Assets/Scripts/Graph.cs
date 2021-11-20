@@ -51,6 +51,10 @@ public class Node
     public Vector3 realPos;
     public Vector3 realPosFromagentHeights;
     [SerializeField] public float timeSinceLastVisit;
+    [SerializeField] public float StraightLineDistanceToEnd;
+    [SerializeField] public bool Visited;
+    [SerializeField] public Node NearestToStart;
+    [SerializeField] public float? MinCostToStart;
     public bool agentPresence;
 
     public Node((int, int) pos)
