@@ -20,25 +20,22 @@ public class AgentManageur : MonoBehaviour
     private Graph graph;
     private GraphGenerator graphGenerator;
 
-    private Dictionary<(Node, Node), List<Node>> shortestPathData;
     private Dictionary<Node, bool> managerTool;
-
-    private Dictionary<Node,int> nodePriority;
+    private Dictionary<Node, int> nodePriority;
 
     IEnumerator Start()
     {
         // Liaison entre les évenements et leurs méthodes
-        EventManager.current.onUpdatingKeyList += OnUpdatingKeyList;
-        EventManager.current.onAddingShortestPath += OnAddShortestPath;
         EventManager.current.onSettingNodeToTrue += OnSetNodeToTrue;
         EventManager.current.onSettingNodeToFalse += OnSetNodeToFalse;
         EventManager.current.onUpdateNewMaxIdleness += OnUpdateMaxIdleness;
+        EventManager.current.onRemoveNodeFromNodeAssignation += OnSettingNodePriorityToOne;
 
         // Récupération des instance d'autres scripts
         graphGenerator = FindObjectOfType<GraphGenerator>();
 
         // Initialisation des variables
-        shortestPathData = new Dictionary<(Node, Node), List<Node>>();
+
         managerTool = new Dictionary<Node, bool>();
         nodePriority = new Dictionary<Node, int>();
 
@@ -51,6 +48,9 @@ public class AgentManageur : MonoBehaviour
 
         // Méthode d'initialisation
         LoadManagerTool();
+        LoadNodePriority();
+        LoadPaths();
+
 
         // Génération = OK
         print("| Manageur | Génération des variables terminée...");
@@ -61,6 +61,14 @@ public class AgentManageur : MonoBehaviour
 
     }
 
+    void LoadNodePriority()
+    {
+        foreach (Node node in graph.nodes.Values)
+        {
+            nodePriority.Add(node, 1);
+        }
+    }
+
     // Méthode permettant de set l'ensemble des nodes dans managerTool à false
     void LoadManagerTool()
     {
@@ -69,17 +77,43 @@ public class AgentManageur : MonoBehaviour
         {
             managerTool.Add(node, false);
         }
-        //print("| Manageur | 'managerTool' initialisé.");
+        print("| Manageur | 'managerTool' initialisé.");
+    }
+
+    // Méthode permettant de charger préalablement tous les paths existants entre 2 nodes dans le graphe.
+    void LoadPaths()
+    {
+        print("| Manageur | Itinialisation des données des shortestPaths...");
+        AStar aStar = FindObjectOfType<AStar>();
+        int count = 1;
+        int nbNode = graph.nodes.Values.Count;
+        int totalPath = nbNode * nbNode;
+        Dictionary<(Node, Node), List<Node>> shortestPathData = new Dictionary<(Node, Node), List<Node>>();
+
+        foreach (Node start in graph.nodes.Values)
+        {
+            foreach (Node end in graph.nodes.Values)
+            {
+                //print("| Manageur | From (" + start.pos.Item1 + "," + start.pos.Item2 + ") to (" + end.pos.Item1 + "," + end.pos.Item2 + ") : path " + count + "/" + nbNode * nbNode);
+                if (count % 100 == 0) print("| Manageur | Path " + count + "/" + totalPath);
+                count++;
+                shortestPathData.Add((start, end), aStar.GetShortestPathAstar(start, end));
+
+            }
+        }
+        print("| Manageur | Path " + count + "/" + totalPath);
+        EventManager.current.SendShortestPathData(shortestPathData);
+        print("| Manageur | ShortestPaths initialisés.");
     }
 
     void CheckGraphLeveling()
     {
+
         int priority = -1;
         foreach (Node node in graph.nodes.Values)
         {
-            if (managerTool[node] == false)
+            if (managerTool[node] == false || (managerTool[node] == true && nodePriority[node] < 5))
             {
-                
                 float x = node.timeSinceLastVisit;
                 // 0% <= x < 20%
                 if (x < 0.2 * threshold)
@@ -102,71 +136,65 @@ public class AgentManageur : MonoBehaviour
                     priority = 4;
                 }
                 // 100% <= x
-                if (x >= threshold) 
+                if (x >= threshold)
                 {
                     priority = 5;
                 }
+
                 if (priority == -1)
                 {
                     throw new Exception("La priorité du node est toujours à -1, alors qu'elle devrait être égale à 1..5.");
                 }
+
+                // Updating new priority
+                nodePriority[node] = priority;
+
                 if (priority > 1)
                 {
-                    
-                    if (hasNeighbourWithBetterPriorityAlreadySpotted(node, priority) == false)
+                    // Si le node est en cours de visite mais que sa priorité doit être revu à la hausse, on le fait quand même passé dans l'évent pour prévenir le gestionnaire.
+                    if (managerTool[node] == true)
                     {
+                        if (nodePriority[node] < priority)
+                        {
+                            //if (hasNeighbourWithBetterPriorityAlreadySpotted(node, priority) == false)
+                            //{
+                            EventManager.current.HasToBeVisited(node);
+                            //}
+                        }
+                    }
+                    else
+                    {
+                        //if (hasNeighbourWithBetterPriorityAlreadySpotted(node, priority) == false)
+                        //{
                         OnSetNodeToTrue(node);
-                        EventManager.current.HasToBeVisited(node, priority);
+                        EventManager.current.HasToBeVisited(node);
+                        //}
                     }
 
                 }
             }
 
         }
+        // Sending new priority to gestionnaire and agents
+        EventManager.current.UpdateNodePriority(nodePriority);
     }
 
     // Méthode vérifiant si un des voisins du noeud 'node' n'est pas déjà prévu d'être visité, et si oui vérifiant qu'il est bien de priorité égale ou supérieure.
     // Si oui, cela signifie que le noeud 'node' va être visité également, et donc il n'est pas nécessaire de l'ajouter à la liste des neouds à visiter.
     bool hasNeighbourWithBetterPriorityAlreadySpotted(Node node, int priority)
     {
+        // Pour chaque voisin du node, on vérifie qu'il n'existe pas un voisin déjà prévu d'être visité avec un niveau de priorité similaire ou supérieur au node à check.
         foreach (Edge edge in node.neighs)
         {
-            if (nodePriority.Keys.Contains(edge.to))
+            if (priority <= nodePriority[edge.to])
             {
-                if (priority <= nodePriority[edge.to])
-                {
-                    return true;
-                }
+                return true;
             }
         }
         return false;
     }
 
-
-
-
-
-    // Méthode ajoutant un nouveau shortest path dans les données des shortestPaths
-    void AddShortestPath(List<Node> shortestPath, Node start, Node end)
-    {
-        shortestPathData.Add((start, end), shortestPath);
-        EventManager.current.UpdatingShortestPathData(shortestPathData);
-    }
-
-
-
-    // Méthode répondant à l'évenement d'update de la liste des nodes prévues d'être visité par l'agent gestionnaire.
-    void OnUpdatingKeyList(Dictionary<Node,int> temp)
-    {
-        nodePriority = temp;
-    }
-
-    // Méthode répondant à l'évenement d'ajout d'un plus cours chemin entre 2 nodes.
-    void OnAddShortestPath(List<Node> shortestPath, Node start, Node end)
-    {
-        AddShortestPath(shortestPath, start, end);
-    }
-
+    // Méthode permettant de set to true un node qui est en cours de visite, ainsi que tous ses voisins.
     public void OnSetNodeToTrue(Node node)
     {
         managerTool[node] = true;
@@ -176,6 +204,7 @@ public class AgentManageur : MonoBehaviour
         }
     }
 
+    // Méthode permettant de set to false un node qui n'est plus en cours de visite; ainsi que tous ses voisins.
     public void OnSetNodeToFalse(Node node)
     {
         managerTool[node] = false;
@@ -185,9 +214,16 @@ public class AgentManageur : MonoBehaviour
         }
     }
 
+    // Méthode lié à l'évent d'update de l'idleness max, detecté dans le script DataManager.
     void OnUpdateMaxIdleness(float value)
     {
         threshold = value;
+    }
+
+    // Méthode lié à l'évent de passage sur un node. Le node a été visité, donc il n'est plus prioritaire.
+    void OnSettingNodePriorityToOne(Node node)
+    {
+        nodePriority[node] = 1;
     }
 
 }

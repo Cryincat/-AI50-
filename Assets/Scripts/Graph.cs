@@ -73,12 +73,10 @@ public class Node
 
     internal void WarnAgentVisit()
     {
-        EventManager.current.NewNodeVisited(timeSinceLastVisit);
         agentPresence = true;
         timeSinceLastVisit = 0;
         foreach(var e in neighs)
         {
-            EventManager.current.NewNodeVisited(e.to.timeSinceLastVisit);
             e.to.timeSinceLastVisit = 0;
         }
     }

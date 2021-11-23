@@ -18,7 +18,7 @@ public class AgentGestionnaire : MonoBehaviour
 
     private Dictionary<Node, AgentPatrouilleur> nodeAssignation;
     private Dictionary<Node, int> nodePriority;
-    private Dictionary<(Node, Node), List<Node>> managerData;
+    private Dictionary<(Node, Node), List<Node>> shortestPathData;
 
     private Graph graph;
     private GraphGenerator graphGenerator;
@@ -29,72 +29,68 @@ public class AgentGestionnaire : MonoBehaviour
     {
         // Liaison entre les évenements et leurs méthodes
         EventManager.current.onHasToBeVisited += OnHasToBeVisited;
-        EventManager.current.onUpdatingShortestPathData += OnUpdatingShortestPathData;
+        EventManager.current.onSendShortestPathData += OnSendShortestPathData;
         EventManager.current.onRemoveNodeFromNodeAssignation += OnRemoveNodeFromNodeAssignation;
+        EventManager.current.onUpdateNodePriority += OnUpdateNodePriority;
 
         // Récupération des instance d'autres scripts
         agentList = FindObjectsOfType(typeof(AgentPatrouilleur)) as AgentPatrouilleur[];
         graphGenerator = FindObjectOfType<GraphGenerator>();
+
+        // Attente de l'initialisation complète du graphGenerator afin de récupérer le graph.
         yield return new WaitUntil(() => graphGenerator.isGenerated);
         graph = graphGenerator.graph;
 
         // Initialisation des variables
         hasToBeVisited = new List<Node>();
         nodeAssignation = new Dictionary<Node, AgentPatrouilleur>();
-        managerData = new Dictionary<(Node, Node), List<Node>>();
         nodePriority = new Dictionary<Node, int>();
 
-        // On envoie la première itération des variables du script à travers certains évenements
-        EventManager.current.UpdateNodeAssignation(nodeAssignation,nodePriority);
+        // Attente de l'initialisation complète de l'agent manageur.
+        yield return new WaitUntil(() => FindObjectOfType<AgentManageur>().isGenerated);
+
+        // On envoie les informations aux agents.
+        EventManager.current.UpdateNodeAssignation(nodeAssignation, nodePriority);
 
         // Génération = OK
         print("| Gestionnaire | Génération des variables terminée...");
         isGenerated = true;
 
-        // Lancement à interval régulier de la méthode de warn 
+        // Lancement à interval régulier de la méthode de warn .
         InvokeRepeating("Warn", delay, repeatRate);
     }
 
-
-
+    // Méthode permettant de vérifier tous les nodes envoyés par l'agent manageur. S'ils ne sont pas encore assigné, on lance la méthode d'assignation.
     void Warn()
     {
-        foreach(Node node in hasToBeVisited)
+        foreach (Node node in hasToBeVisited)
         {
-            WarnAboutNode(node);
+            if (!nodeAssignation.Keys.Contains(node)) WarnAboutNode(node);
         }
         hasToBeVisited.Clear();
         updateNodeAssignation();
     }
 
+    // Méthode permettant d'update les assignations de node en fonction des positions en temps réel des différents agents présent sur le graphe.
     void updateNodeAssignation()
     {
         if (nodeAssignation.Count == 0)
         {
             return;   
         }
-        List<Node> tempKeys = getKeys(nodeAssignation);
+        List<Node> tempKeys = nodeAssignation.Keys.ToList<Node>();
         foreach (Node node in tempKeys)
         {
             WarnAboutNode(node);
         }
         EventManager.current.UpdateNodeAssignation(nodeAssignation,nodePriority);
-        EventManager.current.UpdatingKeyList(nodePriority);
     }
 
-    List<Node> getKeys(Dictionary<Node,AgentPatrouilleur> temp)
-    {
-        List<Node> keys = new List<Node>();
-
-        foreach(Node node in temp.Keys)
-        {
-            keys.Add(node);
-        }
-        return keys;
-    }
-
+    // Méthode assignant le node en paramètre au meilleur agent en fonction de leur distance en terme de path dans le graphe.
+    // Si le meilleur agent existe, l'assigne au node dans nodeAssignation.
     void WarnAboutNode(Node node)
     {
+
         AgentPatrouilleur bestAgent = FindBestAgentByPath(node);
         if (bestAgent != null)
         {
@@ -109,9 +105,9 @@ public class AgentGestionnaire : MonoBehaviour
         }
     }
 
+    // Méthode renvoyant le meilleur agent par rapport au node passé en paramètre. Vérifie les distances de chaque agent par rapport au node et renvoie le plus proche.
     AgentPatrouilleur FindBestAgentByPath(Node node)
     {
-        
         float dist = Mathf.Infinity;
         int iteration = 0;
         int bestAgentIteration = -1;
@@ -121,20 +117,13 @@ public class AgentGestionnaire : MonoBehaviour
             Node agentNode = agent.GetNode();
             float nbNodeInPath = Mathf.Infinity ;
 
-            if (managerData.ContainsKey((agentNode, node)))
+            if (shortestPathData.ContainsKey((agentNode, node)))
             {
-                nbNodeInPath = managerData[(agentNode, node)].Count;
+                nbNodeInPath = shortestPathData[(agentNode, node)].Count;
             }
             else
             {
-                List<Node> path = PathFinding(agentNode, node);
-                EventManager.current.AddingShortestPath(path, agentNode, node);
-                /*while (hasFinish == false)
-                {
-                    //print("| Gestionnaire | En attente d'une mis à jour du managerData...");
-                }
-                hasFinish = false;*/
-                nbNodeInPath = managerData[(agentNode, node)].Count;
+                throw new Exception("The path from node (" + agentNode.pos.Item1 + "," + agentNode.pos.Item2 + ") to node (" + node.pos.Item1 + "," + node.pos.Item2 + ") doesn't exist.");
             }
             if (nbNodeInPath == -1)
             {
@@ -157,88 +146,31 @@ public class AgentGestionnaire : MonoBehaviour
         return agentList[bestAgentIteration];
     }
 
+    // Méthode lié à l'évenement de passage d'un agent sur un node. Lorsqu'un node est visité, on le remove de nodeAssignation. L'agent manageur s'occupe de remettre sa priorité à 1.
     void OnRemoveNodeFromNodeAssignation(Node node)
     {
         nodeAssignation.Remove(node);
-        nodePriority.Remove(node);
     }
 
-    void OnHasToBeVisited(Node node, int priority)
+    // Méthode lié à l'évenement indiquant qu'un node doit être visité, et donc assigné à un agent.
+    void OnHasToBeVisited(Node node)
     {
         hasToBeVisited.Add(node);
-        if (!nodePriority.ContainsKey(node))
-        {
-            nodePriority.Add(node, priority);
-        }
-        else
-        {
-            nodePriority[node] = priority;
-        }
-        EventManager.current.UpdateNodeAssignation(nodeAssignation, nodePriority);
     }
 
-    void OnUpdatingShortestPathData(Dictionary<(Node, Node), List<Node>> shortestPathData)
+    // Méthode se lançant une fois au début, récupérant la liste de tous les paths du graphe.
+    void OnSendShortestPathData(Dictionary<(Node, Node), List<Node>> data)
     {
-        managerData = shortestPathData;
-        //hasFinish = true;
+        shortestPathData = new Dictionary<(Node, Node), List<Node>>();
+        foreach ((Node, Node) couple in data.Keys)
+        {
+            shortestPathData.Add((couple.Item1,couple.Item2), data[couple]);
+        }
     }
 
-    // Méthode permettant de récupérer le plus court chemin entre deux nodes (BFS like)
-    List<Node> PathFinding(Node startNode, Node endNode)
+    // Méthode permettant de récupérer le dictionnaire sur les priorités de passage pour chaque node.
+    void OnUpdateNodePriority(Dictionary<Node,int> _nodePriority)
     {
-        List<Node> queue = new List<Node>();
-        Dictionary<Node, bool> explored = new Dictionary<Node, bool>();
-        Dictionary<Node, Node> previous = new Dictionary<Node, Node>();
-
-        if (startNode == endNode)
-        {
-            return BuildPath(startNode, endNode, previous);
-        }
-        foreach (Node node in graph.nodes.Values)
-        {
-            explored.Add(node, false);
-        }
-
-        explored[startNode] = true;
-        queue.Add(startNode);
-        while (queue.Count != 0)
-        {
-            Node u = queue[0];
-            queue.RemoveAt(0);
-
-            foreach (Edge edge in u.neighs)
-            {
-                if (explored[edge.to] == false)
-                {
-                    explored[edge.to] = true;
-                    previous[edge.to] = u;
-                    queue.Add(edge.to);
-                }
-            }
-            if (queue.Contains(endNode))
-            {
-                break;
-            }
-        }
-        return BuildPath(startNode, endNode, previous);
-
-    }
-
-    // Méthode reconstrusant le plus cours chemin déterminé par 'PathFinding'.
-    List<Node> BuildPath(Node startNode, Node endNode, Dictionary<Node, Node> previous)
-    {
-        List<Node> path = new List<Node>();
-        if (startNode == endNode)
-        {
-            path.Add(startNode);
-            return path;
-        }
-        path.Add(endNode);
-        while (!path.Contains(startNode))
-        {
-            path.Insert(0, previous[endNode]);
-            endNode = previous[endNode];
-        }
-        return path;
+        nodePriority = _nodePriority;
     }
 }

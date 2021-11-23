@@ -15,24 +15,34 @@ public class EventManager : MonoBehaviour
     }
 
     // évenement correspondant à un node tag comme devant être visité au plus vite.
-    public event Action<Node,int> onHasToBeVisited;
-    public void HasToBeVisited(Node node, int priority)
+    public event Action<Node> onHasToBeVisited;
+    public void HasToBeVisited(Node node)
     {
         if (onHasToBeVisited != null)
         {
             //print("| Event manager | hasToBeVisited");
-            onHasToBeVisited(node, priority);
+            onHasToBeVisited(node);
         }
     }
 
     // évenement correspondant à l'update de la liste des Keys correspondant à au dictionnaire nodeAssignation assignant chaque node à visiter à un agent précis
-    public event Action<Dictionary<Node,int>> onUpdatingKeyList;
-    public void UpdatingKeyList(Dictionary<Node, int> nodePriority)
+    public event Action<Dictionary<Node,int>> onUpdateNodePriority;
+    public void UpdateNodePriority(Dictionary<Node, int> nodePriority)
     {
-        if (onUpdatingKeyList != null)
+        if (onUpdateNodePriority != null)
         {
             //print("| Event manager | onUpdatingKeyList");
-            onUpdatingKeyList(nodePriority);
+            onUpdateNodePriority(nodePriority);
+        }
+    }
+
+    // évenement correspondant à l'envoie du dictionnaire contenant les shortests path du graph sur lequel on se trouve.
+    public event Action<Dictionary<(Node, Node), List<Node>>> onSendShortestPathData;
+    public void SendShortestPathData(Dictionary<(Node, Node), List<Node>> shortestPathData)
+    {
+        if (onSendShortestPathData != null)
+        {
+            onSendShortestPathData(shortestPathData);
         }
     }
 
@@ -112,18 +122,7 @@ public class EventManager : MonoBehaviour
         }
     }
 
-
-    public event Action<float> onNewNodeVisited;
-    public void NewNodeVisited(float value)
-    {
-        if (onNewNodeVisited != null)
-        {
-            onNewNodeVisited(value);
-        }
-    }
-
     public event Action<float> onUpdateNewMaxIdleness;
-
     public void UpdateNewMaxIdleness(float value)
     {
         if (onUpdateNewMaxIdleness != null)

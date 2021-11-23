@@ -10,13 +10,14 @@ public class DataManager : MonoBehaviour
     public float maxIdlenessVisited = -1;
     public float maxIdlenessTheoric = -1;
     public float mediumIdleness = -1;
+    public float maxIdlenessRealTime = -1;
+    public float mediumIdlenessRealTime = -1;
 
     private float nbNodes;
 
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        EventManager.current.onNewNodeVisited += onNewNodeVisited;
         graphGenerator = FindObjectOfType<GraphGenerator>();
         yield return new WaitUntil(() => graphGenerator.isGenerated);
         graph = graphGenerator.graph;
@@ -24,32 +25,32 @@ public class DataManager : MonoBehaviour
         nbNodes = graph.nodes.Count;
     }
 
-    void onNewNodeVisited(float value)
-    {
-        if (value > maxIdlenessVisited)
-        {
-            maxIdlenessVisited = value;
-        }
-        EventManager.current.UpdateNewMaxIdleness(maxIdlenessVisited);
-    }
-
     void CheckMaxIdleness()
     {
         float idlenessSum = 0;
+        float temp = 0;
+
         foreach(Node node in graph.nodes.Values)
         {
             idlenessSum += node.timeSinceLastVisit;
             if (node.timeSinceLastVisit > maxIdlenessTheoric)
             {
-                
                 maxIdlenessTheoric = node.timeSinceLastVisit;
             }
+            if (node.timeSinceLastVisit > temp)
+            {
+                temp = node.timeSinceLastVisit;
+            }
         }
+
+        maxIdlenessRealTime = temp;
+        mediumIdlenessRealTime = idlenessSum / nbNodes;
         if (mediumIdleness < (idlenessSum / nbNodes))
         {
             mediumIdleness = (idlenessSum / nbNodes);
         }
-       
+
+        EventManager.current.UpdateNewMaxIdleness(maxIdlenessTheoric);
     }
 
 

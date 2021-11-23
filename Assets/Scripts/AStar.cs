@@ -40,7 +40,7 @@ public class AStar : MonoBehaviour
             node.NearestToStart = null;
         }
         AstarSearch(begin, end);
-        var shortestPath = new List<Node>();
+        List<Node> shortestPath = new List<Node>();
         shortestPath.Add(end);
         BuildShortestPath(shortestPath, end);
         shortestPath.Reverse();
