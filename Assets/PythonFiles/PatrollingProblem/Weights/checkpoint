@@ -1,0 +1,2 @@
+model_checkpoint_path: "JosseSmaller-150k.h5f"
+all_model_checkpoint_paths: "JosseSmaller-150k.h5f"

@@ -15,7 +15,7 @@ public class Agent : MonoBehaviour
     [NonSerialized] protected Node destination;
     bool isGenerated;
 
-    public IEnumerator Start()
+    public virtual IEnumerator Start()
     {
         graphGenerator = FindObjectOfType<GraphGenerator>();
         destination = null;
@@ -39,7 +39,7 @@ public class Agent : MonoBehaviour
             GoToDestination();
         }
     }
-    protected void FindDestination()
+    virtual protected IEnumerator FindDestination()
     {
         //TEST
         if (destination == null)
@@ -59,6 +59,7 @@ public class Agent : MonoBehaviour
                     break;
             }
         }
+        yield return null;
     }
     private void GoToDestination()
     {

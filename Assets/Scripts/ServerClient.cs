@@ -9,25 +9,42 @@ using UnityEngine;
 
 public class ServerClient : MonoBehaviour
 {
-    Server server;
+    public bool learn;
+    public GraphGenerator graphGenerator;
+    public Server server;
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
-        server = new Server();
+        graphGenerator = FindObjectOfType<GraphGenerator>();
+        do
+        {
+            yield return null;
+        } while (!graphGenerator.isGenerated);
+
+        server = new Server(this);
         server.Start();
-        //PythonRunner.RunFile(Directory.GetCurrentDirectory() + "/Assets/PythonFiles/TEST.py");
-        string strCmdText = "python "+ Directory.GetCurrentDirectory() + "/Assets/PythonFiles/server.py";
-        System.Diagnostics.Process.Start("powershell.exe", strCmdText);
+
+        string strCmdText = "python " + Directory.GetCurrentDirectory() + "/Assets/PythonFiles/PatrollingProblem/server.py";
+        //TODO: Remettre
+        //System.Diagnostics.Process.Start("powershell.exe", strCmdText);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
 public class Server : RunAbleThread
 {
+    int iter = 0;
+    private ServerClient serverClient;
+
+    public Server(ServerClient serverClient) : base()
+    {
+        this.serverClient = serverClient;
+    }
+
     protected override void Run()
     {
         ForceDotNet.Force(); // this line is needed to prevent unity freeze after one use, not sure why yet
@@ -37,8 +54,7 @@ public class Server : RunAbleThread
 
             for (int i = 0; i < 10 && Running; i++)
             {
-                Debug.Log("Sending Hello");
-                client.SendFrame("Hello");
+                client.SendFrame(serverClient.graphGenerator.graph.SaveAsString());
                 // ReceiveFrameString() blocks the thread until you receive the string, but TryReceiveFrameString()
                 // do not block the thread, you can try commenting one and see what the other does, try to reason why
                 // unity freezes when you use ReceiveFrameString() and play and stop the scene without running the server
@@ -49,7 +65,20 @@ public class Server : RunAbleThread
                 while (Running)
                 {
                     gotMessage = client.TryReceiveFrameString(out message); // this returns true if it's successful
-                    if (gotMessage) break;
+                    if (gotMessage)
+                    {
+                        if (iter == 1)
+                        {
+                            client.SendFrame(serverClient.learn ? "learn" : "load_weights");
+                            break;
+                        }
+                        else if(iter >= 2)
+                        {
+                            //client.SendFrame();
+                        }
+                        iter++;
+                        break;
+                    }
                 }
 
                 if (gotMessage) Debug.Log("Received " + message);
