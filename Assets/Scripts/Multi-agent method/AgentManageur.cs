@@ -15,10 +15,13 @@ public class AgentManageur : MonoBehaviour
     public float delay = 0;
     public float repeatRate = 1;
 
+    public int maxPriority = 8;
+
     public bool isGenerated = false;
 
     private Graph graph;
     private GraphGenerator graphGenerator;
+    private LoadGraph loadGraph;
 
     private Dictionary<Node, bool> managerTool;
     private Dictionary<Node, int> nodePriority;
@@ -33,6 +36,7 @@ public class AgentManageur : MonoBehaviour
 
         // Récupération des instance d'autres scripts
         graphGenerator = FindObjectOfType<GraphGenerator>();
+        loadGraph = FindObjectOfType<LoadGraph>();
 
         // Initialisation des variables
 
@@ -42,9 +46,11 @@ public class AgentManageur : MonoBehaviour
 
         // Attente de la génération du script
         yield return new WaitUntil(() => graphGenerator.isGenerated);
+        //yield return new WaitUntil(() => loadGraph.isGenerated);
 
         // Récupération des variables issues d'autres scripts
         graph = graphGenerator.graph;
+        //graph = loadGraph.graph;
 
         // Méthode d'initialisation
         LoadManagerTool();
@@ -54,8 +60,7 @@ public class AgentManageur : MonoBehaviour
 
         // Génération = OK
         print("| Manageur | Génération des variables terminée...");
-        isGenerated = true;
-
+        yield return new WaitUntil(() => isGenerated);
         // Lancement à interval régulier de la méthode de check 
         InvokeRepeating("CheckGraphLeveling", delay, repeatRate);
 
@@ -97,13 +102,14 @@ public class AgentManageur : MonoBehaviour
                 //print("| Manageur | From (" + start.pos.Item1 + "," + start.pos.Item2 + ") to (" + end.pos.Item1 + "," + end.pos.Item2 + ") : path " + count + "/" + nbNode * nbNode);
                 if (count % 100 == 0) print("| Manageur | Path " + count + "/" + totalPath);
                 count++;
-                shortestPathData.Add((start, end), aStar.GetShortestPathAstar(start, end));
+                shortestPathData.Add((start, end), aStar.GetShortestPathAstar(start, end, graph));
 
             }
         }
         print("| Manageur | Path " + count + "/" + totalPath);
         EventManager.current.SendShortestPathData(shortestPathData);
         print("| Manageur | ShortestPaths initialisés.");
+        isGenerated = true;
     }
 
     void CheckGraphLeveling()
@@ -112,38 +118,48 @@ public class AgentManageur : MonoBehaviour
         int priority = -1;
         foreach (Node node in graph.nodes.Values)
         {
-            if (managerTool[node] == false || (managerTool[node] == true && nodePriority[node] < 5))
+            if (managerTool[node] == false || (managerTool[node] == true && nodePriority[node] < maxPriority))
             {
                 float x = node.timeSinceLastVisit;
-                // 0% <= x < 20%
-                if (x < 0.2 * threshold)
+                // 0% <= x < 15%
+                if (x < 0.15 * threshold)
                 {
                     priority = 1;
                 }
-                // 20% <= x < 50%
-                if (x >= 0.2 * threshold && x < 0.5 * threshold)
+                // 15% <= x < 30%
+                if (x >= 0.15 * threshold && x < 0.30 * threshold)
                 {
                     priority = 2;
                 }
-                // 50% <= x < 80%
-                if (x >= 0.5 * threshold && x < 0.8 * threshold)
+                // 30% <= x < 50%
+                if (x >= 0.30 * threshold && x < 0.50 * threshold)
                 {
                     priority = 3;
                 }
-                // 80% <= x < 100%
-                if (x >= 0.8 * threshold && x < threshold)
+                // 50% <= x < 65%
+                if (x >= 0.50 * threshold && x < 0.65 * threshold)
                 {
                     priority = 4;
                 }
-                // 100% <= x
-                if (x >= threshold)
+                // 65% <= x < 80%
+                if (x >= 0.65 * threshold && x < 0.80 * threshold)
                 {
                     priority = 5;
+                }
+                // 80% <= x < 90%
+                if (x >= 0.80 * threshold && x < 0.90 * threshold)
+                {
+                    priority = 6;
+                }
+                // 90% <= x
+                if (x >= 0.90 * threshold)
+                {
+                    priority = 7;
                 }
 
                 if (priority == -1)
                 {
-                    throw new Exception("La priorité du node est toujours à -1, alors qu'elle devrait être égale à 1..5.");
+                    throw new Exception("La priorité du node est toujours à -1, alors qu'elle devrait être égale à 1..maxPriority.");
                 }
 
                 // Updating new priority

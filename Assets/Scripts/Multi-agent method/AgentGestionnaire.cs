@@ -22,6 +22,7 @@ public class AgentGestionnaire : MonoBehaviour
 
     private Graph graph;
     private GraphGenerator graphGenerator;
+    private LoadGraph loadGraph;
 
     //private bool hasFinish = false;
 
@@ -36,10 +37,13 @@ public class AgentGestionnaire : MonoBehaviour
         // Récupération des instance d'autres scripts
         agentList = FindObjectsOfType(typeof(AgentPatrouilleur)) as AgentPatrouilleur[];
         graphGenerator = FindObjectOfType<GraphGenerator>();
+        loadGraph = FindObjectOfType<LoadGraph>();
 
         // Attente de l'initialisation complète du graphGenerator afin de récupérer le graph.
         yield return new WaitUntil(() => graphGenerator.isGenerated);
+        //yield return new WaitUntil(() => loadGraph.isGenerated);
         graph = graphGenerator.graph;
+        //graph = loadGraph.graph;
 
         // Initialisation des variables
         hasToBeVisited = new List<Node>();

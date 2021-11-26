@@ -5,16 +5,22 @@ using System.Linq;
 
 public class AStar : MonoBehaviour
 {
-    public Graph graph;
+    //public Graph graph;
     public GraphGenerator graphGenerator;
+    public LoadGraph loadGraph;
     
     // Start is called before the first frame update
     public IEnumerator Start()
     {
         graphGenerator = FindObjectOfType<GraphGenerator>();
+        loadGraph = FindObjectOfType<LoadGraph>();
+
         while (!graphGenerator.isGenerated)
             yield return null;
-        graph = graphGenerator.graph;
+        //graph = graphGenerator.graph;
+
+        //yield return new WaitUntil(() => loadGraph.isGenerated);
+        //graph = loadGraph.graph;
 
         // Path test
         /* 
@@ -30,11 +36,11 @@ public class AStar : MonoBehaviour
 
     }
 
-    public List<Node> GetShortestPathAstar(Node begin, Node end)
+    public List<Node> GetShortestPathAstar(Node begin, Node end, Graph graph)
     {
-        foreach (var node in graph.nodes.Values)
+        foreach (Node node in graph.nodes.Values)
         {
-            node.StraightLineDistanceToEnd = Vector3.Distance(node.realPos, end.realPos);//node.StraightLineDistanceTo(End);
+            node.StraightLineDistanceToEnd = Vector3.Distance(node.realPos, end.realPos);
             node.Visited = false;
             node.MinCostToStart = null;
             node.NearestToStart = null;

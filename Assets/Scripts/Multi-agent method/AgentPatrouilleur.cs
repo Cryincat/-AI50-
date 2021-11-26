@@ -13,6 +13,7 @@ public class AgentPatrouilleur : MonoBehaviour
 
     private Vector3 oldPos;
 
+    private LoadGraph loadGraph;
     private GraphGenerator graphGenerator;
     private AgentManageur agentManageur;
     private AgentGestionnaire agentGestionnaire;
@@ -30,8 +31,6 @@ public class AgentPatrouilleur : MonoBehaviour
 
     private bool isRandomDestination = false;
     private bool clear = false;
-    //private bool hasFinish = false;
-    //private bool hasFinish1 = false;
 
     private GameObject capsule;
     private Renderer capsuleRenderer;
@@ -52,6 +51,7 @@ public class AgentPatrouilleur : MonoBehaviour
         agentManageur = FindObjectOfType<AgentManageur>();
         agentGestionnaire = FindObjectOfType<AgentGestionnaire>();
         capsuleRenderer = GetComponentInChildren<Renderer>();
+        loadGraph = FindObjectOfType<LoadGraph>();
 
         // Setup des variables
         destination = null;
@@ -68,11 +68,23 @@ public class AgentPatrouilleur : MonoBehaviour
 
         // Attente que le graphGenerator s'initialise, puis l'agent manageur et enfin l'agent gestionnaire.
         yield return new WaitUntil(() => graphGenerator.isGenerated);
+        //yield return new WaitUntil(() => loadGraph.isGenerated);
         yield return new WaitUntil(() => agentManageur.isGenerated);
         yield return new WaitUntil(() => agentGestionnaire.isGenerated);
-        
+
         graph = graphGenerator.graph;
-        node = graphGenerator.graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
+        //graph = loadGraph.graph;
+
+        //Set position of agent
+        System.Random random = new System.Random();
+        int randomNode = random.Next(0,graph.nodes.Count-1);
+        Node startPoint = graph.nodes.Values.ToList<Node>()[randomNode];
+        transform.position = startPoint.realPos;
+
+
+
+       
+        node = graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
         node.WarnAgentVisit();
 
         oldPos = transform.position;
@@ -196,7 +208,7 @@ public class AgentPatrouilleur : MonoBehaviour
         Node temp = null;
         if (destination == null)
         {
-            var choice = 2;
+            var choice = 0;
             System.Random random = new System.Random();
 
             switch (choice)

@@ -6,6 +6,7 @@ public class DataManager : MonoBehaviour
 {
     private Graph graph;
     private GraphGenerator graphGenerator;
+    private LoadGraph loadGraph;
 
     public float maxIdlenessVisited = -1;
     public float maxIdlenessTheoric = -1;
@@ -21,6 +22,14 @@ public class DataManager : MonoBehaviour
         graphGenerator = FindObjectOfType<GraphGenerator>();
         yield return new WaitUntil(() => graphGenerator.isGenerated);
         graph = graphGenerator.graph;
+
+        loadGraph = FindObjectOfType<LoadGraph>();
+        //yield return new WaitUntil(() => loadGraph.isGenerated);
+       // graph = loadGraph.graph;
+
+
+
+
         InvokeRepeating("CheckMaxIdleness", 1, 1);
         nbNodes = graph.nodes.Count;
     }
