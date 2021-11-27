@@ -9,12 +9,14 @@ using System.Collections;
 public class AgentGestionnaire : MonoBehaviour
 {
     // Correspond respectivement au délai de lancement (en seconde) et au taux de répétition (en seconde) de la méthode de check du graphe.
-    public float delay = 0;
-    public float repeatRate = 3;
+    public float repeatRate = 1;
+    public float delay = 3;
     public bool isGenerated = false;
+    public bool isGraphLoading = false;
 
     private List<Node> hasToBeVisited;
     private static AgentPatrouilleur[] agentList;
+    private AgentManageur agentManageur;
 
     private Dictionary<Node, AgentPatrouilleur> nodeAssignation;
     private Dictionary<Node, int> nodePriority;
@@ -23,6 +25,8 @@ public class AgentGestionnaire : MonoBehaviour
     private Graph graph;
     private GraphGenerator graphGenerator;
     private LoadGraph loadGraph;
+
+    private bool shortestPathUpdated = false;
 
     //private bool hasFinish = false;
 
@@ -34,16 +38,29 @@ public class AgentGestionnaire : MonoBehaviour
         EventManager.current.onRemoveNodeFromNodeAssignation += OnRemoveNodeFromNodeAssignation;
         EventManager.current.onUpdateNodePriority += OnUpdateNodePriority;
 
+        agentManageur = FindObjectOfType<AgentManageur>();
+        yield return new WaitUntil(() => agentManageur.areAgentGenerated);
+
         // Récupération des instance d'autres scripts
         agentList = FindObjectsOfType(typeof(AgentPatrouilleur)) as AgentPatrouilleur[];
         graphGenerator = FindObjectOfType<GraphGenerator>();
         loadGraph = FindObjectOfType<LoadGraph>();
 
+        shortestPathData = new Dictionary<(Node, Node), List<Node>>();
+
         // Attente de l'initialisation complète du graphGenerator afin de récupérer le graph.
-        yield return new WaitUntil(() => graphGenerator.isGenerated);
-        //yield return new WaitUntil(() => loadGraph.isGenerated);
-        graph = graphGenerator.graph;
-        //graph = loadGraph.graph;
+        if (isGraphLoading)
+        {
+            yield return new WaitUntil(() => loadGraph.isGenerated);
+            graph = loadGraph.graph;
+        }
+        else
+        {
+            yield return new WaitUntil(() => graphGenerator.isGenerated);
+            graph = graphGenerator.graph;
+        }
+        
+        
 
         // Initialisation des variables
         hasToBeVisited = new List<Node>();
@@ -51,7 +68,7 @@ public class AgentGestionnaire : MonoBehaviour
         nodePriority = new Dictionary<Node, int>();
 
         // Attente de l'initialisation complète de l'agent manageur.
-        yield return new WaitUntil(() => FindObjectOfType<AgentManageur>().isGenerated);
+        yield return new WaitUntil(() => agentManageur.isGenerated);
 
         // On envoie les informations aux agents.
         EventManager.current.UpdateNodeAssignation(nodeAssignation, nodePriority);
@@ -61,18 +78,21 @@ public class AgentGestionnaire : MonoBehaviour
         isGenerated = true;
 
         // Lancement à interval régulier de la méthode de warn .
-        InvokeRepeating("Warn", delay, repeatRate);
+        InvokeRepeating("Warn" ,delay, repeatRate);
     }
 
     // Méthode permettant de vérifier tous les nodes envoyés par l'agent manageur. S'ils ne sont pas encore assigné, on lance la méthode d'assignation.
     void Warn()
     {
-        foreach (Node node in hasToBeVisited)
-        {
-            if (!nodeAssignation.Keys.Contains(node)) WarnAboutNode(node);
-        }
-        hasToBeVisited.Clear();
-        updateNodeAssignation();
+            if (shortestPathUpdated)
+            {
+                foreach (Node node in hasToBeVisited)
+                {
+                    if (!nodeAssignation.Keys.Contains(node)) WarnAboutNode(node);
+                }
+                hasToBeVisited.Clear();
+                updateNodeAssignation();
+            }        
     }
 
     // Méthode permettant d'update les assignations de node en fonction des positions en temps réel des différents agents présent sur le graphe.
@@ -120,7 +140,6 @@ public class AgentGestionnaire : MonoBehaviour
         {
             Node agentNode = agent.GetNode();
             float nbNodeInPath = Mathf.Infinity ;
-
             if (shortestPathData.ContainsKey((agentNode, node)))
             {
                 nbNodeInPath = shortestPathData[(agentNode, node)].Count;
@@ -166,10 +185,8 @@ public class AgentGestionnaire : MonoBehaviour
     void OnSendShortestPathData(Dictionary<(Node, Node), List<Node>> data)
     {
         shortestPathData = new Dictionary<(Node, Node), List<Node>>();
-        foreach ((Node, Node) couple in data.Keys)
-        {
-            shortestPathData.Add((couple.Item1,couple.Item2), data[couple]);
-        }
+        shortestPathData = data;
+        shortestPathUpdated = true;
     }
 
     // Méthode permettant de récupérer le dictionnaire sur les priorités de passage pour chaque node.

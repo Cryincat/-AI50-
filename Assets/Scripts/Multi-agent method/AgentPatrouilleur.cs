@@ -10,6 +10,9 @@ public class AgentPatrouilleur : MonoBehaviour
 {
     public bool isGenerated = false;
     public float speed = 1f;
+    public bool isGraphLoading = false;
+    public Node startPoint;
+
 
     private Vector3 oldPos;
 
@@ -41,10 +44,15 @@ public class AgentPatrouilleur : MonoBehaviour
 
     public IEnumerator Start()
     {
+        
+
         // Liaison entre les évenements et leurs méthodes
         EventManager.current.onNodeTaggedVisited += OnNodeVisited;
         EventManager.current.onUpdateNodeAssignation += OnUpdateNodeAssignation;
         EventManager.current.onSendShortestPathData += OnSendShortestPathData;
+
+        //Set position of agent
+        transform.position = startPoint.realPos;
 
         // Récupération des instance d'autres scripts
         graphGenerator = FindObjectOfType<GraphGenerator>();
@@ -66,20 +74,25 @@ public class AgentPatrouilleur : MonoBehaviour
         patrollingColor2 = new Color(1f, 0.2f, 0.5f); // Red
         patrollingColor3 = new Color(0.2f, 0.5f, 1f); // Blue
 
-        // Attente que le graphGenerator s'initialise, puis l'agent manageur et enfin l'agent gestionnaire.
-        yield return new WaitUntil(() => graphGenerator.isGenerated);
-        //yield return new WaitUntil(() => loadGraph.isGenerated);
+        // Attente que le graph s'initialise, puis l'agent manageur et enfin l'agent gestionnaire.
+        if (isGraphLoading)
+        {
+            yield return new WaitUntil(() => loadGraph.isGenerated);
+            graph = loadGraph.graph;
+        }
+        else
+        {
+            yield return new WaitUntil(() => graphGenerator.isGenerated);
+            graph = graphGenerator.graph;
+        }
+        
         yield return new WaitUntil(() => agentManageur.isGenerated);
         yield return new WaitUntil(() => agentGestionnaire.isGenerated);
 
-        graph = graphGenerator.graph;
-        //graph = loadGraph.graph;
+        
+        
 
-        //Set position of agent
-        System.Random random = new System.Random();
-        int randomNode = random.Next(0,graph.nodes.Count-1);
-        Node startPoint = graph.nodes.Values.ToList<Node>()[randomNode];
-        transform.position = startPoint.realPos;
+        
 
 
 
@@ -325,9 +338,7 @@ public class AgentPatrouilleur : MonoBehaviour
     // Méthode de récupération des paths liant chaque node à chaque node dans le graphe.
     void OnSendShortestPathData(Dictionary<(Node, Node), List<Node>> _shortestPathData)
     {
-        foreach ((Node, Node) couple in _shortestPathData.Keys)
-        {
-            shortestPathData.Add(couple, _shortestPathData[couple]);
-        }
+        shortestPathData = _shortestPathData;
+
     }
 }

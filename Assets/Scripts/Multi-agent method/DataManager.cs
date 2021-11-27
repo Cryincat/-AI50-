@@ -7,6 +7,7 @@ public class DataManager : MonoBehaviour
     private Graph graph;
     private GraphGenerator graphGenerator;
     private LoadGraph loadGraph;
+    public bool isGraphLoading = false;
 
     public float maxIdlenessVisited = -1;
     public float maxIdlenessTheoric = -1;
@@ -19,22 +20,24 @@ public class DataManager : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        graphGenerator = FindObjectOfType<GraphGenerator>();
-        yield return new WaitUntil(() => graphGenerator.isGenerated);
-        graph = graphGenerator.graph;
+        if (isGraphLoading)
+        {
+            loadGraph = FindObjectOfType<LoadGraph>();
+            yield return new WaitUntil(() => loadGraph.isGenerated);
+            graph = loadGraph.graph;
+        }
+        else
+        {
+            graphGenerator = FindObjectOfType<GraphGenerator>();
+            yield return new WaitUntil(() => graphGenerator.isGenerated);
+            graph = graphGenerator.graph;
+        }
 
-        loadGraph = FindObjectOfType<LoadGraph>();
-        //yield return new WaitUntil(() => loadGraph.isGenerated);
-       // graph = loadGraph.graph;
-
-
-
-
-        InvokeRepeating("CheckMaxIdleness", 1, 1);
+        InvokeRepeating("CheckIdleness", 1, 1);
         nbNodes = graph.nodes.Count;
     }
 
-    void CheckMaxIdleness()
+    void CheckIdleness()
     {
         float idlenessSum = 0;
         float temp = 0;
