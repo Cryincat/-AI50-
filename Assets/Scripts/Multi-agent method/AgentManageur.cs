@@ -249,7 +249,7 @@ public class AgentManageur : MonoBehaviour
     void Save(Dictionary<(Node,Node),List<Node>> data, string path)
     {
         List<string> dataToSave = new List<string>();
-        path += "data_" + getFileCount(path) + ".txt";
+        path += "data_" + getFileCount(path) / 2 + ".txt";
 
         // Insert hash to first
         dataToSave.Insert(0, getHashGraph());

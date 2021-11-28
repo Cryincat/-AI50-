@@ -102,6 +102,7 @@ public class AgentPatrouilleur : MonoBehaviour
 
         oldPos = transform.position;
         isGenerated = true;
+        FindObjectOfType<TimeManager>().delta = 1;
     }
 
     private void Update()
