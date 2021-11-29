@@ -17,6 +17,10 @@ public class DataManager : MonoBehaviour
 
     private float nbNodes;
 
+    public float simulationTime = 0;
+    public int count = 0;
+    public int nbIterationBeforeStop = 0;
+
     // Start is called before the first frame update
     IEnumerator Start()
     {
@@ -37,11 +41,16 @@ public class DataManager : MonoBehaviour
         nbNodes = graph.nodes.Count;
     }
 
+    private void Update()
+    {
+        simulationTime += Time.deltaTime;
+    }
+
     void CheckIdleness()
     {
         float idlenessSum = 0;
         float temp = 0;
-
+        count++;
         foreach(Node node in graph.nodes.Values)
         {
             idlenessSum += node.timeSinceLastVisit;
@@ -60,6 +69,14 @@ public class DataManager : MonoBehaviour
         if (mediumIdleness < (idlenessSum / nbNodes))
         {
             mediumIdleness = (idlenessSum / nbNodes);
+            count = 0;
+        }
+        
+        if(count >= nbIterationBeforeStop)
+        {
+            print("Cela fait " + nbIterationBeforeStop + " que la mediumIdleness = " + mediumIdleness + " n'a pas augmenté.");
+            FindObjectOfType<TimeManager>().delta = 0;
+            Application.Quit();
         }
 
         EventManager.current.UpdateNewMaxIdleness(maxIdlenessTheoric);
