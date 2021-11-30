@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delta: 0
-  speed: 10
+  speed: 20
 --- !u!114 &1522439633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,8 +351,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   threshold: 60
   repeatRate: 1
-  delay: 0
-  nbAgent: 2
+  delay: 1
+  nbAgent: 20
   isGenerated: 0
   isGraphLoading: 1
   parent: {fileID: 2007058377}
@@ -371,7 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   repeatRate: 1
-  delay: 0
+  delay: 1
   isGenerated: 0
   isGraphLoading: 1
 --- !u!114 &1522439636
