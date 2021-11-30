@@ -51,7 +51,7 @@ public class AgentManageur : MonoBehaviour
         {
             graphGenerator = FindObjectOfType<GraphGenerator>();
         }
-        
+
 
         // Initialisation des variables
         managerTool = new Dictionary<Node, bool>();
@@ -88,7 +88,7 @@ public class AgentManageur : MonoBehaviour
 
 
         // Génération = OK
-        
+
         yield return new WaitUntil(() => isGenerated);
         print("| Manageur | Génération des variables terminée...");
 
@@ -140,14 +140,14 @@ public class AgentManageur : MonoBehaviour
             Node node1 = graph.nodes[(int.Parse(node1Str[0]), int.Parse(node1Str[1]))];
             Node node2 = graph.nodes[(int.Parse(node2Str[0]), int.Parse(node2Str[1]))];
             List<Node> shortestPath = new List<Node>();
-            foreach(string nodeStr in listStr)
+            foreach (string nodeStr in listStr)
             {
                 if (nodeStr != "")
                 {
                     string[] nodeStrSplitted = nodeStr.Split(',');
                     shortestPath.Add(graph.nodes[(int.Parse(nodeStrSplitted[0]), int.Parse(nodeStrSplitted[1]))]);
                 }
-                
+
             }
             shortestPathData.Add((node1, node2), shortestPath);
         }
@@ -190,10 +190,10 @@ public class AgentManageur : MonoBehaviour
     {
         var directory = new DirectoryInfo(path);
         List<FileInfo> files = directory.GetFiles().ToList<FileInfo>();
-        foreach(FileInfo file in files)
+        foreach (FileInfo file in files)
         {
-           
-            string path2 = path + "/" +  file.Name;
+
+            string path2 = path + "/" + file.Name;
             print(path2);
             List<string> content = File.ReadAllLines(path2).ToList<string>();
             if (content[0] == graphHash)
@@ -208,11 +208,11 @@ public class AgentManageur : MonoBehaviour
     {
         string hash = "";
 
-        foreach(Node node in graph.nodes.Values)
+        foreach (Node node in graph.nodes.Values)
         {
-            hash += node.pos.Item1 + "," +  node.pos.Item2 + ";";
+            hash += node.pos.Item1 + "," + node.pos.Item2 + ";";
         }
-        print("hash : " + hash);
+        //print("hash : " + hash);
         return hash;
     }
 
@@ -246,7 +246,7 @@ public class AgentManageur : MonoBehaviour
         print("| Manageur | ShortestPaths initialisés.");
     }
 
-    void Save(Dictionary<(Node,Node),List<Node>> data, string path)
+    void Save(Dictionary<(Node, Node), List<Node>> data, string path)
     {
         List<string> dataToSave = new List<string>();
         path += "data_" + getFileCount(path) / 2 + ".txt";
@@ -255,7 +255,7 @@ public class AgentManageur : MonoBehaviour
         dataToSave.Insert(0, getHashGraph());
 
         // Insert all data
-        foreach((Node,Node) couple in data.Keys)
+        foreach ((Node, Node) couple in data.Keys)
         {
             // Saving (Node,Node) as '(X1,Y1)|(X2,Y2);'
             string lineToSave = couple.Item1.pos.Item1 + "," + couple.Item1.pos.Item2 + "|" + couple.Item2.pos.Item1 + "," + couple.Item2.pos.Item2 + "|";
@@ -278,7 +278,7 @@ public class AgentManageur : MonoBehaviour
     string ToString(List<Node> data)
     {
         string temp = "";
-        foreach(Node node in data)
+        foreach (Node node in data)
         {
             temp += node.pos.Item1 + "," + node.pos.Item2 + ";";
         }
@@ -287,84 +287,81 @@ public class AgentManageur : MonoBehaviour
 
     void CheckGraphLeveling()
     {
-            int priority = -1;
-            foreach (Node node in graph.nodes.Values)
+        int priority = -1;
+        foreach (Node node in graph.nodes.Values)
+        {
+            if (managerTool[node] == false || (managerTool[node] == true && nodePriority[node] < maxPriority) || node.timeSinceLastVisit > threshold)
             {
-                if (managerTool[node] == false || (managerTool[node] == true && nodePriority[node] < maxPriority))
+                float x = node.timeSinceLastVisit;
+                // 0% <= x < 15%
+                if (x < 0.15 * threshold)
                 {
-                    float x = node.timeSinceLastVisit;
-                    // 0% <= x < 15%
-                    if (x < 0.15 * threshold)
-                    {
-                        priority = 1;
-                    }
-                    // 15% <= x < 30%
-                    if (x >= 0.15 * threshold && x < 0.30 * threshold)
-                    {
-                        priority = 2;
-                    }
-                    // 30% <= x < 50%
-                    if (x >= 0.30 * threshold && x < 0.50 * threshold)
-                    {
-                        priority = 3;
-                    }
-                    // 50% <= x < 65%
-                    if (x >= 0.50 * threshold && x < 0.65 * threshold)
-                    {
-                        priority = 4;
-                    }
-                    // 65% <= x < 80%
-                    if (x >= 0.65 * threshold && x < 0.80 * threshold)
-                    {
-                        priority = 5;
-                    }
-                    // 80% <= x < 90%
-                    if (x >= 0.80 * threshold && x < 0.90 * threshold)
-                    {
-                        priority = 6;
-                    }
-                    // 90% <= x
-                    if (x >= 0.90 * threshold)
-                    {
-                        priority = 7;
-                    }
-
-                    if (priority == -1)
-                    {
-                        throw new Exception("La priorité du node est toujours à -1, alors qu'elle devrait être égale à 1..maxPriority.");
-                    }
-
-                    // Updating new priority
-                    nodePriority[node] = priority;
-
-                    if (priority > 1)
-                    {
-                        // Si le node est en cours de visite mais que sa priorité doit être revu à la hausse, on le fait quand même passé dans l'évent pour prévenir le gestionnaire.
-                        if (managerTool[node] == true)
-                        {
-                            if (nodePriority[node] < priority)
-                            {
-                                //if (hasNeighbourWithBetterPriorityAlreadySpotted(node, priority) == false)
-                                //{
-                                EventManager.current.HasToBeVisited(node);
-                                //}
-                            }
-                        }
-                        else
-                        {
-                            //if (hasNeighbourWithBetterPriorityAlreadySpotted(node, priority) == false)
-                            //{
-                            OnSetNodeToTrue(node);
-                            EventManager.current.HasToBeVisited(node);
-                            //}
-                        }
-
-                    }
+                    priority = 1;
+                }
+                // 15% <= x < 30%
+                if (x >= 0.15 * threshold && x < 0.30 * threshold)
+                {
+                    priority = 2;
+                }
+                // 30% <= x < 50%
+                if (x >= 0.30 * threshold && x < 0.50 * threshold)
+                {
+                    priority = 3;
+                }
+                // 50% <= x < 65%
+                if (x >= 0.50 * threshold && x < 0.65 * threshold)
+                {
+                    priority = 4;
+                }
+                // 65% <= x < 80%
+                if (x >= 0.65 * threshold && x < 0.80 * threshold)
+                {
+                    priority = 5;
+                }
+                // 80% <= x < 90%
+                if (x >= 0.80 * threshold && x < 0.90 * threshold)
+                {
+                    priority = 6;
+                }
+                // 90% <= x
+                if (x >= 0.90 * threshold)
+                {
+                    priority = 7;
                 }
 
+                if (priority == -1)
+                {
+                    throw new Exception("La priorité du node est toujours à -1, alors qu'elle devrait être égale à 1..maxPriority.");
+                }
+
+                // Updating new priority
+                nodePriority[node] = priority;
+
+                //print("Le node (" + node.pos.Item1 + "," + node.pos.Item2 + ") à oisiveté = " + node.timeSinceLastVisit + " et donc une priorité de " + priority);
+
+
+                if (priority > 1)
+                {
+                    // Si le node est en cours de visite mais que sa priorité doit être revu à la hausse, on le fait quand même passé dans l'évent pour prévenir le gestionnaire.
+                    if (managerTool[node] == true)
+                    {
+                        if (nodePriority[node] <= priority)
+                        {
+                            EventManager.current.HasToBeVisited(node);
+                        }
+                    }
+                    else
+                    {
+                        OnSetNodeToTrue(node);
+                        EventManager.current.HasToBeVisited(node);
+                    }
+
+                }
             }
-            // Sending new priority to gestionnaire and agents
-            EventManager.current.UpdateNodePriority(nodePriority);
+
+        }
+        // Sending new priority to gestionnaire and agents
+        EventManager.current.UpdateNodePriority(nodePriority);
     }
 
     // Méthode vérifiant si un des voisins du noeud 'node' n'est pas déjà prévu d'être visité, et si oui vérifiant qu'il est bien de priorité égale ou supérieure.
@@ -374,9 +371,12 @@ public class AgentManageur : MonoBehaviour
         // Pour chaque voisin du node, on vérifie qu'il n'existe pas un voisin déjà prévu d'être visité avec un niveau de priorité similaire ou supérieur au node à check.
         foreach (Edge edge in node.neighs)
         {
-            if (priority <= nodePriority[edge.to])
+            if (Vector3.Distance(node.realPos, edge.to.realPos) <= Mathf.Sqrt(2))
             {
-                return true;
+                if (priority <= nodePriority[edge.to])
+                {
+                    return true;
+                }
             }
         }
         return false;
@@ -388,7 +388,10 @@ public class AgentManageur : MonoBehaviour
         managerTool[node] = true;
         foreach (Edge edge in node.neighs)
         {
-            managerTool[edge.to] = true;
+            if (Vector3.Distance(node.realPos, edge.to.realPos) <= Mathf.Sqrt(2))
+            {
+                managerTool[edge.to] = true;
+            }
         }
     }
 
@@ -398,7 +401,10 @@ public class AgentManageur : MonoBehaviour
         managerTool[node] = false;
         foreach (Edge edge in node.neighs)
         {
-            managerTool[edge.to] = false;
+            if (Vector3.Distance(node.realPos, edge.to.realPos) <= Mathf.Sqrt(2))
+            {
+                managerTool[edge.to] = false;
+            }
         }
     }
 
@@ -412,6 +418,13 @@ public class AgentManageur : MonoBehaviour
     void OnSettingNodePriorityToOne(Node node)
     {
         nodePriority[node] = 1;
+        foreach (Edge edge in node.neighs)
+        {
+            if (Vector3.Distance(node.realPos, edge.to.realPos) <= Mathf.Sqrt(2))
+            {
+                nodePriority[edge.to] = 1;
+            }
+        }
     }
 
 }

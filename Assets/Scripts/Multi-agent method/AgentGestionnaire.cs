@@ -59,8 +59,8 @@ public class AgentGestionnaire : MonoBehaviour
             yield return new WaitUntil(() => graphGenerator.isGenerated);
             graph = graphGenerator.graph;
         }
-        
-        
+
+
 
         // Initialisation des variables
         hasToBeVisited = new List<Node>();
@@ -78,21 +78,29 @@ public class AgentGestionnaire : MonoBehaviour
         isGenerated = true;
 
         // Lancement à interval régulier de la méthode de warn .
-        InvokeRepeating("Warn" ,delay, repeatRate);
+        InvokeRepeating("Warn", delay, repeatRate);
     }
 
     // Méthode permettant de vérifier tous les nodes envoyés par l'agent manageur. S'ils ne sont pas encore assigné, on lance la méthode d'assignation.
     void Warn()
     {
-            if (shortestPathUpdated)
+        if (shortestPathUpdated)
+        {
+            foreach (Node node in hasToBeVisited)
             {
-                foreach (Node node in hasToBeVisited)
-                {
-                    if (!nodeAssignation.Keys.Contains(node)) WarnAboutNode(node);
-                }
-                hasToBeVisited.Clear();
-                updateNodeAssignation();
-            }        
+                if (!nodeAssignation.Keys.Contains(node)) WarnAboutNode(node);
+            }
+            hasToBeVisited.Clear();
+            updateNodeAssignation();
+        }
+
+        foreach (Node node in nodeAssignation.Keys)
+        {
+            if (node.timeSinceLastVisit > 0.5 * agentManageur.threshold)
+            {
+                print("Le noeud (" + node.pos.Item1 + "," + node.pos.Item2 + ") est assigné à l'agent " + nodeAssignation[node] + ", avec un oisiveté = " + node.timeSinceLastVisit);
+            }
+        }
     }
 
     // Méthode permettant d'update les assignations de node en fonction des positions en temps réel des différents agents présent sur le graphe.
@@ -100,14 +108,14 @@ public class AgentGestionnaire : MonoBehaviour
     {
         if (nodeAssignation.Count == 0)
         {
-            return;   
+            return;
         }
         List<Node> tempKeys = nodeAssignation.Keys.ToList<Node>();
         foreach (Node node in tempKeys)
         {
             WarnAboutNode(node);
         }
-        EventManager.current.UpdateNodeAssignation(nodeAssignation,nodePriority);
+        EventManager.current.UpdateNodeAssignation(nodeAssignation, nodePriority);
     }
 
     // Méthode assignant le node en paramètre au meilleur agent en fonction de leur distance en terme de path dans le graphe.
@@ -139,25 +147,20 @@ public class AgentGestionnaire : MonoBehaviour
         foreach (AgentPatrouilleur agent in agentList)
         {
             Node agentNode = agent.GetNode();
-            float nbNodeInPath = Mathf.Infinity ;
+            float totalDistanceOfPath = Mathf.Infinity;
             if (shortestPathData.ContainsKey((agentNode, node)))
             {
-                nbNodeInPath = shortestPathData[(agentNode, node)].Count;
+                totalDistanceOfPath = getSumDistanceOfPath(shortestPathData[(agentNode, node)]);
             }
             else
             {
                 throw new Exception("The path from node (" + agentNode.pos.Item1 + "," + agentNode.pos.Item2 + ") to node (" + node.pos.Item1 + "," + node.pos.Item2 + ") doesn't exist.");
             }
-            if (nbNodeInPath == -1)
+            if (dist > totalDistanceOfPath)
             {
-                throw new Exception("Une erreur est survenue dans la récupération du nombre de node dans le path pour le choix du meilleure agent.");
-            }
-            
-            if (dist > nbNodeInPath)
-            {
-                dist = nbNodeInPath;
+                dist = totalDistanceOfPath;
                 bestAgentIteration = iteration;
-               
+
             }
             iteration++;
         }
@@ -165,14 +168,37 @@ public class AgentGestionnaire : MonoBehaviour
         {
             return null;
         }
-       
+
         return agentList[bestAgentIteration];
+    }
+
+    float getSumDistanceOfPath(List<Node> nodes)
+    {
+        float sum = 0;
+
+        if (nodes.Count == 0 || nodes.Count == 1)
+        {
+            return 0;
+        }
+        if (nodes.Count == 2)
+        {
+            return Vector3.Distance(nodes[0].realPos, nodes[1].realPos);
+        }
+
+        for (int i = 0; i <= nodes.Count - 1; i++)
+        {
+            if (nodes.Count - 1 > i + 1)
+                sum += Vector3.Distance(nodes[i].realPos, nodes[i + 1].realPos);
+        }
+
+        return sum;
     }
 
     // Méthode lié à l'évenement de passage d'un agent sur un node. Lorsqu'un node est visité, on le remove de nodeAssignation. L'agent manageur s'occupe de remettre sa priorité à 1.
     void OnRemoveNodeFromNodeAssignation(Node node)
     {
         nodeAssignation.Remove(node);
+        EventManager.current.SettingNodeToFalse(node);
     }
 
     // Méthode lié à l'évenement indiquant qu'un node doit être visité, et donc assigné à un agent.
@@ -190,7 +216,7 @@ public class AgentGestionnaire : MonoBehaviour
     }
 
     // Méthode permettant de récupérer le dictionnaire sur les priorités de passage pour chaque node.
-    void OnUpdateNodePriority(Dictionary<Node,int> _nodePriority)
+    void OnUpdateNodePriority(Dictionary<Node, int> _nodePriority)
     {
         nodePriority = _nodePriority;
     }

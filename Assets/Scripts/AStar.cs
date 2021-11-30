@@ -8,19 +8,30 @@ public class AStar : MonoBehaviour
     //public Graph graph;
     public GraphGenerator graphGenerator;
     public LoadGraph loadGraph;
+    public bool isGraphLoading;
+    private Graph graph;
     
     // Start is called before the first frame update
     public IEnumerator Start()
     {
-        graphGenerator = FindObjectOfType<GraphGenerator>();
-        loadGraph = FindObjectOfType<LoadGraph>();
+        graph = null;
+        if (isGraphLoading)
+        {
+            loadGraph = FindObjectOfType<LoadGraph>();
+            while (!loadGraph.isGenerated)
+                yield return null;
+            graph = loadGraph.graph;
+        }
+        else
+        {
+            graphGenerator = FindObjectOfType<GraphGenerator>();
+            while (!graphGenerator.isGenerated)
+                yield return null;
+            graph = graphGenerator.graph;
+        }
 
-        while (!graphGenerator.isGenerated)
-            yield return null;
-        //graph = graphGenerator.graph;
-
-        //yield return new WaitUntil(() => loadGraph.isGenerated);
-        //graph = loadGraph.graph;
+        
+      
 
         // Path test
         /* 

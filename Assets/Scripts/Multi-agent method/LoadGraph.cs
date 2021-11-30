@@ -15,6 +15,7 @@ public class LoadGraph : MonoBehaviour
     public bool isGenerated = false;
     public Graph graph;
     public GameObject parent;
+    public string textFileName = "";
     private Dictionary<Node, NodeComponent> nodeComponentDict;
 
 
@@ -23,13 +24,13 @@ public class LoadGraph : MonoBehaviour
     {
         nodeComponentDict = new Dictionary<Node, NodeComponent>();
         string path = Directory.GetCurrentDirectory() + "/Assets/Data/";
-        string textFileName = "graph_1.txt";
+
         path = path + textFileName;
 
         graph = createGraph(path);
         spawnMap(graph, parent);
 
-        print(graph);
+        //print(graph);
 
         print("| LoadGraph | Génération des variables terminée.");
         isGenerated = true;
@@ -101,7 +102,7 @@ public class LoadGraph : MonoBehaviour
 
     void spawnEdgeOnMap(Vector3 from, Vector3 to)
     {
-        float pas = 0.02f;
+        float pas = 0.3f;
         float dist = Vector3.Distance(from, to);
         float decount = dist;
         while(decount > 0)
@@ -120,7 +121,7 @@ public class LoadGraph : MonoBehaviour
         Graph graph = new Graph();
         graph.edges = new List<Edge>();
 
-        createNode(graph, lines[0]);
+        createNodes(graph, lines[0]);
         lines.RemoveAt(0);
         foreach(string line in lines)
         {
@@ -132,7 +133,6 @@ public class LoadGraph : MonoBehaviour
             int x = int.Parse(nodeInStringSplitted[0]);
             int y = int.Parse(nodeInStringSplitted[1]);
             Node from = graph.nodes[(x, y)];
-
             // génération et attachements des edges
             foreach(string edgeInString in edgesInStringSplitted)
             {
@@ -151,7 +151,7 @@ public class LoadGraph : MonoBehaviour
 
 
 
-    private void createNode(Graph graph, string line)
+    private void createNodes(Graph graph, string line)
     {
         Dictionary<(int, int), Node> nodes = new Dictionary<(int, int), Node>();
         graph.nodes = nodes;

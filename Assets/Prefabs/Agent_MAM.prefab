@@ -142,4 +142,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGenerated: 0
   speed: 1
-  isGraphLoading: 0
+  isGraphLoading: 1
+  startPoint:
+    realPos: {x: 0, y: 0, z: 0}
+    realPosFromagentHeights: {x: 0, y: 0, z: 0}
+    timeSinceLastVisit: 0
+    StraightLineDistanceToEnd: 0
+    Visited: 0
+    agentPresence: 0

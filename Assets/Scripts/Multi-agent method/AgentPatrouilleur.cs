@@ -193,11 +193,12 @@ public class AgentPatrouilleur : MonoBehaviour
             if (Vector3.Distance(moveToward, destination.realPosFromagentHeights) < 0.01)
             {
                 EventManager.current.RemoveNodeFromNodeAssignation(node);
+                EventManager.current.SettingNodeToFalse(node);
                 EventManager.current.NodeTaggedVisited(node);
                 node.agentPresence = false;
                 node = destination;
                 node.WarnAgentVisit();
-                EventManager.current.SettingNodeToFalse(node);
+                
                 destination = null;
                 if (isRandomDestination == true)
                 {
@@ -222,7 +223,7 @@ public class AgentPatrouilleur : MonoBehaviour
         Node temp = null;
         if (destination == null)
         {
-            var choice = 0;
+            var choice = 3;
             System.Random random = new System.Random();
 
             switch (choice)
@@ -242,8 +243,28 @@ public class AgentPatrouilleur : MonoBehaviour
                     destination = temp;
                     EventManager.current.SettingNodeToTrue(temp);
                     break;
+                case 3:
+                    temp = getBestNeighbour(node);
+                    destination = temp;
+                    EventManager.current.SettingNodeToTrue(temp);
+                    break;
             }
         }
+    }
+
+    Node getBestNeighbour (Node node)
+    {
+        float bestIdleness = Mathf.Infinity;
+        Node bestNode = null;
+        foreach(Edge edge in node.neighs)
+        {
+            if (bestIdleness > edge.to.timeSinceLastVisit)
+            {
+                bestIdleness = edge.to.timeSinceLastVisit;
+                bestNode = edge.to;
+            }
+        }
+        return bestNode;
     }
 
     // Méthode permettant de récupérer le meilleur node à visiter au plus vite par l'agent. Crée une liste de tous les nodes de priorité
@@ -262,43 +283,72 @@ public class AgentPatrouilleur : MonoBehaviour
         {
             if (nodeAssignated[node] > priority)
             {
+                //print("| " + ToString() + " | Une meilleure priorité a été trouvée sur (" + node.pos.Item1 + "," + node.pos.Item2 + ") avec oisiveté = " + node.timeSinceLastVisit + " . Priorité = " + nodeAssignated[node] + "par rapport à " + priority + ".");
                 priority = nodeAssignated[node];
                 listForCheck.Clear();
                 listForCheck.Add(node);
             }
-            else if (priority == nodeAssignated[node])
+            if (priority == nodeAssignated[node])
             {
-                listForCheck.Add(node);
+                if (!listForCheck.Contains(node))
+                {
+                    //print("| " + ToString() + " | Un nouveau noeud de priorité équivalente à été trouvé : (" + node.pos.Item1 + "," + node.pos.Item2 + ") avec oisiveté = " + node.timeSinceLastVisit + ".");
+                    listForCheck.Add(node);
+                }
+                
             }
         }
-        
+
+        //print("| " + ToString() + " | Je dois vérifier tous ces noeuds.");
+        //foreach (Node node in listForCheck)
+        //{
+            //print("| " + ToString() + " | node : (" + node.pos.Item1 + "," + node.pos.Item2 + ").");
+        //}
         Node bestNode = null;
         float dist = Mathf.Infinity;
 
         foreach (Node node in listForCheck)
         {
-            float nbNodeInPath = 999;
+            float sumOfDistance = 0;
             if (shortestPathData.ContainsKey((GetNode(), node)))
             {
-                nbNodeInPath = shortestPathData[(GetNode(), node)].Count;
+                sumOfDistance = getSumDistanceOfPath(shortestPathData[(GetNode(), node)]);
             }
             else
             {
                 throw new Exception("The path from node (" + GetNode().pos.Item1 + "," + GetNode().pos.Item2 + ") to node (" + node.pos.Item1 + "," + node.pos.Item2 + ") doesn't exist.");
             }
 
-            if (dist > nbNodeInPath)
+            if (dist > sumOfDistance)
             {
                 
                 bestNode = node;
-                dist = nbNodeInPath;
-            }
-            if (nbNodeInPath <= 0)
-            {
-                throw new Exception("Probleme dans le CheckForNodes d'un patrouilleur.");
+                dist = sumOfDistance;
             }
         }
         return bestNode;
+    }
+
+    float getSumDistanceOfPath(List<Node> nodes)
+    {
+        float sum = 0;
+
+        if (nodes.Count == 0 || nodes.Count == 1)
+        {
+            return 0;
+        }
+        if (nodes.Count == 2)
+        {
+            return Vector3.Distance(nodes[0].realPos, nodes[1].realPos);
+        }
+
+        for(int i = 0; i <= nodes.Count - 1; i++)
+        {
+            if (nodes.Count - 1 > i + 1)
+                sum += Vector3.Distance(nodes[i].realPos, nodes[i + 1].realPos);
+        }
+
+        return sum;
     }
 
     // Méthode lié à l'évenement d'update de nodeAssignation. Clear la liste existante et récupère les nodes présent dans la nouvelle qui lui sont assignés..
