@@ -10,7 +10,12 @@
       "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
       "DisplayName": "Fichiers divers",
       "ColorIndex": -1
+    },
+    "675fffda-6520-9de7-d705-93e7f97a07a0": {
+      "ProjectGuid": "675fffda-6520-9de7-d705-93e7f97a07a0",
+      "DisplayName": "Assembly-CSharp",
+      "ColorIndex": 1
     }
   },
-  "NextColorIndex": 1
+  "NextColorIndex": 2
 }
