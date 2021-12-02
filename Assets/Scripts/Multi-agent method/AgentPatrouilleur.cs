@@ -239,7 +239,7 @@ public class AgentPatrouilleur : MonoBehaviour
                     EventManager.current.SettingNodeToTrue(temp);
                     break;
                 case 2:
-                    temp = (node.neighs.OrderByDescending(x => x.to.neighs.Max(y => y.to.timeSinceLastVisit))).First().to;
+                    temp = (node.neighs.OrderByDescending(x => x.to.neighs.Max(y => y.to.timeSinceLastVisit))).Last().to;
                     destination = temp;
                     EventManager.current.SettingNodeToTrue(temp);
                     break;
@@ -254,13 +254,12 @@ public class AgentPatrouilleur : MonoBehaviour
 
     Node getBestNeighbour (Node node)
     {
-        float bestIdleness = Mathf.Infinity;
-        Node bestNode = null;
+        if (node.neighs.Count == 0) throw new Exception("Un des noeuds " + node.pos + " n'a aucun voisin, alors que ce n'est pas possible.");
+        Node bestNode = node.neighs[0].to;
         foreach(Edge edge in node.neighs)
         {
-            if (bestIdleness > edge.to.timeSinceLastVisit)
+            if (bestNode.timeSinceLastVisit < edge.to.timeSinceLastVisit)
             {
-                bestIdleness = edge.to.timeSinceLastVisit;
                 bestNode = edge.to;
             }
         }
@@ -342,10 +341,9 @@ public class AgentPatrouilleur : MonoBehaviour
             return Vector3.Distance(nodes[0].realPos, nodes[1].realPos);
         }
 
-        for(int i = 0; i <= nodes.Count - 1; i++)
+        for(int i = 0; i <= nodes.Count - 2; i++)
         {
-            if (nodes.Count - 1 > i + 1)
-                sum += Vector3.Distance(nodes[i].realPos, nodes[i + 1].realPos);
+            sum += Vector3.Distance(nodes[i].realPos, nodes[i + 1].realPos);
         }
 
         return sum;

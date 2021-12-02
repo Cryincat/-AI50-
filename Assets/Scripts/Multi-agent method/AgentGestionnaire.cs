@@ -74,7 +74,6 @@ public class AgentGestionnaire : MonoBehaviour
         EventManager.current.UpdateNodeAssignation(nodeAssignation, nodePriority);
 
         // Génération = OK
-        print("| Gestionnaire | Génération des variables terminée...");
         isGenerated = true;
 
         // Lancement à interval régulier de la méthode de warn .
@@ -92,14 +91,6 @@ public class AgentGestionnaire : MonoBehaviour
             }
             hasToBeVisited.Clear();
             updateNodeAssignation();
-        }
-
-        foreach (Node node in nodeAssignation.Keys)
-        {
-            if (node.timeSinceLastVisit > 0.5 * agentManageur.threshold)
-            {
-                print("Le noeud (" + node.pos.Item1 + "," + node.pos.Item2 + ") est assigné à l'agent " + nodeAssignation[node] + ", avec un oisiveté = " + node.timeSinceLastVisit);
-            }
         }
     }
 

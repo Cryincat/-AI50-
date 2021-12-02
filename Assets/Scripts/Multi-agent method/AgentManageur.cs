@@ -90,7 +90,6 @@ public class AgentManageur : MonoBehaviour
         // Génération = OK
 
         yield return new WaitUntil(() => isGenerated);
-        print("| Manageur | Génération des variables terminée...");
 
 
         // Lancement à interval régulier de la méthode de check 
@@ -114,12 +113,11 @@ public class AgentManageur : MonoBehaviour
         {
             managerTool.Add(node, false);
         }
-        print("| Manageur | 'managerTool' initialisé.");
     }
 
     IEnumerator LoadPathFromFile(List<string> content)
     {
-        print("Loading from existing file !!");
+        print("| Manageur | Loading all existing path in graph...");
         int count = 0;
         content.RemoveAt(0);
         Dictionary<(Node, Node), List<Node>> shortestPathData = new Dictionary<(Node, Node), List<Node>>();
@@ -151,7 +149,7 @@ public class AgentManageur : MonoBehaviour
             }
             shortestPathData.Add((node1, node2), shortestPath);
         }
-        print("| Manageur | " + count + " paths loaded, this is the end.");
+        print("| Manageur | A total of " + count + " paths have been loaded.");
         EventManager.current.SendShortestPathData(shortestPathData);
         isGenerated = true;
 
@@ -159,7 +157,6 @@ public class AgentManageur : MonoBehaviour
 
     void LoadPaths(string path)
     {
-        print("LoadPath(path) path : " + path);
         string graphHash = getHashGraph();
         if (isAnyFileInDirectory(path))
         {
@@ -178,7 +175,6 @@ public class AgentManageur : MonoBehaviour
     {
         var directory = new DirectoryInfo(path);
         List<FileInfo> files = directory.GetFiles().ToList<FileInfo>();
-        print("how much file in directory  :" + files.Count);
         if (files.Count == 0)
         {
             return false;
@@ -194,7 +190,6 @@ public class AgentManageur : MonoBehaviour
         {
 
             string path2 = path + "/" + file.Name;
-            print(path2);
             List<string> content = File.ReadAllLines(path2).ToList<string>();
             if (content[0] == graphHash)
             {
@@ -207,19 +202,17 @@ public class AgentManageur : MonoBehaviour
     string getHashGraph()
     {
         string hash = "";
-
-        foreach (Node node in graph.nodes.Values)
+        foreach(Node node in graph.nodes.Values)
         {
-            hash += node.pos.Item1 + "," + node.pos.Item2 + ";";
+            hash += node.pos + ";";
         }
-        //print("hash : " + hash);
         return hash;
     }
 
     // Méthode permettant de charger préalablement tous les paths existants entre 2 nodes dans le graphe.
     IEnumerator LoadPaths()
     {
-        print("| Manageur | Itinialisation des données des shortestPaths...");
+        print("| Manageur | No file corresponding to this graph. Calculating all existing path in graph...");
         AStar aStar = FindObjectOfType<AStar>();
         int count = 0;
         int nbNode = graph.nodes.Values.Count;
@@ -243,7 +236,7 @@ public class AgentManageur : MonoBehaviour
         print("| Manageur | Path " + count + "/" + totalPath);
         EventManager.current.SendShortestPathData(shortestPathData);
         Save(shortestPathData, path);
-        print("| Manageur | ShortestPaths initialisés.");
+        print("| Manageur | A total of " + count + " paths have been created and saved.");
     }
 
     void Save(Dictionary<(Node, Node), List<Node>> data, string path)

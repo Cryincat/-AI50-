@@ -30,9 +30,6 @@ public class LoadGraph : MonoBehaviour
         graph = createGraph(path);
         spawnMap(graph, parent);
 
-        //print(graph);
-
-        print("| LoadGraph | Génération des variables terminée.");
         isGenerated = true;
     }
 
@@ -83,7 +80,7 @@ public class LoadGraph : MonoBehaviour
 
     void spawnMap(Graph graph, GameObject parent)
     {
-        print("| LoadGraph | Generating world...");
+        print("| LoadGraph | Spawning map...");
         foreach (Node node in graph.nodes.Values)
         {
             
@@ -95,28 +92,29 @@ public class LoadGraph : MonoBehaviour
         // Spawn l'edge visuellement
         foreach (Edge edge in graph.edges)
         {
-            spawnEdgeOnMap(edge.from.realPos, edge.to.realPos);
+            spawnEdgeOnMap2(edge.from.realPos, edge.to.realPos);
         }
-        print("| LoadGraph | Wolrd ready.");
+        print("| LoadGraph | Map ready.");
     }
 
-    void spawnEdgeOnMap(Vector3 from, Vector3 to)
+    void spawnEdgeOnMap2 (Vector3 from, Vector3 to)
     {
-        float pas = 0.3f;
-        float dist = Vector3.Distance(from, to);
-        float decount = dist;
-        while(decount > 0)
-        {
-            Vector3 position = Vector3.MoveTowards(from, to, decount);
-            GameObject gameObject = Instantiate(prefabEdge, position, Quaternion.identity, parent.transform);
-            gameObject.GetComponent<Renderer>().material.color = Color.white;
-            decount -= pas;
-        }
+        float edgeSize = Vector3.Distance(from, to);
+        Vector3 middlePoint = Vector3.Lerp(from, to, 0.5f);
+        Vector3 baseRepere = new Vector3(1,0,0);
+        Quaternion edgeRotation = Quaternion.FromToRotation(baseRepere, (to - from));
+     
+        GameObject newEdge = Instantiate(prefabEdge, middlePoint, edgeRotation, parent.transform);
+        //newEdge.GetComponent<Renderer>().material.SetColor("edgeColor", Color.green);
+        // Changement de la taille de l'edge
+        Vector3 newScale = new Vector3(edgeSize, newEdge.transform.localScale.y, newEdge.transform.localScale.z);
+        newEdge.transform.localScale = newScale;
+        
     }
 
     private Graph createGraph(string path)
     {
-        print("| LoadGraph | Creating graph from file...");
+        print("| LoadGraph | Generating graph from file...");
         List<string> lines = File.ReadAllLines(path).ToList<string>();
         Graph graph = new Graph();
         graph.edges = new List<Edge>();
@@ -146,6 +144,7 @@ public class LoadGraph : MonoBehaviour
                 graph.edges.Add(edgeToAdd);
             }
         }
+        print("| LoadGraph | Graph fully generated.");
         return graph;
     }
 

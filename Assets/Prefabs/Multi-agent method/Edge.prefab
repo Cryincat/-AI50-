@@ -1,15 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &6877158411037861826
+--- !u!1001 &6827788817886206008
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3905132522768971470, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3905132522768971470, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9c0587a406c198744940eb7f6703df6d, type: 2}
     - target: {fileID: 5815201628646411250, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815201628646411250, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815201628646411250, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5815201628646411250, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 5815201628646411250, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
       propertyPath: m_LocalPosition.x

@@ -86,6 +86,7 @@
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Materials\TileShader.shader" />
+    <None Include="Assets\Data\graph_3.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\SOURCES.txt" />
     <None Include="Assets\Data\graph_2.txt" />
@@ -95,10 +96,11 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\Data\iris-full.txt" />
     <None Include="Assets\NetMQExample\Plugins\AsyncIO.dll" />
-    <None Include="Assets\Data\QLearning2.txt" />
     <None Include="Assets\Data\ShortestPathData\data_1.txt" />
     <None Include="Assets\Data\ShortestPathData\data_0.txt" />
+    <None Include="Assets\Data\graph_4.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Data\graph_5.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
@@ -109,19 +111,14 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\dependency_links.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-    <None Include="Assets\Data\ShortestPathData\data_5.txt" />
     <None Include="Assets\Data\ShortestPathData\data_2.txt" />
-    <None Include="Assets\Data\QLearning.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
-    <None Include="Assets\Data\graph_1.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\requires.txt" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\top_level.txt" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
-    <None Include="Assets\Data\ShortestPathData\data_3.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
-    <None Include="Assets\Data\ShortestPathData\data_4.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>
   <ItemGroup>
