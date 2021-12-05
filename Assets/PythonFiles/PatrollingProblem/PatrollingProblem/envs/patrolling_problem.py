@@ -48,6 +48,9 @@ class PatrollingProblemEnv(gym.Env):
        self.posAgent = self.environnement.Transition(self.posAgent, Environnement.actions[action])
        observation = self.environnement.Flatten(self.posAgent)
        self.reward = - np.mean(list(self.environnement.nodesTimes.values()))#1.0 / max(0.1,np.mean(list(self.environnement.nodesTimes.values())))
+       
+       #if(abs(action[0])+abs(action[1]) == 2) : self.reward -= 0.5
+       
        #if(self.reward == 0) : self.reward = 1
        done = self.environnement.nbiter > self.nbiter_per_episode
        info = self.environnement.nodesTimes.copy()

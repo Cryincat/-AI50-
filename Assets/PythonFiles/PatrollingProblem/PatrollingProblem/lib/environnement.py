@@ -13,13 +13,18 @@ class Environnement:
     # 1   6
     # 2 4 7
     
-    def __init__(self,nodes):
+    def __init__(self,nodes,nodesTimes = None):
         self.nbiter = 0
         self.nodes = nodes.copy()
         self.nodesTimes = {}
+        
         for n in nodes:
             assert n not in self.nodesTimes
-            self.nodesTimes[n] = 0
+            if(nodesTimes == None) :
+                self.nodesTimes[n] = 0
+            else:
+                self.nodesTimes[n] = nodesTimes[n]
+                
         self.dimX = (min(n[0] for n in nodes),max(n[0] for n in nodes))
         self.dimY = (min(n[1] for n in nodes),max(n[1] for n in nodes))
         self.nbX = self.dimX[1]-self.dimX[0]+1
@@ -35,8 +40,9 @@ class Environnement:
         return l
     
     def Transition(self,posAgent,action):
+        inc = 1 if(abs(action[0])+abs(action[1]) < 2) else 1.41
         for n in self.nodesTimes:
-            self.nodesTimes[n] = min(self.nodesTimes[n]+1,99)
+            self.nodesTimes[n] = min(self.nodesTimes[n]+inc,99)
         to = (posAgent[0] + action[0],posAgent[1] + action[1])
         if(to not in self.nodes):
             to = posAgent

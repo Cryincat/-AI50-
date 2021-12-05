@@ -74,10 +74,10 @@ public class GraphGenerator : MonoBehaviour
             graph.nodes.TryGetValue((node.pos.Item1 - 1, node.pos.Item2 - 1), out Node bottomLeftNeigh);
             graph.nodes.TryGetValue((node.pos.Item1 + 1, node.pos.Item2 - 1), out Node bottomRightNeigh);
 
-            if (topNeigh == null || leftNeigh == null) topLeftNeigh = null;
-            if (topNeigh == null || rightNeigh == null) topRightNeigh = null;
-            if (bottomNeigh == null || leftNeigh == null) bottomLeftNeigh = null;
-            if (bottomNeigh == null || rightNeigh == null) bottomRightNeigh = null;
+            //if (topNeigh == null || leftNeigh == null) topLeftNeigh = null;
+            //if (topNeigh == null || rightNeigh == null) topRightNeigh = null;
+            //if (bottomNeigh == null || leftNeigh == null) bottomLeftNeigh = null;
+            //if (bottomNeigh == null || rightNeigh == null) bottomRightNeigh = null;
 
             List<Node> neighs = new List<Node>() { leftNeigh, rightNeigh, topNeigh, bottomNeigh, topLeftNeigh, topRightNeigh, bottomLeftNeigh, bottomRightNeigh };
             neighs.RemoveAll(item => item == null);

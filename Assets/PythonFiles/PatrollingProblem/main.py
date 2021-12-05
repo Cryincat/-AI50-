@@ -13,15 +13,16 @@ from rl.agents import DQNAgent
 from rl.memory import SequentialMemory
 from rl.policy import LinearAnnealedPolicy,EpsGreedyQPolicy
 
-print("Wait")
-# import tensorflow as tf
+from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation, Flatten
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import SGD
 
 nb_actions = 8
     
 def build_model(environnement):
+    print("Building Model ...")
     input_shape = (1,) + (environnement.Shape(),)
     model = Sequential()
     # model.add(Input(shape = input_shape))
@@ -30,7 +31,9 @@ def build_model(environnement):
     # model.add(Activation('relu'))
     # model.add(Dense(10))
     # model.add(Activation('sigmoid'))
-    model.add(Dense((nb_actions+environnement.Shape())/2))
+    model.add(Dense((nb_actions+environnement.Shape())*2))
+    model.add(Activation('relu'))
+    model.add(Dense((nb_actions+environnement.Shape())))
     model.add(Activation('relu'))
     model.add(Dense((nb_actions+environnement.Shape())/2))
     model.add(Activation('relu'))
@@ -42,13 +45,15 @@ def build_model(environnement):
     return model
 
 def build_agent(model,actions):
+    print("Building Agent ...")
     policy = LinearAnnealedPolicy(inner_policy=EpsGreedyQPolicy(), attr="eps", value_max=1.0,
-                                  value_min=0.1, value_test=0.2, nb_steps = 20000)
+                                  value_min=0.1, value_test=0.2, nb_steps = 10000)
     # policy = EpsGreedyQPolicy()
     memory = SequentialMemory(limit=1000, window_length=1)
     dqn = DQNAgent(model=model,memory=memory,policy=policy,enable_dueling_network=(True),
-                    dueling_type='avg',nb_actions=nb_actions,nb_steps_warmup=20000)
+                    dueling_type='avg',nb_actions=nb_actions,nb_steps_warmup=10000)
     # dqn = DQNAgent(model=model,memory=memory,policy=policy,nb_actions=nb_actions)
+    dqn.compile(Adam(learning_rate=0.00001))
     return dqn
 
 def main():
@@ -66,13 +71,13 @@ def main():
     #                 (0,2),(1,2),(2,2),(3,2),(4,2),(5,2)])
     e = Environnement([(1,1),(2,1),(3,1),
                        (1,2),(2,2),(3,2),
-                       (1,3),(2,3),(3,3),
-                       (2,4),
-                       (1,5),(2,5),(3,5),
-                       (2,6),
+                       (1,3),(2,3),(3,3),(4,3),      (6,3),(7,3),
+                             (2,4),                  (6,4),(7,4),
+                       (1,5),(2,5),(3,5),(4,5),(5,5),(6,5),(7,5),
+                             (2,6),
                        (1,7),(2,7),(3,7),
                        (1,8),(2,8),(3,8),
-                       (1,9),(2,9),(3,9)])
+                       (1,9),(2,9),(3,9),(4,9)])
     posAgent = None#(0,0)
     
     nbiter_per_episode = 500
@@ -86,7 +91,7 @@ def main():
     
     model = build_model(e)
     dqn = build_agent(model, Environnement.actions)
-    dqn.compile(Adam(learning_rate=0.0001))
+
     hist = dqn.fit(env, nb_steps=10000000, visualize=False, verbose=1)
     Y = [i / nbiter_per_episode for i in hist.history['episode_reward']]
     X = [x for x in range(len(Y))]
@@ -94,7 +99,7 @@ def main():
     from matplotlib import pyplot as plt
     plt.plot(X,Y)
     
-    # dqn.save_weights("ev2-weights-500k.h5f")
+    dqn.save_weights("Weights/3piecesCouloirV2.h5f")
     
     # test = [0,0,10,10,10,10,0,0,10,0,0]
     # test = np.asarray(test, dtype=np.float32)
@@ -133,7 +138,9 @@ def main():
             
             state = dqn.memory.get_recent_state(flt)
             q_values = np.array(dqn.compute_q_values(state))
-            softmax = np.exp(np.array(q_values).astype('float64'))/sum(np.exp(np.array(q_values).astype('float64')))
+            arr = np.array(q_values).astype('float64')
+            arr -= np.min(arr)
+            softmax = np.exp(arr)/sum(np.exp(arr))
             
             a = Environnement.actions[randomChoice(softmax)]
             # a = Environnement.actions[dqn.forward(e.Flatten(pos))]#Environnement.actions[np.argmax([model.predict(flt)])]
