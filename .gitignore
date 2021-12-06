@@ -29,3 +29,8 @@ obj/
 .Trashes
 ehthumbs.db
 Thumbs.db
+Logs/AssetImportWorker0-prev.log
+Logs/AssetImportWorker0-prev.log
+Logs/AssetImportWorker0.log
+UserSettings/EditorUserSettings.asset
+Assembly-CSharp.csproj
