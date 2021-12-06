@@ -10,14 +10,12 @@ public class AgentPatrouilleur : MonoBehaviour
 {
     public bool isGenerated = false;
     public float speed = 1f;
-    public bool isGraphLoading = false;
     public Node startPoint;
 
 
     private Vector3 oldPos;
 
     private LoadGraph loadGraph;
-    private GraphGenerator graphGenerator;
     private AgentManageur agentManageur;
     private AgentGestionnaire agentGestionnaire;
 
@@ -35,7 +33,6 @@ public class AgentPatrouilleur : MonoBehaviour
     private bool isRandomDestination = false;
     private bool clear = false;
 
-    private GameObject capsule;
     private Renderer capsuleRenderer;
 
     private Color patrollingColor1;
@@ -55,7 +52,6 @@ public class AgentPatrouilleur : MonoBehaviour
         transform.position = startPoint.realPos;
 
         // Récupération des instance d'autres scripts
-        graphGenerator = FindObjectOfType<GraphGenerator>();
         agentManageur = FindObjectOfType<AgentManageur>();
         agentGestionnaire = FindObjectOfType<AgentGestionnaire>();
         capsuleRenderer = GetComponentInChildren<Renderer>();
@@ -75,16 +71,8 @@ public class AgentPatrouilleur : MonoBehaviour
         patrollingColor3 = new Color(0.2f, 0.5f, 1f); // Blue
 
         // Attente que le graph s'initialise, puis l'agent manageur et enfin l'agent gestionnaire.
-        if (isGraphLoading)
-        {
-            yield return new WaitUntil(() => loadGraph.isGenerated);
-            graph = loadGraph.graph;
-        }
-        else
-        {
-            yield return new WaitUntil(() => graphGenerator.isGenerated);
-            graph = graphGenerator.graph;
-        }
+        yield return new WaitUntil(() => loadGraph.isGenerated);
+        graph = loadGraph.graph;
         
         yield return new WaitUntil(() => agentManageur.isGenerated);
         yield return new WaitUntil(() => agentGestionnaire.isGenerated);

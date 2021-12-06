@@ -14,14 +14,16 @@ public class LoadGraph : MonoBehaviour
     public GameObject prefabEdge;
     public bool isGenerated = false;
     public Graph graph;
-    public GameObject parent;
+    private GameObject parent;
     public string textFileName = "";
     private Dictionary<Node, NodeComponent> nodeComponentDict;
 
 
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
+        yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+        parent = GameObject.FindGameObjectWithTag("Sols");
         nodeComponentDict = new Dictionary<Node, NodeComponent>();
         string path = Directory.GetCurrentDirectory() + "/Assets/Data/";
 
@@ -29,6 +31,7 @@ public class LoadGraph : MonoBehaviour
 
         graph = createGraph(path);
         spawnMap(graph, parent);
+        setupCamera();
 
         isGenerated = true;
     }
@@ -65,6 +68,60 @@ public class LoadGraph : MonoBehaviour
         }
     }
 
+    void setupCamera()
+    {
+        Camera camera = FindObjectOfType<Camera>();
+        Vector3 posNW = getNorthWesternNodePos(graph);
+        Vector3 posSE = getSouthEsternNodePos(graph);
+        Vector3 cameraPosition = Vector3.Lerp(posNW, posSE, 0.5f);
+        float heigh = Vector3.Distance(posNW, posSE);
+        cameraPosition.y = (float) (heigh + (heigh * 0.05));
+        camera.transform.position = cameraPosition;
+    }
+
+    Vector3 getNorthWesternNodePos(Graph graph)
+    {
+        Vector3 actualBestPos = graph.nodes.First().Value.realPos;
+        float actualDist = Vector3.Distance(actualBestPos, Vector3.zero);
+        float xPos = graph.nodes.First().Value.pos.Item1;
+        float yPos = graph.nodes.First().Value.pos.Item2;
+
+        foreach (Node node in graph.nodes.Values)
+        {
+            float xNodePos = node.pos.Item1;
+            float yNodePos = node.pos.Item2;
+            if (Vector3.Distance(node.realPos,Vector3.zero) > actualDist && xNodePos <= xPos && yNodePos >= yPos)
+            {
+                actualBestPos = node.realPos;
+                xPos = xNodePos;
+                yPos = yNodePos;
+                actualDist = Vector3.Distance(Vector3.zero, node.realPos);
+            }
+        }
+        return actualBestPos;
+    }
+
+    Vector3 getSouthEsternNodePos(Graph graph)
+    {
+        Vector3 actualBestPos = graph.nodes.First().Value.realPos;
+        float actualDist = Vector3.Distance(actualBestPos, Vector3.zero);
+        float xPos = graph.nodes.First().Value.pos.Item1;
+        float yPos = graph.nodes.First().Value.pos.Item2;
+
+        foreach (Node node in graph.nodes.Values)
+        {
+            float xNodePos = node.pos.Item1;
+            float yNodePos = node.pos.Item2;
+            if (Vector3.Distance(node.realPos, Vector3.zero) > actualDist && xNodePos >= xPos && yNodePos <= yPos)
+            {
+                actualBestPos = node.realPos;
+                xPos = xNodePos;
+                yPos = yNodePos;
+                actualDist = Vector3.Distance(Vector3.zero, node.realPos);
+            }
+        }
+        return actualBestPos;
+    }
 
     public void print (Graph graph)
     {

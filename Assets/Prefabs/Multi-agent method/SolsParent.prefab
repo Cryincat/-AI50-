@@ -14,10 +14,9 @@ GameObject:
   - component: {fileID: 1160337730520915008}
   - component: {fileID: 1160337730520915011}
   - component: {fileID: 1160337730520915010}
-  - component: {fileID: 1160337730520915036}
   m_Layer: 0
   m_Name: SolsParent
-  m_TagString: Untagged
+  m_TagString: Sols
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -79,12 +78,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220353c9ed7dc1a45b28a462df356eca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  threshold: 60
+  threshold: 0
   repeatRate: 1
   delay: 1
-  nbAgent: 5
+  nbAgent: 0
   isGenerated: 0
-  isGraphLoading: 1
   parent: {fileID: 1248408182043189690, guid: a0a72ebaa2917ff458a4923ca16ff651, type: 3}
   agentPrefab: {fileID: 8380341965850614729, guid: b970522f36102b348afc8c2bf3206c39, type: 3}
   areAgentGenerated: 0
@@ -100,9 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c683f62968f5745a0ebf5a7c13bdf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGraphLoading: 1
-  maxIdlenessVisited: -1
-  maxIdlenessTheoric: -1
+  maxIdleness: -1
   mediumIdleness: -1
   maxIdlenessRealTime: -1
   mediumIdlenessRealTime: -1
@@ -123,20 +119,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   delta: 0
   speed: 20
---- !u!114 &1160337730520915036
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1160337730520915039}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea1889825a2666345ac223e723e9235e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabSol: {fileID: 4610293331483583467, guid: 019ccf962bf383e46a6d4cdb2cd82a69, type: 3}
-  prefabEdge: {fileID: 4681182850963845025, guid: 092934d9d96e89c4dac23e7d7d7f89a1, type: 3}
-  isGenerated: 0
-  parent: {fileID: 1160337730520915039}
-  textFileName: graph_2.txt

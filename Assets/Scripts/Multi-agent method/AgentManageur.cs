@@ -21,12 +21,10 @@ public class AgentManageur : MonoBehaviour
 
     string path = Directory.GetCurrentDirectory() + "/Assets/Data/ShortestPathData/";
     public bool isGenerated = false;
-    public bool isGraphLoading = false;
-    public GameObject parent;
+    private GameObject parent;
     public GameObject agentPrefab;
 
     private Graph graph;
-    private GraphGenerator graphGenerator;
     private LoadGraph loadGraph;
 
     private Dictionary<Node, bool> managerTool;
@@ -43,31 +41,20 @@ public class AgentManageur : MonoBehaviour
         EventManager.current.onRemoveNodeFromNodeAssignation += OnSettingNodePriorityToOne;
 
         // Récupération des instance d'autres scripts
-        if (isGraphLoading)
-        {
-            loadGraph = FindObjectOfType<LoadGraph>();
-        }
-        else
-        {
-            graphGenerator = FindObjectOfType<GraphGenerator>();
-        }
+        loadGraph = FindObjectOfType<LoadGraph>();
 
+        
 
         // Initialisation des variables
         managerTool = new Dictionary<Node, bool>();
         nodePriority = new Dictionary<Node, int>();
 
         // Attente de la génération du script
-        if (isGraphLoading)
-        {
-            yield return new WaitUntil(() => loadGraph.isGenerated);
-            graph = loadGraph.graph;
-        }
-        else
-        {
-            yield return new WaitUntil(() => graphGenerator.isGenerated);
-            graph = graphGenerator.graph;
-        }
+        yield return new WaitUntil(() => loadGraph.isGenerated);
+        graph = loadGraph.graph;
+
+        // Récupération du gameObject vide pour stocker les agents
+        parent = GameObject.FindGameObjectWithTag("Agents");
 
         System.Random random = new System.Random();
         for (int i = 0; i < nbAgent; i++)
@@ -88,7 +75,6 @@ public class AgentManageur : MonoBehaviour
 
 
         // Génération = OK
-
         yield return new WaitUntil(() => isGenerated);
 
 
@@ -126,11 +112,7 @@ public class AgentManageur : MonoBehaviour
         foreach (string line in content)
         {
             count++;
-            if (count % 1000 == 0)
-            {
-                print("| Manageur | " + count + " paths loaded.");
-                yield return null;
-            }
+            
             string[] lineSplitted = line.Split('|');
             string[] node1Str = lineSplitted[0].Split(',');
             string[] node2Str = lineSplitted[1].Split(',');
@@ -148,7 +130,13 @@ public class AgentManageur : MonoBehaviour
 
             }
             shortestPathData.Add((node1, node2), shortestPath);
+            if (count % 1000 == 0)
+            {
+                print("| Manageur | " + count + " paths loaded.");
+                yield return null;
+            }
         }
+        yield return null;
         print("| Manageur | A total of " + count + " paths have been loaded.");
         EventManager.current.SendShortestPathData(shortestPathData);
         isGenerated = true;
@@ -224,7 +212,7 @@ public class AgentManageur : MonoBehaviour
             foreach (Node end in graph.nodes.Values)
             {
                 count++;
-                if (count % 250 == 0)
+                if (count % 1000 == 0)
                 {
                     print("| Manageur | Path " + count + "/" + totalPath);
                     yield return null;

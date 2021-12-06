@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 370023283}
   - component: {fileID: 370023282}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -199,13 +199,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 370023281}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &416963748
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,3 +299,72 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1001 &1116654779
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 32.09021
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 54.29441
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -26.582684
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3758143233739628746, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4493055516050113703, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: m_Name
+      value: LoadMAM
+      objectReference: {fileID: 0}
+    - target: {fileID: 6649521953003090924, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: nbAgent
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6649521953003090924, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: graphFile
+      value: graph_1.txt
+      objectReference: {fileID: 0}
+    - target: {fileID: 6649521953003090924, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
+      propertyPath: nbIterationBeforeStop
+      value: 150
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}

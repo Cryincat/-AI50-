@@ -22,9 +22,8 @@ public class AgentGestionnaire : MonoBehaviour
     private Dictionary<Node, int> nodePriority;
     private Dictionary<(Node, Node), List<Node>> shortestPathData;
 
-    private Graph graph;
-    private GraphGenerator graphGenerator;
     private LoadGraph loadGraph;
+    private Graph graph;
 
     private bool shortestPathUpdated = false;
 
@@ -43,24 +42,13 @@ public class AgentGestionnaire : MonoBehaviour
 
         // Récupération des instance d'autres scripts
         agentList = FindObjectsOfType(typeof(AgentPatrouilleur)) as AgentPatrouilleur[];
-        graphGenerator = FindObjectOfType<GraphGenerator>();
         loadGraph = FindObjectOfType<LoadGraph>();
 
         shortestPathData = new Dictionary<(Node, Node), List<Node>>();
 
-        // Attente de l'initialisation complète du graphGenerator afin de récupérer le graph.
-        if (isGraphLoading)
-        {
-            yield return new WaitUntil(() => loadGraph.isGenerated);
-            graph = loadGraph.graph;
-        }
-        else
-        {
-            yield return new WaitUntil(() => graphGenerator.isGenerated);
-            graph = graphGenerator.graph;
-        }
-
-
+        // Attente de l'initialisation complète du loadGraph afin de récupérer le graph.
+        yield return new WaitUntil(() => loadGraph.isGenerated);
+        graph = loadGraph.graph;
 
         // Initialisation des variables
         hasToBeVisited = new List<Node>();
@@ -75,6 +63,8 @@ public class AgentGestionnaire : MonoBehaviour
 
         // Génération = OK
         isGenerated = true;
+
+        yield return new WaitUntil(() => shortestPathUpdated);
 
         // Lancement à interval régulier de la méthode de warn .
         InvokeRepeating("Warn", delay, repeatRate);
@@ -146,6 +136,7 @@ public class AgentGestionnaire : MonoBehaviour
             else
             {
                 throw new Exception("The path from node (" + agentNode.pos.Item1 + "," + agentNode.pos.Item2 + ") to node (" + node.pos.Item1 + "," + node.pos.Item2 + ") doesn't exist.");
+                
             }
             if (dist > totalDistanceOfPath)
             {
@@ -201,7 +192,6 @@ public class AgentGestionnaire : MonoBehaviour
     // Méthode se lançant une fois au début, récupérant la liste de tous les paths du graphe.
     void OnSendShortestPathData(Dictionary<(Node, Node), List<Node>> data)
     {
-        shortestPathData = new Dictionary<(Node, Node), List<Node>>();
         shortestPathData = data;
         shortestPathUpdated = true;
     }

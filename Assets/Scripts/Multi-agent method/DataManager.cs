@@ -9,10 +9,11 @@ using System.Linq;
 public class DataManager : MonoBehaviour
 {
     private Graph graph;
-    private GraphGenerator graphGenerator;
     private LoadGraph loadGraph;
-    public bool isGraphLoading = false;
 
+
+    public string graphName = "";
+    public string methodName = "";
     public float maxIdleness = -1;
     public float mediumIdleness = -1;
     public float maxIdlenessRealTime = -1;
@@ -32,18 +33,9 @@ public class DataManager : MonoBehaviour
 
         dataRealTime = new Dictionary<int, float>();
 
-        if (isGraphLoading)
-        {
-            loadGraph = FindObjectOfType<LoadGraph>();
-            yield return new WaitUntil(() => loadGraph.isGenerated);
-            graph = loadGraph.graph;
-        }
-        else
-        {
-            graphGenerator = FindObjectOfType<GraphGenerator>();
-            yield return new WaitUntil(() => graphGenerator.isGenerated);
-            graph = graphGenerator.graph;
-        }
+        loadGraph = FindObjectOfType<LoadGraph>();
+        yield return new WaitUntil(() => loadGraph.isGenerated);
+        graph = loadGraph.graph;
 
         InvokeRepeating("CheckIdleness", 1, 1);
         nbNodes = graph.nodes.Count;
@@ -91,7 +83,7 @@ public class DataManager : MonoBehaviour
         {
             print("Cela fait " + nbIterationBeforeStop + " que la mediumIdleness = " + mediumIdleness + " n'a pas augmenté.");
             FindObjectOfType<TimeManager>().delta = 0;
-            SaveSimulationData("Multi-Agent method", 10, "graph_2", dataRealTime);
+            SaveSimulationData(methodName, 10, graphName, dataRealTime);
         }
         
 

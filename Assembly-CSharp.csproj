@@ -82,26 +82,28 @@
     <Compile Include="Assets\Scripts\Multi-agent method\AgentManageur.cs" />
     <Compile Include="Assets\Scripts\ServerClient.cs" />
     <Compile Include="Assets\Scripts\GraphGenerator.cs" />
+    <Compile Include="Assets\LoadMethod.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Materials\TileShader.shader" />
+    <None Include="Assets\Data\graph_1.txt" />
     <None Include="Assets\Data\graph_3.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\SOURCES.txt" />
     <None Include="Assets\Data\graph_2.txt" />
-    <None Include="Assets\Data\DataSimulation\Simulation_06_12_2021__16-54-04.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\NetMQExample\Plugins\NetMQ.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
-    <None Include="Assets\Data\iris-full.txt" />
     <None Include="Assets\NetMQExample\Plugins\AsyncIO.dll" />
     <None Include="Assets\Data\ShortestPathData\data_1.txt" />
     <None Include="Assets\Data\ShortestPathData\data_0.txt" />
     <None Include="Assets\Data\graph_4.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Data\DataSimulation\Simulation_06_12_2021__19-35-45.txt" />
     <None Include="Assets\Data\graph_5.txt" />
+    <None Include="Assets\Data\DataSimulation\Simulation_06_12_2021__19-11-49.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
@@ -112,8 +114,6 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\dependency_links.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-    <None Include="Assets\Data\DataSimulation\Simulation_06_12_2021__16-54-48.txt" />
-    <None Include="Assets\Data\ShortestPathData\data_2.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
