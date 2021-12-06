@@ -37,7 +37,7 @@ public class ButtonsHUD : MonoBehaviour
         string minutes = Mathf.Floor((timer % 3600) / 60).ToString("00");
         string seconds = (timer % 60).ToString("00");
         timerText.text = minutes + ":" + seconds;
-        maxIdleValue.text = (Mathf.Round(dataM.maxIdlenessTheoric)).ToString(); // Recupérer l idleness max
+        maxIdleValue.text = (Mathf.Round(dataM.maxIdleness)).ToString(); // Recupérer l idleness max
         averageIdleValue.text = (Mathf.Round(dataM.mediumIdleness)).ToString(); // Recuperer l idleness moyenne
     }
 
