@@ -321,7 +321,7 @@ PrefabInstance:
       objectReference: {fileID: 2007058377}
     - target: {fileID: 1160337730520915008, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: nbAgent
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915008, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: repeatRate
@@ -338,6 +338,10 @@ PrefabInstance:
     - target: {fileID: 1160337730520915010, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: speed
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1160337730520915011, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+      propertyPath: nbIterationBeforeStop
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915036, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: prefabSol
