@@ -12,19 +12,25 @@ public class AgentManageur : MonoBehaviour
     public float threshold = 60;
 
     // Correspond respectivement au délai de lancement (en seconde) et au taux de répétition (en seconde) de la méthode de check du graphe.
-    public float delay = 0;
     public float repeatRate = 1;
+    public float delay = 1;
+    public int nbAgent = 3;
 
-    public int maxPriority = 8;
+    private int maxPriority = 8;
 
+
+    string path = Directory.GetCurrentDirectory() + "/Assets/Data/ShortestPathData/";
     public bool isGenerated = false;
+    private GameObject parent;
+    public GameObject agentPrefab;
 
     private Graph graph;
-    private GraphGenerator graphGenerator;
     private LoadGraph loadGraph;
 
     private Dictionary<Node, bool> managerTool;
     private Dictionary<Node, int> nodePriority;
+
+    public bool areAgentGenerated = false;
 
     IEnumerator Start()
     {
@@ -35,32 +41,43 @@ public class AgentManageur : MonoBehaviour
         EventManager.current.onRemoveNodeFromNodeAssignation += OnSettingNodePriorityToOne;
 
         // Récupération des instance d'autres scripts
-        graphGenerator = FindObjectOfType<GraphGenerator>();
         loadGraph = FindObjectOfType<LoadGraph>();
 
-        // Initialisation des variables
+        
 
+        // Initialisation des variables
         managerTool = new Dictionary<Node, bool>();
         nodePriority = new Dictionary<Node, int>();
 
-
         // Attente de la génération du script
-        yield return new WaitUntil(() => graphGenerator.isGenerated);
-        //yield return new WaitUntil(() => loadGraph.isGenerated);
+        yield return new WaitUntil(() => loadGraph.isGenerated);
+        graph = loadGraph.graph;
 
-        // Récupération des variables issues d'autres scripts
-        graph = graphGenerator.graph;
-        //graph = loadGraph.graph;
+        // Récupération du gameObject vide pour stocker les agents
+        parent = GameObject.FindGameObjectWithTag("Agents");
+
+        System.Random random = new System.Random();
+        for (int i = 0; i < nbAgent; i++)
+        {
+            GameObject agent = Instantiate(agentPrefab, Vector3.zero, Quaternion.identity, parent.transform);
+            agent.name = ("Agent_" + i);
+            int randomNode = random.Next(0, graph.nodes.Count);
+            Node startPoint = graph.nodes.Values.ToList<Node>()[randomNode];
+            AgentPatrouilleur agentScript = agent.GetComponent<AgentPatrouilleur>();
+            agentScript.startPoint = startPoint;
+        }
+        areAgentGenerated = true;
 
         // Méthode d'initialisation
         LoadManagerTool();
         LoadNodePriority();
-        LoadPaths();
+        LoadPaths(path);
 
 
         // Génération = OK
-        print("| Manageur | Génération des variables terminée...");
         yield return new WaitUntil(() => isGenerated);
+
+
         // Lancement à interval régulier de la méthode de check 
         InvokeRepeating("CheckGraphLeveling", delay, repeatRate);
 
@@ -82,15 +99,110 @@ public class AgentManageur : MonoBehaviour
         {
             managerTool.Add(node, false);
         }
-        print("| Manageur | 'managerTool' initialisé.");
+    }
+
+    IEnumerator LoadPathFromFile(List<string> content)
+    {
+        print("| Manageur | Loading all existing path in graph...");
+        int count = 0;
+        content.RemoveAt(0);
+        Dictionary<(Node, Node), List<Node>> shortestPathData = new Dictionary<(Node, Node), List<Node>>();
+        // Forme du fichier text : 
+        // X1,Y1|X2,Y2|x1,y1;x2,y2;... (NODE|NODE|LIST<NODE>)
+        foreach (string line in content)
+        {
+            count++;
+            
+            string[] lineSplitted = line.Split('|');
+            string[] node1Str = lineSplitted[0].Split(',');
+            string[] node2Str = lineSplitted[1].Split(',');
+            string[] listStr = lineSplitted[2].Split(';');
+            Node node1 = graph.nodes[(int.Parse(node1Str[0]), int.Parse(node1Str[1]))];
+            Node node2 = graph.nodes[(int.Parse(node2Str[0]), int.Parse(node2Str[1]))];
+            List<Node> shortestPath = new List<Node>();
+            foreach (string nodeStr in listStr)
+            {
+                if (nodeStr != "")
+                {
+                    string[] nodeStrSplitted = nodeStr.Split(',');
+                    shortestPath.Add(graph.nodes[(int.Parse(nodeStrSplitted[0]), int.Parse(nodeStrSplitted[1]))]);
+                }
+
+            }
+            shortestPathData.Add((node1, node2), shortestPath);
+            if (count % 1000 == 0)
+            {
+                print("| Manageur | " + count + " paths loaded.");
+                yield return null;
+            }
+        }
+        yield return null;
+        print("| Manageur | A total of " + count + " paths have been loaded.");
+        EventManager.current.SendShortestPathData(shortestPathData);
+        isGenerated = true;
+
+    }
+
+    void LoadPaths(string path)
+    {
+        string graphHash = getHashGraph();
+        if (isAnyFileInDirectory(path))
+        {
+            List<string> content = GetAnyFileCorrespondingInDirectory(path, graphHash);
+            if (content != null)
+            {
+                StartCoroutine(LoadPathFromFile(content));
+                return;
+            }
+        }
+        StartCoroutine(LoadPaths());
+        return;
+    }
+
+    bool isAnyFileInDirectory(string path)
+    {
+        var directory = new DirectoryInfo(path);
+        List<FileInfo> files = directory.GetFiles().ToList<FileInfo>();
+        if (files.Count == 0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    List<string> GetAnyFileCorrespondingInDirectory(string path, string graphHash)
+    {
+        var directory = new DirectoryInfo(path);
+        List<FileInfo> files = directory.GetFiles().ToList<FileInfo>();
+        foreach (FileInfo file in files)
+        {
+
+            string path2 = path + "/" + file.Name;
+            List<string> content = File.ReadAllLines(path2).ToList<string>();
+            if (content[0] == graphHash)
+            {
+                return content;
+            }
+        }
+        return null;
+    }
+
+    string getHashGraph()
+    {
+        string hash = "";
+        foreach(Node node in graph.nodes.Values)
+        {
+            hash += node.pos + ";";
+        }
+        return hash;
     }
 
     // Méthode permettant de charger préalablement tous les paths existants entre 2 nodes dans le graphe.
-    void LoadPaths()
+    IEnumerator LoadPaths()
     {
-        print("| Manageur | Itinialisation des données des shortestPaths...");
+        print("| Manageur | No file corresponding to this graph. Calculating all existing path in graph...");
         AStar aStar = FindObjectOfType<AStar>();
-        int count = 1;
+        int count = 0;
         int nbNode = graph.nodes.Values.Count;
         int totalPath = nbNode * nbNode;
         Dictionary<(Node, Node), List<Node>> shortestPathData = new Dictionary<(Node, Node), List<Node>>();
@@ -99,26 +211,67 @@ public class AgentManageur : MonoBehaviour
         {
             foreach (Node end in graph.nodes.Values)
             {
-                //print("| Manageur | From (" + start.pos.Item1 + "," + start.pos.Item2 + ") to (" + end.pos.Item1 + "," + end.pos.Item2 + ") : path " + count + "/" + nbNode * nbNode);
-                if (count % 100 == 0) print("| Manageur | Path " + count + "/" + totalPath);
                 count++;
+                if (count % 1000 == 0)
+                {
+                    print("| Manageur | Path " + count + "/" + totalPath);
+                    yield return null;
+                }
                 shortestPathData.Add((start, end), aStar.GetShortestPathAstar(start, end, graph));
 
             }
         }
         print("| Manageur | Path " + count + "/" + totalPath);
         EventManager.current.SendShortestPathData(shortestPathData);
-        print("| Manageur | ShortestPaths initialisés.");
+        Save(shortestPathData, path);
+        print("| Manageur | A total of " + count + " paths have been created and saved.");
+    }
+
+    void Save(Dictionary<(Node, Node), List<Node>> data, string path)
+    {
+        List<string> dataToSave = new List<string>();
+        path += "data_" + getFileCount(path) / 2 + ".txt";
+
+        // Insert hash to first
+        dataToSave.Insert(0, getHashGraph());
+
+        // Insert all data
+        foreach ((Node, Node) couple in data.Keys)
+        {
+            // Saving (Node,Node) as '(X1,Y1)|(X2,Y2);'
+            string lineToSave = couple.Item1.pos.Item1 + "," + couple.Item1.pos.Item2 + "|" + couple.Item2.pos.Item1 + "," + couple.Item2.pos.Item2 + "|";
+
+            // Saving list corresponding to (Node,Node)
+            lineToSave += ToString(data[couple]);
+            dataToSave.Add(lineToSave);
+        }
+        File.WriteAllLines(path, dataToSave);
         isGenerated = true;
+    }
+
+    int getFileCount(string path)
+    {
+        var directory = new DirectoryInfo(path);
+        List<FileInfo> files = directory.GetFiles().ToList<FileInfo>();
+        return files.Count;
+    }
+
+    string ToString(List<Node> data)
+    {
+        string temp = "";
+        foreach (Node node in data)
+        {
+            temp += node.pos.Item1 + "," + node.pos.Item2 + ";";
+        }
+        return temp;
     }
 
     void CheckGraphLeveling()
     {
-
         int priority = -1;
         foreach (Node node in graph.nodes.Values)
         {
-            if (managerTool[node] == false || (managerTool[node] == true && nodePriority[node] < maxPriority))
+            if (managerTool[node] == false || (managerTool[node] == true && nodePriority[node] < maxPriority) || node.timeSinceLastVisit > threshold)
             {
                 float x = node.timeSinceLastVisit;
                 // 0% <= x < 15%
@@ -165,26 +318,23 @@ public class AgentManageur : MonoBehaviour
                 // Updating new priority
                 nodePriority[node] = priority;
 
+                //print("Le node (" + node.pos.Item1 + "," + node.pos.Item2 + ") à oisiveté = " + node.timeSinceLastVisit + " et donc une priorité de " + priority);
+
+
                 if (priority > 1)
                 {
                     // Si le node est en cours de visite mais que sa priorité doit être revu à la hausse, on le fait quand même passé dans l'évent pour prévenir le gestionnaire.
                     if (managerTool[node] == true)
                     {
-                        if (nodePriority[node] < priority)
+                        if (nodePriority[node] <= priority)
                         {
-                            //if (hasNeighbourWithBetterPriorityAlreadySpotted(node, priority) == false)
-                            //{
                             EventManager.current.HasToBeVisited(node);
-                            //}
                         }
                     }
                     else
                     {
-                        //if (hasNeighbourWithBetterPriorityAlreadySpotted(node, priority) == false)
-                        //{
                         OnSetNodeToTrue(node);
                         EventManager.current.HasToBeVisited(node);
-                        //}
                     }
 
                 }
@@ -202,9 +352,12 @@ public class AgentManageur : MonoBehaviour
         // Pour chaque voisin du node, on vérifie qu'il n'existe pas un voisin déjà prévu d'être visité avec un niveau de priorité similaire ou supérieur au node à check.
         foreach (Edge edge in node.neighs)
         {
-            if (priority <= nodePriority[edge.to])
+            if (Vector3.Distance(node.realPos, edge.to.realPos) <= Mathf.Sqrt(2))
             {
-                return true;
+                if (priority <= nodePriority[edge.to])
+                {
+                    return true;
+                }
             }
         }
         return false;
@@ -216,7 +369,10 @@ public class AgentManageur : MonoBehaviour
         managerTool[node] = true;
         foreach (Edge edge in node.neighs)
         {
-            managerTool[edge.to] = true;
+            if (Vector3.Distance(node.realPos, edge.to.realPos) <= Mathf.Sqrt(2))
+            {
+                managerTool[edge.to] = true;
+            }
         }
     }
 
@@ -226,7 +382,10 @@ public class AgentManageur : MonoBehaviour
         managerTool[node] = false;
         foreach (Edge edge in node.neighs)
         {
-            managerTool[edge.to] = false;
+            if (Vector3.Distance(node.realPos, edge.to.realPos) <= Mathf.Sqrt(2))
+            {
+                managerTool[edge.to] = false;
+            }
         }
     }
 
@@ -240,6 +399,13 @@ public class AgentManageur : MonoBehaviour
     void OnSettingNodePriorityToOne(Node node)
     {
         nodePriority[node] = 1;
+        foreach (Edge edge in node.neighs)
+        {
+            if (Vector3.Distance(node.realPos, edge.to.realPos) <= Mathf.Sqrt(2))
+            {
+                nodePriority[edge.to] = 1;
+            }
+        }
     }
 
 }

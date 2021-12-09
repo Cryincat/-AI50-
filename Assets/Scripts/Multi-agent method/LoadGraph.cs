@@ -14,24 +14,25 @@ public class LoadGraph : MonoBehaviour
     public GameObject prefabEdge;
     public bool isGenerated = false;
     public Graph graph;
-    public GameObject parent;
+    private GameObject parent;
+    public string textFileName = "";
     private Dictionary<Node, NodeComponent> nodeComponentDict;
 
 
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
+        yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+        parent = GameObject.FindGameObjectWithTag("Sols");
         nodeComponentDict = new Dictionary<Node, NodeComponent>();
         string path = Directory.GetCurrentDirectory() + "/Assets/Data/";
-        string textFileName = "graph_1.txt";
+
         path = path + textFileName;
 
         graph = createGraph(path);
         spawnMap(graph, parent);
+        setupCamera();
 
-        print(graph);
-
-        print("| LoadGraph | Génération des variables terminée.");
         isGenerated = true;
     }
 
@@ -67,6 +68,60 @@ public class LoadGraph : MonoBehaviour
         }
     }
 
+    void setupCamera()
+    {
+        Camera camera = FindObjectOfType<Camera>();
+        Vector3 posNW = getNorthWesternNodePos(graph);
+        Vector3 posSE = getSouthEsternNodePos(graph);
+        Vector3 cameraPosition = Vector3.Lerp(posNW, posSE, 0.5f);
+        float heigh = Vector3.Distance(posNW, posSE);
+        cameraPosition.y = (float) (heigh + (heigh * 0.05));
+        camera.transform.position = cameraPosition;
+    }
+
+    Vector3 getNorthWesternNodePos(Graph graph)
+    {
+        Vector3 actualBestPos = graph.nodes.First().Value.realPos;
+        float actualDist = Vector3.Distance(actualBestPos, Vector3.zero);
+        float xPos = graph.nodes.First().Value.pos.Item1;
+        float yPos = graph.nodes.First().Value.pos.Item2;
+
+        foreach (Node node in graph.nodes.Values)
+        {
+            float xNodePos = node.pos.Item1;
+            float yNodePos = node.pos.Item2;
+            if (Vector3.Distance(node.realPos,Vector3.zero) > actualDist && xNodePos <= xPos && yNodePos >= yPos)
+            {
+                actualBestPos = node.realPos;
+                xPos = xNodePos;
+                yPos = yNodePos;
+                actualDist = Vector3.Distance(Vector3.zero, node.realPos);
+            }
+        }
+        return actualBestPos;
+    }
+
+    Vector3 getSouthEsternNodePos(Graph graph)
+    {
+        Vector3 actualBestPos = graph.nodes.First().Value.realPos;
+        float actualDist = Vector3.Distance(actualBestPos, Vector3.zero);
+        float xPos = graph.nodes.First().Value.pos.Item1;
+        float yPos = graph.nodes.First().Value.pos.Item2;
+
+        foreach (Node node in graph.nodes.Values)
+        {
+            float xNodePos = node.pos.Item1;
+            float yNodePos = node.pos.Item2;
+            if (Vector3.Distance(node.realPos, Vector3.zero) > actualDist && xNodePos >= xPos && yNodePos <= yPos)
+            {
+                actualBestPos = node.realPos;
+                xPos = xNodePos;
+                yPos = yNodePos;
+                actualDist = Vector3.Distance(Vector3.zero, node.realPos);
+            }
+        }
+        return actualBestPos;
+    }
 
     public void print (Graph graph)
     {
@@ -82,7 +137,7 @@ public class LoadGraph : MonoBehaviour
 
     void spawnMap(Graph graph, GameObject parent)
     {
-        print("| LoadGraph | Generating world...");
+        print("| LoadGraph | Spawning map...");
         foreach (Node node in graph.nodes.Values)
         {
             
@@ -94,33 +149,34 @@ public class LoadGraph : MonoBehaviour
         // Spawn l'edge visuellement
         foreach (Edge edge in graph.edges)
         {
-            spawnEdgeOnMap(edge.from.realPos, edge.to.realPos);
+            spawnEdgeOnMap2(edge.from.realPos, edge.to.realPos);
         }
-        print("| LoadGraph | Wolrd ready.");
+        print("| LoadGraph | Map ready.");
     }
 
-    void spawnEdgeOnMap(Vector3 from, Vector3 to)
+    void spawnEdgeOnMap2 (Vector3 from, Vector3 to)
     {
-        float pas = 0.02f;
-        float dist = Vector3.Distance(from, to);
-        float decount = dist;
-        while(decount > 0)
-        {
-            Vector3 position = Vector3.MoveTowards(from, to, decount);
-            GameObject gameObject = Instantiate(prefabEdge, position, Quaternion.identity, parent.transform);
-            gameObject.GetComponent<Renderer>().material.color = Color.white;
-            decount -= pas;
-        }
+        float edgeSize = Vector3.Distance(from, to);
+        Vector3 middlePoint = Vector3.Lerp(from, to, 0.5f);
+        Vector3 baseRepere = new Vector3(1,0,0);
+        Quaternion edgeRotation = Quaternion.FromToRotation(baseRepere, (to - from));
+     
+        GameObject newEdge = Instantiate(prefabEdge, middlePoint, edgeRotation, parent.transform);
+        //newEdge.GetComponent<Renderer>().material.SetColor("edgeColor", Color.green);
+        // Changement de la taille de l'edge
+        Vector3 newScale = new Vector3(edgeSize, newEdge.transform.localScale.y, newEdge.transform.localScale.z);
+        newEdge.transform.localScale = newScale;
+        
     }
 
     private Graph createGraph(string path)
     {
-        print("| LoadGraph | Creating graph from file...");
+        print("| LoadGraph | Generating graph from file...");
         List<string> lines = File.ReadAllLines(path).ToList<string>();
         Graph graph = new Graph();
         graph.edges = new List<Edge>();
 
-        createNode(graph, lines[0]);
+        createNodes(graph, lines[0]);
         lines.RemoveAt(0);
         foreach(string line in lines)
         {
@@ -132,7 +188,6 @@ public class LoadGraph : MonoBehaviour
             int x = int.Parse(nodeInStringSplitted[0]);
             int y = int.Parse(nodeInStringSplitted[1]);
             Node from = graph.nodes[(x, y)];
-
             // génération et attachements des edges
             foreach(string edgeInString in edgesInStringSplitted)
             {
@@ -146,12 +201,13 @@ public class LoadGraph : MonoBehaviour
                 graph.edges.Add(edgeToAdd);
             }
         }
+        print("| LoadGraph | Graph fully generated.");
         return graph;
     }
 
 
 
-    private void createNode(Graph graph, string line)
+    private void createNodes(Graph graph, string line)
     {
         Dictionary<(int, int), Node> nodes = new Dictionary<(int, int), Node>();
         graph.nodes = nodes;

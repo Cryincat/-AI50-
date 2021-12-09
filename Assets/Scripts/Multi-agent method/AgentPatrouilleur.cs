@@ -10,11 +10,12 @@ public class AgentPatrouilleur : MonoBehaviour
 {
     public bool isGenerated = false;
     public float speed = 1f;
+    public Node startPoint;
+
 
     private Vector3 oldPos;
 
     private LoadGraph loadGraph;
-    private GraphGenerator graphGenerator;
     private AgentManageur agentManageur;
     private AgentGestionnaire agentGestionnaire;
 
@@ -32,7 +33,6 @@ public class AgentPatrouilleur : MonoBehaviour
     private bool isRandomDestination = false;
     private bool clear = false;
 
-    private GameObject capsule;
     private Renderer capsuleRenderer;
 
     private Color patrollingColor1;
@@ -41,13 +41,17 @@ public class AgentPatrouilleur : MonoBehaviour
 
     public IEnumerator Start()
     {
+        
+
         // Liaison entre les évenements et leurs méthodes
         EventManager.current.onNodeTaggedVisited += OnNodeVisited;
         EventManager.current.onUpdateNodeAssignation += OnUpdateNodeAssignation;
         EventManager.current.onSendShortestPathData += OnSendShortestPathData;
 
+        //Set position of agent
+        transform.position = startPoint.realPos;
+
         // Récupération des instance d'autres scripts
-        graphGenerator = FindObjectOfType<GraphGenerator>();
         agentManageur = FindObjectOfType<AgentManageur>();
         agentGestionnaire = FindObjectOfType<AgentGestionnaire>();
         capsuleRenderer = GetComponentInChildren<Renderer>();
@@ -66,20 +70,17 @@ public class AgentPatrouilleur : MonoBehaviour
         patrollingColor2 = new Color(1f, 0.2f, 0.5f); // Red
         patrollingColor3 = new Color(0.2f, 0.5f, 1f); // Blue
 
-        // Attente que le graphGenerator s'initialise, puis l'agent manageur et enfin l'agent gestionnaire.
-        yield return new WaitUntil(() => graphGenerator.isGenerated);
-        //yield return new WaitUntil(() => loadGraph.isGenerated);
+        // Attente que le graph s'initialise, puis l'agent manageur et enfin l'agent gestionnaire.
+        yield return new WaitUntil(() => loadGraph.isGenerated);
+        graph = loadGraph.graph;
+        
         yield return new WaitUntil(() => agentManageur.isGenerated);
         yield return new WaitUntil(() => agentGestionnaire.isGenerated);
 
-        graph = graphGenerator.graph;
-        //graph = loadGraph.graph;
+        
+        
 
-        //Set position of agent
-        System.Random random = new System.Random();
-        int randomNode = random.Next(0,graph.nodes.Count-1);
-        Node startPoint = graph.nodes.Values.ToList<Node>()[randomNode];
-        transform.position = startPoint.realPos;
+        
 
 
 
@@ -89,6 +90,7 @@ public class AgentPatrouilleur : MonoBehaviour
 
         oldPos = transform.position;
         isGenerated = true;
+        FindObjectOfType<TimeManager>().delta = 1;
     }
 
     private void Update()
@@ -179,11 +181,12 @@ public class AgentPatrouilleur : MonoBehaviour
             if (Vector3.Distance(moveToward, destination.realPosFromagentHeights) < 0.01)
             {
                 EventManager.current.RemoveNodeFromNodeAssignation(node);
+                EventManager.current.SettingNodeToFalse(node);
                 EventManager.current.NodeTaggedVisited(node);
                 node.agentPresence = false;
                 node = destination;
                 node.WarnAgentVisit();
-                EventManager.current.SettingNodeToFalse(node);
+                
                 destination = null;
                 if (isRandomDestination == true)
                 {
@@ -208,7 +211,7 @@ public class AgentPatrouilleur : MonoBehaviour
         Node temp = null;
         if (destination == null)
         {
-            var choice = 0;
+            var choice = 3;
             System.Random random = new System.Random();
 
             switch (choice)
@@ -224,12 +227,31 @@ public class AgentPatrouilleur : MonoBehaviour
                     EventManager.current.SettingNodeToTrue(temp);
                     break;
                 case 2:
-                    temp = (node.neighs.OrderByDescending(x => x.to.neighs.Max(y => y.to.timeSinceLastVisit))).First().to;
+                    temp = (node.neighs.OrderByDescending(x => x.to.neighs.Max(y => y.to.timeSinceLastVisit))).Last().to;
+                    destination = temp;
+                    EventManager.current.SettingNodeToTrue(temp);
+                    break;
+                case 3:
+                    temp = getBestNeighbour(node);
                     destination = temp;
                     EventManager.current.SettingNodeToTrue(temp);
                     break;
             }
         }
+    }
+
+    Node getBestNeighbour (Node node)
+    {
+        if (node.neighs.Count == 0) throw new Exception("Un des noeuds " + node.pos + " n'a aucun voisin, alors que ce n'est pas possible.");
+        Node bestNode = node.neighs[0].to;
+        foreach(Edge edge in node.neighs)
+        {
+            if (bestNode.timeSinceLastVisit < edge.to.timeSinceLastVisit)
+            {
+                bestNode = edge.to;
+            }
+        }
+        return bestNode;
     }
 
     // Méthode permettant de récupérer le meilleur node à visiter au plus vite par l'agent. Crée une liste de tous les nodes de priorité
@@ -248,43 +270,71 @@ public class AgentPatrouilleur : MonoBehaviour
         {
             if (nodeAssignated[node] > priority)
             {
+                //print("| " + ToString() + " | Une meilleure priorité a été trouvée sur (" + node.pos.Item1 + "," + node.pos.Item2 + ") avec oisiveté = " + node.timeSinceLastVisit + " . Priorité = " + nodeAssignated[node] + "par rapport à " + priority + ".");
                 priority = nodeAssignated[node];
                 listForCheck.Clear();
                 listForCheck.Add(node);
             }
-            else if (priority == nodeAssignated[node])
+            if (priority == nodeAssignated[node])
             {
-                listForCheck.Add(node);
+                if (!listForCheck.Contains(node))
+                {
+                    //print("| " + ToString() + " | Un nouveau noeud de priorité équivalente à été trouvé : (" + node.pos.Item1 + "," + node.pos.Item2 + ") avec oisiveté = " + node.timeSinceLastVisit + ".");
+                    listForCheck.Add(node);
+                }
+                
             }
         }
-        
+
+        //print("| " + ToString() + " | Je dois vérifier tous ces noeuds.");
+        //foreach (Node node in listForCheck)
+        //{
+            //print("| " + ToString() + " | node : (" + node.pos.Item1 + "," + node.pos.Item2 + ").");
+        //}
         Node bestNode = null;
         float dist = Mathf.Infinity;
 
         foreach (Node node in listForCheck)
         {
-            float nbNodeInPath = 999;
+            float sumOfDistance = 0;
             if (shortestPathData.ContainsKey((GetNode(), node)))
             {
-                nbNodeInPath = shortestPathData[(GetNode(), node)].Count;
+                sumOfDistance = getSumDistanceOfPath(shortestPathData[(GetNode(), node)]);
             }
             else
             {
                 throw new Exception("The path from node (" + GetNode().pos.Item1 + "," + GetNode().pos.Item2 + ") to node (" + node.pos.Item1 + "," + node.pos.Item2 + ") doesn't exist.");
             }
 
-            if (dist > nbNodeInPath)
+            if (dist > sumOfDistance)
             {
                 
                 bestNode = node;
-                dist = nbNodeInPath;
-            }
-            if (nbNodeInPath <= 0)
-            {
-                throw new Exception("Probleme dans le CheckForNodes d'un patrouilleur.");
+                dist = sumOfDistance;
             }
         }
         return bestNode;
+    }
+
+    float getSumDistanceOfPath(List<Node> nodes)
+    {
+        float sum = 0;
+
+        if (nodes.Count == 0 || nodes.Count == 1)
+        {
+            return 0;
+        }
+        if (nodes.Count == 2)
+        {
+            return Vector3.Distance(nodes[0].realPos, nodes[1].realPos);
+        }
+
+        for(int i = 0; i <= nodes.Count - 2; i++)
+        {
+            sum += Vector3.Distance(nodes[i].realPos, nodes[i + 1].realPos);
+        }
+
+        return sum;
     }
 
     // Méthode lié à l'évenement d'update de nodeAssignation. Clear la liste existante et récupère les nodes présent dans la nouvelle qui lui sont assignés..
@@ -325,9 +375,7 @@ public class AgentPatrouilleur : MonoBehaviour
     // Méthode de récupération des paths liant chaque node à chaque node dans le graphe.
     void OnSendShortestPathData(Dictionary<(Node, Node), List<Node>> _shortestPathData)
     {
-        foreach ((Node, Node) couple in _shortestPathData.Keys)
-        {
-            shortestPathData.Add(couple, _shortestPathData[couple]);
-        }
+        shortestPathData = _shortestPathData;
+
     }
 }
