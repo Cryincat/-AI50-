@@ -1,2 +1,2 @@
-model_checkpoint_path: "ev2-weights-500k.h5f"
-all_model_checkpoint_paths: "ev2-weights-500k.h5f"
+model_checkpoint_path: "ev2-Grid5v3(corridor)-600k.h5f"
+all_model_checkpoint_paths: "ev2-Grid5v3(corridor)-600k.h5f"

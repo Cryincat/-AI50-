@@ -9,7 +9,8 @@ import numpy as np
 import gym
 from gym import spaces
 from ..lib.environnement import Environnement
-    
+import random
+
 class PatrollingProblemEnv(gym.Env):
   """Custom Environment that follows gym interface"""
   metadata = {'render.modes': ['human']}
@@ -20,8 +21,14 @@ class PatrollingProblemEnv(gym.Env):
     # Example when using discrete actions:
     self.environnement = environnement
     self.environnement_memory = Environnement(environnement.nodes)
-    self.posAgent = posAgent
-    self.posAgent_memory = posAgent
+    
+    if(not(posAgent==None)):
+        self.posAgent = posAgent
+        self.posAgent_memory = posAgent
+    else:
+        self.posAgent_memory = None
+        self.posAgent = random.choice(self.environnement.nodes)
+        
     self.nbiter_per_episode = nbiter_per_episode
 
     self.listTimes = [self.environnement.nodesTimes.copy()]
@@ -41,6 +48,9 @@ class PatrollingProblemEnv(gym.Env):
        self.posAgent = self.environnement.Transition(self.posAgent, Environnement.actions[action])
        observation = self.environnement.Flatten(self.posAgent)
        self.reward = - np.mean(list(self.environnement.nodesTimes.values()))#1.0 / max(0.1,np.mean(list(self.environnement.nodesTimes.values())))
+       
+       #if(abs(action[0])+abs(action[1]) == 2) : self.reward -= 0.5
+       
        #if(self.reward == 0) : self.reward = 1
        done = self.environnement.nbiter > self.nbiter_per_episode
        info = self.environnement.nodesTimes.copy()
@@ -51,6 +61,8 @@ class PatrollingProblemEnv(gym.Env):
      # Reset the state of the environment to an initial state
      self.environnement = Environnement(self.environnement_memory.nodes)
      self.posAgent = self.posAgent_memory
+     if(self.posAgent==None):
+         self.posAgent = random.choice(self.environnement.nodes)
      observation = self.environnement.Flatten(self.posAgent)
      return observation
 

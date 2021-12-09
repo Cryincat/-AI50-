@@ -36,6 +36,15 @@ public class Graph
         }
         return save;
     }
+    public string SaveAsStringWithTimes()
+    {
+        string save = "";
+        foreach (var n in nodes.Values)
+        {
+            save += (n.pos,Mathf.FloorToInt(n.timeSinceLastVisit)) + "\n";
+        }
+        return save;
+    }
 
     internal void LoadFromString(string v)
     {

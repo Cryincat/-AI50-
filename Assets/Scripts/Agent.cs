@@ -8,6 +8,7 @@ using System.Linq;
 
 public class Agent : MonoBehaviour
 {
+    public bool thinking;
     public float speed = 1;
     protected Vector3 oldPos;
     GraphGenerator graphGenerator;
@@ -15,7 +16,7 @@ public class Agent : MonoBehaviour
     [NonSerialized] protected Node destination;
     bool isGenerated;
 
-    public IEnumerator Start()
+    public virtual IEnumerator Start()
     {
         graphGenerator = FindObjectOfType<GraphGenerator>();
         destination = null;
@@ -31,15 +32,24 @@ public class Agent : MonoBehaviour
             var t = MDP.Transition(new MDP.State(graphGenerator.graph, node.pos), action);
         }
     }
-    private void Update()
+    virtual protected void Update()
     {
-        if(node != null && isGenerated)
+        if (destination != null && destination.realPos != null)
         {
-            FindDestination();
+            Debug.Log(destination.pos);
+        }
+        if (destination != null)
+        {
             GoToDestination();
         }
+        else if (node != null && isGenerated && !thinking)
+        {
+            thinking = true;
+            StartCoroutine(FindDestination());
+        }
+
     }
-    protected void FindDestination()
+    virtual protected IEnumerator FindDestination()
     {
         //TEST
         if (destination == null)
@@ -59,6 +69,7 @@ public class Agent : MonoBehaviour
                     break;
             }
         }
+        yield return null;
     }
     private void GoToDestination()
     {
@@ -84,8 +95,10 @@ public class Agent : MonoBehaviour
                 node = destination;
                 node.WarnAgentVisit();
                 destination = null;
-                FindDestination();
-                GoToDestination(movementLeft);
+                Debug.Log("Dest" + destination == null);
+                //thinking = false;
+                //StartCoroutine(FindDestination());
+                //GoToDestination(movementLeft);
             }
         }
     }
