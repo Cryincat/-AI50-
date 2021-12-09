@@ -17,9 +17,19 @@ public class LoadMethod : MonoBehaviour
     public GameObject prefabLoadGraph;
 
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
+        yield return new WaitUntil(() => FindObjectOfType<load>().isGenerated);
+        GetData();
         LaunchMAM();
+    }
+
+    void GetData()
+    {
+        LevelLoader levelLoader = FindObjectOfType<LevelLoader>();
+        nbAgent = (int) levelLoader.dataScene[1];
+        graphFile = levelLoader.dataScene[2] as string;
+        nbIterationBeforeStop = (int)levelLoader.dataScene[3];
     }
 
     void LaunchMAM()

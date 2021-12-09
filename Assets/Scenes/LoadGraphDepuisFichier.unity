@@ -123,6 +123,27 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &859853961 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1160337730520915039, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+  m_PrefabInstance: {fileID: 1160337731970140562}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &859853968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 859853961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea1889825a2666345ac223e723e9235e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabSol: {fileID: 7936965496669389415, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
+  prefabEdge: {fileID: 3523197888291084895, guid: fdc55648484ca0247b7a2979efdbdeff, type: 3}
+  isGenerated: 0
+  textFileName: graph_7.txt
 --- !u!1 &1425029125
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,7 +342,7 @@ PrefabInstance:
       objectReference: {fileID: 2007058377}
     - target: {fileID: 1160337730520915008, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: nbAgent
-      value: 10
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915008, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: repeatRate
@@ -338,6 +359,10 @@ PrefabInstance:
     - target: {fileID: 1160337730520915010, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: speed
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1160337730520915011, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+      propertyPath: graphName
+      value: graph_6.txt
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915011, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: nbIterationBeforeStop

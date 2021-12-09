@@ -18,6 +18,7 @@ public class DataManager : MonoBehaviour
     public float mediumIdleness = -1;
     public float maxIdlenessRealTime = -1;
     public float mediumIdlenessRealTime = -1;
+    public string typeOfMethod = "MAM";
 
     private float nbNodes;
     private Dictionary<int, float> dataRealTime;
@@ -25,14 +26,14 @@ public class DataManager : MonoBehaviour
 
     public float simulationTime = 0;
     public int count = 0;
-    public int nbIterationBeforeStop = 0;
+    public int nbIterationBeforeStop = 500;
 
     // Start is called before the first frame update
     IEnumerator Start()
     {
 
         dataRealTime = new Dictionary<int, float>();
-
+        //nbIterationBeforeStop = FindObjectOfType<LoadMethod>().nbIterationBeforeStop;
         loadGraph = FindObjectOfType<LoadGraph>();
         yield return new WaitUntil(() => loadGraph.isGenerated);
         graph = loadGraph.graph;
@@ -83,14 +84,14 @@ public class DataManager : MonoBehaviour
         {
             print("Cela fait " + nbIterationBeforeStop + " que la mediumIdleness = " + mediumIdleness + " n'a pas augmenté.");
             FindObjectOfType<TimeManager>().delta = 0;
-            SaveSimulationData(methodName, 10, graphName, dataRealTime);
+            SaveSimulationData(methodName, 10, graphName, dataRealTime, typeOfMethod);
         }
         
 
         EventManager.current.UpdateNewMaxIdleness(maxIdleness);
     }
 
-    void SaveSimulationData(string methodName, int nbAgent, string graphName, Dictionary<int,float> dataRealTime)
+    void SaveSimulationData(string methodName, int nbAgent, string graphName, Dictionary<int,float> dataRealTime, string typeOfMethod)
     {
         string path = pathForSave;
         string actualDate = DateTime.Now.ToString();
@@ -102,6 +103,7 @@ public class DataManager : MonoBehaviour
 
         dataToSave.Add("Simulation date : " + actualDate);
         dataToSave.Add("");
+        dataToSave.Add("Method used : " + typeOfMethod);
         dataToSave.Add("Graph used : " + graphName);
         dataToSave.Add("Agent number : " + nbAgent);
         dataToSave.Add("Simulation time : " + simulationTime);

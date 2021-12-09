@@ -18,6 +18,37 @@ public class GraphGenerator : MonoBehaviour
     void Start()
     {
         Generate();
+        save();
+    }
+
+    void save()
+    {
+        string path = Directory.GetCurrentDirectory() + "/Assets/Data/graphNew.txt";
+        List<string> data = new List<string>();
+        data.Add("");
+        foreach(Node node in graph.nodes.Values)
+        {
+            if (node != graph.nodes.Values.Last())
+                data[0] += node.pos.Item1 + "," + node.pos.Item2 + ";";
+            else
+                data[0] += node.pos.Item1 + "," + node.pos.Item2;
+
+        }
+        foreach(Node node in graph.nodes.Values)
+        {
+            string dataToAdd = "";
+            dataToAdd = node.pos.Item1 + "," + node.pos.Item2 + ";";
+            foreach(Edge edge in node.neighs)
+            {
+                if (edge != node.neighs.Last())
+                    dataToAdd += edge.to.pos.Item1 + "," + edge.to.pos.Item2 + ":";
+                else
+                    dataToAdd += edge.to.pos.Item1 + "," + edge.to.pos.Item2;
+
+            }
+            data.Add(dataToAdd);
+        }
+        File.WriteAllLines(path, data);
     }
 
     private void Generate()

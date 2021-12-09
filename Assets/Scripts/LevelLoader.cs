@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,14 +14,14 @@ public class LevelLoader : MonoBehaviour
     public TMP_InputField nbAgent;
     public TMP_InputField fileMap;
     public ToggleGroup numImage;
-    static ArrayList dataScene;
+    public List<object> dataScene;
 
     private float tmpNbAgent;
-    private string map1 = "path1";
-    private string map2 = "path2";
-    private string map3 = "path3";
-    private string map4 = "path4";
-    private string map5 = "path5";
+    private string map1 = "graph_1.txt";
+    private string map2 = "graph_2.txt";
+    private string map3 = "graph_3.txt";
+    private string map4 = "graph_4.txt";
+    private string map5 = "graph_5.txt";
     private string map6 = "path6";
     private ArrayList maps;
 
@@ -34,6 +35,7 @@ public class LevelLoader : MonoBehaviour
         maps.Add(map5);
         maps.Add(map6);
         dataScene = getData();
+        DontDestroyOnLoad(gameObject);
         StartCoroutine(LoadAsynchronously(scene));
     }
 
@@ -51,12 +53,12 @@ public class LevelLoader : MonoBehaviour
         }
     }
 
-    ArrayList getData()
+    List<object> getData()
     {
-        ArrayList tmpListData = new ArrayList();
+        List<object> tmpListData = new List<object>();
+
         // Get selected algorithm
         int numAlgo = 0;
-        Debug.Log(algos.GetComponentsInChildren<Toggle>());
         for(int i = 0; i < 3; i++)
         {
             if (algos.GetComponentsInChildren<Toggle>()[i].isOn)
@@ -67,6 +69,7 @@ public class LevelLoader : MonoBehaviour
         // Get number of agents
         int nbAgents = 1;
         nbAgents = int.Parse(nbAgent.text);
+
         // Get file's path of the map
         string filePath;
         filePath = fileMap.textComponent.text;
@@ -80,10 +83,12 @@ public class LevelLoader : MonoBehaviour
                 }
             }
         }
+
         // Add data in the list
         tmpListData.Add(numAlgo);
         tmpListData.Add(nbAgents);
         tmpListData.Add(filePath);
+        tmpListData.Add(500);
         return tmpListData;
     }
 

@@ -22,7 +22,7 @@ public class LoadGraph : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+        //yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
         parent = GameObject.FindGameObjectWithTag("Sols");
         nodeComponentDict = new Dictionary<Node, NodeComponent>();
         string path = Directory.GetCurrentDirectory() + "/Assets/Data/";
@@ -34,6 +34,7 @@ public class LoadGraph : MonoBehaviour
         setupCamera();
 
         isGenerated = true;
+        yield return null;
     }
 
     void Update()
