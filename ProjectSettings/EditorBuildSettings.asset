@@ -12,8 +12,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Parameters.unity
     guid: c9497f35e37bc2f4c9aa82420fda5fd5
   - enabled: 1
-    path: Assets/Scenes/Gillian.unity
-    guid: b91f44f69dec6704aba5f66337c2950d
+    path: Assets/Scenes/ParamQLearning.unity
+    guid: 399bfdf090faf5b4d91bac511889dbfd
+  - enabled: 1
+    path: Assets/Scenes/Simulation.unity
+    guid: 20667040dce268941914b4b69f10547f
   - enabled: 1
     path: Assets/Scenes/Data.unity
     guid: 4e20c4ec826acf14a8e79df9f8c3d7ce

@@ -19,8 +19,6 @@ public class Launcher : MonoBehaviour
         {
             MapSelection.GetComponent<ToggleGroup>().SetAllTogglesOff();
             fieldMap.textComponent.SetText(fileToLoad);
-
-            //SceneManager.LoadScene("Load");
         } 
         else
         {
