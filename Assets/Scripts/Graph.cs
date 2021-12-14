@@ -89,11 +89,15 @@ public class Edge
     public Node from;
     public Node to;
     public float cost;
+    public double pheromone;
+    public List<Node> realPath;
 
     public Edge(Node from, Node to, float cost)
     {
         this.from = from;
         this.to = to;
         this.cost = cost;
+        this.pheromone = 0;
+        this.realPath = new List<Node>();
     }
 }
