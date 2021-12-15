@@ -1,2 +1,2 @@
-model_checkpoint_path: "3piecesCouloirV2.h5f"
-all_model_checkpoint_paths: "3piecesCouloirV2.h5f"
+model_checkpoint_path: "graph_10"
+all_model_checkpoint_paths: "graph_10"

@@ -11,25 +11,27 @@ public class Agent : MonoBehaviour
     public bool thinking;
     public float speed = 1;
     protected Vector3 oldPos;
-    GraphGenerator graphGenerator;
+    LoadGraph loadGraph;
     [NonSerialized] protected Node node;
     [NonSerialized] protected Node destination;
     bool isGenerated;
 
     public virtual IEnumerator Start()
     {
-        graphGenerator = FindObjectOfType<GraphGenerator>();
+        if(node != null) transform.position = node.realPosFromAgentHeights;
+        loadGraph = FindObjectOfType<LoadGraph>();
         destination = null;
-        while (!graphGenerator.isGenerated)
+        while (!loadGraph.isGenerated)
             yield return null;
-        node = graphGenerator.graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
+        node = loadGraph.graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
+        transform.position = node.realPosFromAgentHeights;
         node.WarnAgentVisit();
         oldPos = transform.position;
         isGenerated = true;
 
         foreach (MDP.Action action in Enum.GetValues(typeof(MDP.Action)))
         {
-            var t = MDP.Transition(new MDP.State(graphGenerator.graph, node.pos), action);
+            var t = MDP.Transition(new MDP.State(loadGraph.graph, node.pos), action);
         }
     }
     virtual protected void Update()
@@ -86,10 +88,10 @@ public class Agent : MonoBehaviour
     {
         if (destination != null)
         {
-            Vector3 moveToward = Vector3.MoveTowards(transform.position, destination.realPosFromagentHeights, movementLeft);
+            Vector3 moveToward = Vector3.MoveTowards(transform.position, destination.realPosFromAgentHeights, movementLeft);
             movementLeft -= Vector3.Distance(transform.position, moveToward);
             transform.position = moveToward;
-            if (Vector3.Distance(moveToward, destination.realPosFromagentHeights) < 0.01)
+            if (Vector3.Distance(moveToward, destination.realPosFromAgentHeights) < 0.01)
             {
                 node.agentPresence = false;
                 node = destination;

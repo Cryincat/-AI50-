@@ -143,7 +143,7 @@ MonoBehaviour:
   prefabSol: {fileID: 7936965496669389415, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
   prefabEdge: {fileID: 3523197888291084895, guid: fdc55648484ca0247b7a2979efdbdeff, type: 3}
   isGenerated: 0
-  textFileName: graph_7.txt
+  textFileName: graph_8.txt
 --- !u!1 &1425029125
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,7 +342,7 @@ PrefabInstance:
       objectReference: {fileID: 2007058377}
     - target: {fileID: 1160337730520915008, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: nbAgent
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915008, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: repeatRate
