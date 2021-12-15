@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 public class UdpSocket : MonoBehaviour
 {
-    List<AgentDQN> agentsDQN;
+    public List<AgentDQN> agentsDQN;
     [HideInInspector] public bool isTxStarted = false;
 
     [SerializeField] string IP = "127.0.0.1"; // local host
@@ -35,8 +35,7 @@ public class UdpSocket : MonoBehaviour
     UdpClient client;
     IPEndPoint remoteEndPoint;
     Thread receiveThread; // Receiving Thread
-
-    PythonTest pythonTest;
+    public bool isRunning;
 
 
     //IEnumerator SendDataCoroutine() // DELETE THIS: Added to show sending data from Unity to Python via UDP
@@ -78,7 +77,7 @@ public class UdpSocket : MonoBehaviour
 
         // Initialize (seen in comments window)
         print("UDP Comms Initialised");
-
+        isRunning = true;
         //StartCoroutine(SendDataCoroutine()); // DELETE THIS: Added to show sending data from Unity to Python via UDP
     }
 
@@ -111,6 +110,7 @@ public class UdpSocket : MonoBehaviour
     private void ProcessInput(string input)
     {
         //// PROCESS INPUT RECEIVED STRING HERE
+        print("Socket input is : " + input);
         var data = input.Split(';');
         agentsDQN.Where(a => a.agentId == data[0]).First().GiveAction(data[1]);
         //pythonTest.UpdatePythonRcvdText(input); // Update text by string received from python

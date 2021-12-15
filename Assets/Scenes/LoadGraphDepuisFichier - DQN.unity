@@ -128,6 +128,43 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1160337730520915039, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
   m_PrefabInstance: {fileID: 1160337731970140562}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &859853962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 859853961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52395b768bff51b47b52a369e1d969a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentsDQN: []
+  isTxStarted: 0
+  IP: 127.0.0.1
+  rxPort: 8000
+  txPort: 8001
+  isRunning: 0
+--- !u!114 &859853963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 859853961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0bc8ccad94f40546afa827ae9f409dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  learningFromScratch: 1
+  nbIter: 500000
+  fileWeights: C:\UTBM\INFO6\AI50\AI50\Assets\PythonFiles\PatrollingProblem\Weights\graph_10
+  nbAgent: 1
+  agentPrefab: {fileID: 2235436545955277492, guid: 88ae341033c0af54185720900b26b832, type: 3}
+  isGenerated: 0
+  areAgentGenerated: 0
 --- !u!114 &859853968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,7 +180,7 @@ MonoBehaviour:
   prefabSol: {fileID: 7936965496669389415, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
   prefabEdge: {fileID: 3523197888291084895, guid: fdc55648484ca0247b7a2979efdbdeff, type: 3}
   isGenerated: 0
-  textFileName: graph_8.txt
+  textFileName: graph_10.txt
 --- !u!1 &1425029125
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,12 +382,20 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915008, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1160337730520915008, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: repeatRate
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915009, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: delay
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1160337730520915009, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915009, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: repeatRate
@@ -360,13 +405,21 @@ PrefabInstance:
       propertyPath: speed
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 1160337730520915010, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915011, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: graphName
-      value: graph_6.txt
+      value: graph_10.txt
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915011, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: nbIterationBeforeStop
       value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 1160337730520915014, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915036, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: prefabSol

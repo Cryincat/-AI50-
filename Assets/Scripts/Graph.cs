@@ -58,7 +58,7 @@ public class Node
     public (int, int) pos;
     public List<Edge> neighs;
     public Vector3 realPos;
-    public Vector3 realPosFromagentHeights;
+    public Vector3 realPosFromAgentHeights;
     [SerializeField] public float timeSinceLastVisit;
     [SerializeField] public float StraightLineDistanceToEnd;
     [SerializeField] public bool Visited;
@@ -72,7 +72,7 @@ public class Node
         timeSinceLastVisit = 0f;
         neighs = new List<Edge>();
         realPos = new Vector3(pos.Item1, 0, pos.Item2);
-        realPosFromagentHeights = realPos + Vector3.up;
+        realPosFromAgentHeights = realPos + Vector3.up;
     }
     public Node(Node n) : this(n.pos)
     {

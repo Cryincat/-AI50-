@@ -6,7 +6,7 @@ using UnityEngine;
 public class AgentDQN : Agent
 {
     public string agentId;
-    GraphGenerator graphGenerator;
+    LoadGraph loadGraph;
     UdpSocket udpSocket;
     public (int, int)? action;
     System.Diagnostics.Stopwatch stopwatch;
@@ -14,12 +14,14 @@ public class AgentDQN : Agent
 
     public override IEnumerator Start()
     {
-        graphGenerator = FindObjectOfType<GraphGenerator>();
+        loadGraph = FindObjectOfType<LoadGraph>();
         meshRenderer = GetComponentInChildren<MeshRenderer>();
-        while (!graphGenerator.isGenerated) yield return null;
+        while (!loadGraph.isGenerated) yield return null;
 
         StartCoroutine(base.Start());
         udpSocket = FindObjectOfType<UdpSocket>();
+        if (!udpSocket.agentsDQN.Contains(this))
+            udpSocket.agentsDQN.Add(this);
 
         int i = 0;
         while (true)
@@ -50,7 +52,7 @@ public class AgentDQN : Agent
         {
             Debug.Log("FindDestination : thinking is " + thinking + " in pos "+ node.pos);
 
-            string message = transform.name + "\n" + node.pos + "\n" + graphGenerator.graph.SaveAsStringWithTimes();
+            string message = transform.name + "\n" + node.pos + "\n" + loadGraph.graph.SaveAsStringWithTimes();
             udpSocket.SendData(message);
             meshRenderer.material.color = Color.green;
             stopwatch = new System.Diagnostics.Stopwatch();
@@ -63,9 +65,9 @@ public class AgentDQN : Agent
 
             var pos = (node.pos.Item1 + action.Value.Item1, node.pos.Item2 + action.Value.Item2);
             Debug.Log("Destination is " + pos);
-            if (graphGenerator.graph.nodes.ContainsKey(pos))
+            if (loadGraph.graph.nodes.ContainsKey(pos))
             {
-                destination = graphGenerator.graph.nodes[pos];
+                destination = loadGraph.graph.nodes[pos];
             }
             //if (_catch) yield return new WaitForSeconds(1f / base.speed);
             //else 
