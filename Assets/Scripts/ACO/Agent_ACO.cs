@@ -171,10 +171,10 @@ public class Agent_ACO : MonoBehaviour
     {
         if (destination != null)
         {
-            Vector3 moveToward = Vector3.MoveTowards(transform.position, destination.realPosFromagentHeights, mouvement);
+            Vector3 moveToward = Vector3.MoveTowards(transform.position, destination.realPosFromAgentHeights, mouvement);
             mouvement -= Vector3.Distance(transform.position, moveToward);
             transform.position = moveToward;
-            if (Vector3.Distance(moveToward, destination.realPosFromagentHeights) < 0.01)
+            if (Vector3.Distance(moveToward, destination.realPosFromAgentHeights) < 0.01)
             {
                 
                 node.agentPresence = false;

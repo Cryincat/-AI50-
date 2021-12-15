@@ -18,14 +18,14 @@ public class LevelLoader : MonoBehaviour
 
     private float tmpNbAgent;
     private string sceneParam;
-    private string map1 = "graph_1.txt";
-    private string map2 = "graph_2.txt";
-    private string map3 = "graph_3.txt";
-    private string map4 = "graph_4.txt";
-    private string map5 = "graph_5.txt";
-    private string map6 = "path6";
-    private string map7 = "path7";
-    private string map8 = "path8";
+    private string map1 = "path1";
+    private string map2 = "path2";
+    private string map3 = "path3";
+    private string map4 = "graph_1.txt";
+    private string map5 = "graph_2.txt";
+    private string map6 = "graph_3.txt";
+    private string map7 = "graph_4.txt";
+    private string map8 = "graph_5.txt";
     private ArrayList maps;
 
     public void LoadLevel()
@@ -108,6 +108,11 @@ public class LevelLoader : MonoBehaviour
         tmpListData.Add(filePath);
         tmpListData.Add(500);
         return tmpListData;
+    }
+
+    public void updateMaps()
+    {
+
     }
 
     public void Update()
