@@ -59,6 +59,7 @@
     <Compile Include="Assets\Scripts\Menus&amp;HUD\LevelLoader.cs" />
     <Compile Include="Assets\Scripts\MDP.cs" />
     <Compile Include="Assets\Scripts\load.cs" />
+    <Compile Include="Assets\Scripts\ACO\ColonyMulti.cs" />
     <Compile Include="Assets\Extensions.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\ParamBtnQLearning.cs" />
     <Compile Include="Assets\Scripts\Multi-agent method\DataManager.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Assets\Scripts\Menus&amp;HUD\LoadScene.cs" />
     <Compile Include="Assets\Scripts\NodeComponent.cs" />
     <Compile Include="Assets\Scripts\AStar.cs" />
+    <Compile Include="Assets\Scripts\ACO\AStar_ACO.cs" />
     <Compile Include="Assets\Scripts\PythonTest.cs" />
     <Compile Include="Assets\Scripts\Multi-agent method\EventManager.cs" />
     <Compile Include="Assets\Scripts\Multi-agent method\TimeManager.cs" />
@@ -73,9 +75,11 @@
     <Compile Include="Assets\Scripts\QLearningPatrolling.cs" />
     <Compile Include="Assets\Scripts\AgentDQN.cs" />
     <Compile Include="Assets\Scripts\UdpSocket.cs" />
+    <Compile Include="Assets\Scripts\ACO\Manager_ACO.cs" />
     <Compile Include="Assets\Scripts\StartMethod.cs" />
     <Compile Include="Assets\GreedyAlgorithmSimplifiedGraphGenerator.cs" />
     <Compile Include="Assets\Scripts\HamiltonianPathGenerator.cs" />
+    <Compile Include="Assets\Scripts\ACO\Agent_ACO.cs" />
     <Compile Include="Assets\Scripts\ACO\CompleteGraph.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\ButtonsHUD.cs" />
     <Compile Include="Assets\Scripts\Multi-agent method\AgentGestionnaire.cs" />
@@ -86,11 +90,8 @@
     <Compile Include="Assets\Scripts\Agent.cs" />
     <Compile Include="Assets\Scripts\Multi-agent method\AgentManageur.cs" />
     <Compile Include="Assets\Scripts\GraphGenerator.cs" />
-    <Compile Include="Assets\Scripts\ACO\Agent_ACO.cs" />
-    <Compile Include="Assets\Scripts\ACO\AStar_ACO.cs" />
-    <Compile Include="Assets\Scripts\ACO\Manager_ACO.cs" />
-    <Compile Include="Assets\Scripts\ACO\ColonyMulti.cs" />
     <Compile Include="Assets\DQNManager.cs" />
+    <Compile Include="Assets\Scripts\Menus&amp;HUD\ParamBtnACO.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

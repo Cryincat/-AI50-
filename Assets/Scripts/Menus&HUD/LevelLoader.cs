@@ -18,17 +18,19 @@ public class LevelLoader : MonoBehaviour
 
     private float tmpNbAgent;
     private string sceneParam;
-    private string map1 = "path1";
-    private string map2 = "path2";
-    private string map3 = "path3";
+    private string map1 = "graph_6.txt";
+    private string map2 = "graph_7.txt";
+    private string map3 = "graph_8.txt";
     private string map4 = "graph_1.txt";
     private string map5 = "graph_2.txt";
     private string map6 = "graph_3.txt";
     private string map7 = "graph_4.txt";
     private string map8 = "graph_5.txt";
     private ArrayList maps;
+    private List<Toggle> mapsToggle;
 
-    public void LoadLevel()
+
+    public void Start()
     {
         maps = new ArrayList();
         maps.Add(map1);
@@ -39,6 +41,19 @@ public class LevelLoader : MonoBehaviour
         maps.Add(map6);
         maps.Add(map7);
         maps.Add(map8);
+        mapsToggle = new List<Toggle>();
+        for (int i = 0; i < maps.Count; i++)
+        {
+            mapsToggle.Add(numImage.GetComponentsInChildren<Toggle>()[i]);
+        }
+        for (int i = 3; i < maps.Count; i++)
+        {
+            mapsToggle[i].gameObject.SetActive(false);
+        }
+    }
+    public void LoadLevel()
+    {
+
         dataScene = getData();
         DontDestroyOnLoad(gameObject);
         SceneManager.LoadScene(sceneParam);
@@ -95,7 +110,7 @@ public class LevelLoader : MonoBehaviour
         {
             for(int i = 0; i < maps.Count; i++)
             {
-                if (numImage.GetComponentsInChildren<Toggle>()[i].isOn)
+                if (mapsToggle[i].isOn)
                 {
                     filePath = maps[i] as string;
                 }
@@ -112,7 +127,38 @@ public class LevelLoader : MonoBehaviour
 
     public void updateMaps()
     {
-
+        /*
+        if (algos.GetComponentsInChildren<Toggle>()[0].isOn)
+        {
+            foreach (Toggle map in numImage.GetComponentsInChildren<Toggle>())
+            {
+                map.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            foreach (Toggle map in numImage.GetComponentsInChildren<Toggle>())
+            {
+                map.gameObject.SetActive(true);
+            }
+        }
+         */   
+        
+        if (algos.GetComponentsInChildren<Toggle>()[0].isOn)
+        {
+            for (int i = 3; i < maps.Count; i++)
+            {
+                mapsToggle[i].gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            for (int i = 3; i < maps.Count; i++)
+            {
+                mapsToggle[i].gameObject.SetActive(true);
+            }
+        }
+        
     }
 
     public void Update()
