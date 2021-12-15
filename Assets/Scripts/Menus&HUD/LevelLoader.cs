@@ -24,6 +24,8 @@ public class LevelLoader : MonoBehaviour
     private string map4 = "graph_4.txt";
     private string map5 = "graph_5.txt";
     private string map6 = "path6";
+    private string map7 = "path7";
+    private string map8 = "path8";
     private ArrayList maps;
 
     public void LoadLevel()
@@ -35,6 +37,8 @@ public class LevelLoader : MonoBehaviour
         maps.Add(map4);
         maps.Add(map5);
         maps.Add(map6);
+        maps.Add(map7);
+        maps.Add(map8);
         dataScene = getData();
         DontDestroyOnLoad(gameObject);
         SceneManager.LoadScene(sceneParam);
@@ -89,7 +93,7 @@ public class LevelLoader : MonoBehaviour
         filePath = fileMap.textComponent.text;
         if(filePath == "")
         {
-            for(int i = 0; i < 6; i++)
+            for(int i = 0; i < maps.Count; i++)
             {
                 if (numImage.GetComponentsInChildren<Toggle>()[i].isOn)
                 {
