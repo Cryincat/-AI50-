@@ -17,6 +17,7 @@ public class LevelLoader : MonoBehaviour
     public List<object> dataScene;
 
     private float tmpNbAgent;
+    private string sceneParam;
     private string map1 = "graph_1.txt";
     private string map2 = "graph_2.txt";
     private string map3 = "graph_3.txt";
@@ -25,7 +26,7 @@ public class LevelLoader : MonoBehaviour
     private string map6 = "path6";
     private ArrayList maps;
 
-    public void LoadLevel(string scene)
+    public void LoadLevel()
     {
         maps = new ArrayList();
         maps.Add(map1);
@@ -36,7 +37,8 @@ public class LevelLoader : MonoBehaviour
         maps.Add(map6);
         dataScene = getData();
         DontDestroyOnLoad(gameObject);
-        StartCoroutine(LoadAsynchronously(scene));
+        SceneManager.LoadScene(sceneParam);
+        //StartCoroutine(LoadAsynchronously(scene));
     }
 
     IEnumerator LoadAsynchronously(string scene)
@@ -65,6 +67,18 @@ public class LevelLoader : MonoBehaviour
             {
                 numAlgo = i;
             }
+        }
+        switch (numAlgo)
+        {
+            case 0:
+                sceneParam = "ParamQLearning";
+                break;
+            case 1:
+                sceneParam = "ParamMultiAgent";
+                break;
+            case 2:
+                sceneParam = "ParamACO";
+                break;
         }
         // Get number of agents
         int nbAgents = 1;
