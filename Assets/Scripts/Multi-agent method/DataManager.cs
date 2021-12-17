@@ -104,9 +104,7 @@ public class DataManager : MonoBehaviour
         {
             if (count >= nbIterationBeforeStop)
             {
-                print("Cela fait " + nbIterationBeforeStop + " que la mediumIdleness = " + mediumIdleness + " n'a pas augmenté.");
-                FindObjectOfType<ButtonsHUD>().speed = 0;
-                SaveSimulationData(methodName, nbAgent, graphName, dataRealTime);
+                FindObjectOfType<ButtonsHUD>().quitSimulation();
             }
         }
         if (methodName == MAM) EventManager.current.UpdateNewMaxIdleness(maxIdleness);
@@ -145,6 +143,7 @@ public class DataManager : MonoBehaviour
     public void Save()
     {
         SaveSimulationData(methodName, nbAgent, graphName, dataRealTime);
+        GameObject.Destroy(gameObject);
     }
 
 }
