@@ -77,20 +77,12 @@ public class AgentPatrouilleur : MonoBehaviour
         yield return new WaitUntil(() => agentManageur.isGenerated);
         yield return new WaitUntil(() => agentGestionnaire.isGenerated);
 
-        
-        
-
-        
-
-
-
-       
         node = graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
         node.WarnAgentVisit();
 
         oldPos = transform.position;
         isGenerated = true;
-        FindObjectOfType<TimeManager>().delta = 1;
+        FindObjectOfType<ButtonsHUD>().speed = 1;
     }
 
     private void Update()

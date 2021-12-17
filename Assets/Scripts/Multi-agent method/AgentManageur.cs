@@ -320,7 +320,7 @@ public class AgentManageur : MonoBehaviour
 
                 //print("Le node (" + node.pos.Item1 + "," + node.pos.Item2 + ") à oisiveté = " + node.timeSinceLastVisit + " et donc une priorité de " + priority);
 
-
+                print("node :" + node.realPos + " is priority : " + priority + " with time : " + node.timeSinceLastVisit + " and treshhold : " + threshold);
                 if (priority > 1)
                 {
                     // Si le node est en cours de visite mais que sa priorité doit être revu à la hausse, on le fait quand même passé dans l'évent pour prévenir le gestionnaire.

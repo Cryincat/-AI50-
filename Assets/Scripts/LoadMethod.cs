@@ -6,8 +6,9 @@ public class LoadMethod : MonoBehaviour
 {
 
     public int nbAgent = 0;
-    public string graphFile = "";
+    public string graphName = "";
     public int nbIterationBeforeStop = 0;
+    public int numMethod = 0;
 
     public bool isReady = false;
 
@@ -27,9 +28,10 @@ public class LoadMethod : MonoBehaviour
     void GetData()
     {
         LevelLoader levelLoader = FindObjectOfType<LevelLoader>();
+        numMethod = (int)levelLoader.dataScene[0];
         nbAgent = (int) levelLoader.dataScene[1];
-        graphFile = levelLoader.dataScene[2] as string;
-        nbIterationBeforeStop = (int)levelLoader.dataScene[3];
+        graphName= levelLoader.dataScene[2] as string;
+        nbIterationBeforeStop = (int) levelLoader.dataScene[3];
     }
 
     void LaunchMAM()
@@ -37,14 +39,14 @@ public class LoadMethod : MonoBehaviour
         // Génération du GameObject loadGraph pour générer le graph.
         GameObject loadGraph = Instantiate(prefabLoadGraph);
         loadGraph.name = "LoadGraph";
-        loadGraph.GetComponent<LoadGraph>().textFileName = graphFile;
+        loadGraph.GetComponent<LoadGraph>().textFileName = graphName;
 
         // Génération du GameObject Sols (conteneur des gameobjects de terrains, et des scripts pour la méthode)
         GameObject sols = Instantiate(prefabSols);
         sols.GetComponent<AgentManageur>().nbAgent = nbAgent;
         sols.GetComponent<DataManager>().nbIterationBeforeStop = nbIterationBeforeStop;
-        sols.GetComponent<DataManager>().graphName = graphFile;
-        sols.GetComponent<DataManager>().methodName = "Multi-Agent Method";
+        sols.GetComponent<DataManager>().graphName = graphName;
+        sols.GetComponent<DataManager>().numMethod = numMethod;
         sols.name = "Sols";
 
         // Génération du GameObject Agents (conteneur pour les instances d'agents)
