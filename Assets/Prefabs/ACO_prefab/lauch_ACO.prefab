@@ -119,6 +119,9 @@ MonoBehaviour:
   AStar_: {fileID: 0}
   Agen: {fileID: 0}
   realTimeNodes: []
+  colonyGenerated: 0
+  nbColony: 0
+  costChemin: 0
 --- !u!114 &3025204188982400442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,5 +134,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0263e92f3f2b26418d6c1be8fb06ee7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delta: 0
-  speed: 1
+  delta: 1
+  speed: 10
