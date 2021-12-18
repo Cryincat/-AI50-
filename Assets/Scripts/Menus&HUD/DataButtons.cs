@@ -24,6 +24,7 @@ public class DataButtons : MonoBehaviour
 
     public void exportData()
     {
-        
+        DataManager dataManager = FindObjectOfType<DataManager>();
+        dataManager.Save();
     }
 }

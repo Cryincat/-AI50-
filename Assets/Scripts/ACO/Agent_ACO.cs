@@ -48,107 +48,54 @@ public class Agent_ACO : MonoBehaviour
 
     
 
-    public IEnumerator Start()
+    public void Start()
     {
-        yield return new WaitUntil(() => FindObjectOfType<AStar_ACO>().isGenerated);
+        //yield return new WaitUntil(() => FindObjectOfType<AStar_ACO>().isGenerated);
 
         transform.position = startPoint.realPos;
         node = startPoint;
 
-        // Liaison entre les évenements et leurs méthodes
-        //EventManager.current.onNodeTaggedVisited += OnNodeVisited;
-        //EventManager.current.onUpdateNodeAssignation += OnUpdateNodeAssignation;
-        //EventManager.current.onSendShortestPathData += OnSendShortestPathData;
-
-        //Set position of agent
-        //transform.position = startPoint.realPos;
+        
 
         // Récupération des instance d'autres scripts
         graphGenerator = FindObjectOfType<GraphGenerator>();
-        //agentManageur = FindObjectOfType<AgentManageur>();
-        //agentGestionnaire = FindObjectOfType<AgentGestionnaire>();
         capsuleRenderer = GetComponentInChildren<Renderer>();
         loadGraph = FindObjectOfType<LoadGraph>();
-
-        // Setup des variables
         
 
         //priorityQueue = new List<Node>();
         pathToNode = new List<Node>();
 
-        //nodeAssignated = new Dictionary<Node, int>();
-        //shortestPathData = new Dictionary<(Node, Node), List<Node>>();
-
         patrollingColor1 = new Color(0.5f, 0.9f, 0.2f); // Green
         patrollingColor2 = new Color(1f, 0.2f, 0.5f); // Red
         patrollingColor3 = new Color(0.2f, 0.5f, 1f); // Blue
 
-
-        //node = graph.nodes.Values.OrderBy(x => Vector3.Distance(transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
-        //node.WarnAgentVisit();
-
         oldPos = transform.position;
-        //isGenerated = true;
-        //FindObjectOfType<TimeManager>().delta = 1;
 
         manag = FindObjectOfType<Manager_ACO>();
-        //pathToNode = manag.realTimeNodes;
-        //print("---");
-        //print("Select nodes :" + manag.realTimeNodes.Count);
-        //print("---");
+
+        print("NEW AGENT");
         foreach (var s in manag.realTimeNodes)
         {
             pathToNode.Add(s);
-            
+            print(s.pos);
         }
 
-        //foreach (var g in pathToNode) print("jk :" + g.realPos);
-        //startPoint = pathToNode[0];
-        
-        //transform.position = startPoint.realPos;
         destination = null;
-        //print("FIN DU START");
-        //print("---");
-        //print("pathnode count au start  :" + pathToNode.Count);
-        //print("---");
         startIsDOne = true;
+        isGenerated = true;
     }
 
     private void Update()
     {
         if(startIsDOne && node != null)
         {
-            //print(destination.realPos + " dest");
-            //print(transform.position + "pos reel");
-            //print("destination" + destination);
-            //int inde = 0;
             if (destination == null)
             {
                 destination = pathToNode[0]; // donne ton prochain node
                 
             }
             GoToDestination();
-            //if (destination.realPos == transform.position) // Quand on arrive a destination
-            //{
-                //print("I DID IT BROOOOOOOOO !!!!!");
-                //print("pathnode count au update :" + pathToNode.Count);
-                //if (inde < pathToNode.Count)
-                //{
-                    //inde++;
-                    //oldPos = transform.position;
-                    //destination = pathToNode[inde];
-                    //GoToDestination();
-
-                //}
-
-                //else
-                //{
-                    //inde = 0;
-                    //oldPos = transform.position;
-                    //destination = pathToNode[inde];
-                    //GoToDestination();
-                //}
-            //}
         }
        
     }

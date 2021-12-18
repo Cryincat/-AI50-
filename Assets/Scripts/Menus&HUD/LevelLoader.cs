@@ -12,6 +12,7 @@ public class LevelLoader : MonoBehaviour
     public Slider slider;
     public ToggleGroup algos;
     public TMP_InputField nbAgent;
+    public TMP_InputField nbIterations;
     public TMP_InputField fileMap;
     public ToggleGroup numImage;
     public List<object> dataScene;
@@ -93,7 +94,7 @@ public class LevelLoader : MonoBehaviour
                 sceneParam = "ParamQLearning";
                 break;
             case 1:
-                sceneParam = "ParamMultiAgent";
+                sceneParam = "Simulation";
                 break;
             case 2:
                 sceneParam = "ParamACO";
@@ -102,6 +103,9 @@ public class LevelLoader : MonoBehaviour
         // Get number of agents
         int nbAgents = 1;
         nbAgents = int.Parse(nbAgent.text);
+
+        int nbIterationsBStop = 200;
+        nbIterationsBStop = int.Parse(nbIterations.text);
 
         // Get file's path of the map
         string filePath;
@@ -121,29 +125,12 @@ public class LevelLoader : MonoBehaviour
         tmpListData.Add(numAlgo);
         tmpListData.Add(nbAgents);
         tmpListData.Add(filePath);
-        tmpListData.Add(500);
+        tmpListData.Add(nbIterationsBStop);
         return tmpListData;
     }
 
     public void updateMaps()
-    {
-        /*
-        if (algos.GetComponentsInChildren<Toggle>()[0].isOn)
-        {
-            foreach (Toggle map in numImage.GetComponentsInChildren<Toggle>())
-            {
-                map.gameObject.SetActive(false);
-            }
-        }
-        else
-        {
-            foreach (Toggle map in numImage.GetComponentsInChildren<Toggle>())
-            {
-                map.gameObject.SetActive(true);
-            }
-        }
-         */   
-        
+    {   
         if (algos.GetComponentsInChildren<Toggle>()[0].isOn)
         {
             for (int i = 3; i < maps.Count; i++)
@@ -163,10 +150,22 @@ public class LevelLoader : MonoBehaviour
 
     public void Update()
     {
-        if(nbAgent.text != "" && nbAgent.text != "-")
+        try
         {
-            tmpNbAgent = Mathf.Clamp(float.Parse(nbAgent.text), 1, 15);
-            nbAgent.text = tmpNbAgent.ToString();
+            if (nbAgent.text != "" && nbAgent.text != "-")
+            {
+                tmpNbAgent = Mathf.Clamp(float.Parse(nbAgent.text), 1, 25);
+                nbAgent.text = tmpNbAgent.ToString();
+            }
+            if (nbIterations.text != "" && nbIterations.text != "-")
+            {
+                float tmpNbIterations = Mathf.Clamp(float.Parse(nbIterations.text), 1, 1000);
+                nbIterations.text = tmpNbIterations.ToString();
+            }
+        } catch (System.Exception e)
+        {
+
         }
+
     }
 }

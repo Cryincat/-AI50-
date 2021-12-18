@@ -18,8 +18,12 @@ public class DataManager : MonoBehaviour
     public float mediumIdleness = -1;
     public float maxIdlenessRealTime = -1;
     public float mediumIdlenessRealTime = -1;
-    public string typeOfMethod = "MAM";
+    public int numMethod;
+    public int nbAgent;
 
+    private static string RL = "Reinforcment learning method";
+    private static string ACO = "Ant Colony Optimization method";
+    private static string MAM = "Multi-Agent Method";
     private float nbNodes;
     private Dictionary<int, float> dataRealTime;
     string pathForSave = Directory.GetCurrentDirectory() + "/Assets/Data/DataSimulation";
@@ -32,10 +36,12 @@ public class DataManager : MonoBehaviour
     IEnumerator Start()
     {
 
+        DontDestroyOnLoad(gameObject);
         dataRealTime = new Dictionary<int, float>();
         //nbIterationBeforeStop = FindObjectOfType<LoadMethod>().nbIterationBeforeStop;
         loadGraph = FindObjectOfType<LoadGraph>();
         yield return new WaitUntil(() => loadGraph.isGenerated);
+        determineMethodName(numMethod);
         graph = loadGraph.graph;
 
         InvokeRepeating("CheckIdleness", 1, 1);
@@ -45,6 +51,22 @@ public class DataManager : MonoBehaviour
     private void Update()
     {
         simulationTime += Time.deltaTime;
+    }
+
+    void determineMethodName(int numMethod)
+    {
+        switch (numMethod)
+        {
+            case 0:
+                methodName = RL;
+                break;
+            case 1:
+                methodName = MAM;
+                break;
+            case 2:
+                methodName = ACO;
+                break;
+        }
     }
 
     void CheckIdleness()
@@ -78,20 +100,17 @@ public class DataManager : MonoBehaviour
             dataRealTime.Add((int)simulationTime, mediumIdleness);
         }
         
-
-
-        if (count >= nbIterationBeforeStop)
+        if (methodName != ACO)
         {
-            print("Cela fait " + nbIterationBeforeStop + " que la mediumIdleness = " + mediumIdleness + " n'a pas augmenté.");
-            FindObjectOfType<TimeManager>().delta = 0;
-            SaveSimulationData(methodName, 10, graphName, dataRealTime, typeOfMethod);
+            if (count >= nbIterationBeforeStop)
+            {
+                FindObjectOfType<ButtonsHUD>().quitSimulation();
+            }
         }
-        
-
-        EventManager.current.UpdateNewMaxIdleness(maxIdleness);
+        if (methodName == MAM) EventManager.current.UpdateNewMaxIdleness(maxIdleness);
     }
 
-    void SaveSimulationData(string methodName, int nbAgent, string graphName, Dictionary<int,float> dataRealTime, string typeOfMethod)
+    void SaveSimulationData(string methodName, int nbAgent, string graphName, Dictionary<int,float> dataRealTime)
     {
         string path = pathForSave;
         string actualDate = DateTime.Now.ToString();
@@ -103,7 +122,7 @@ public class DataManager : MonoBehaviour
 
         dataToSave.Add("Simulation date : " + actualDate);
         dataToSave.Add("");
-        dataToSave.Add("Method used : " + typeOfMethod);
+        dataToSave.Add("Method used : " + methodName);
         dataToSave.Add("Graph used : " + graphName);
         dataToSave.Add("Agent number : " + nbAgent);
         dataToSave.Add("Simulation time : " + simulationTime);
@@ -120,4 +139,11 @@ public class DataManager : MonoBehaviour
         File.WriteAllLines(path, dataToSave);
         print("All data were writed in a new file at path : " + path);
     }
+
+    public void Save()
+    {
+        SaveSimulationData(methodName, nbAgent, graphName, dataRealTime);
+        GameObject.Destroy(gameObject);
+    }
+
 }

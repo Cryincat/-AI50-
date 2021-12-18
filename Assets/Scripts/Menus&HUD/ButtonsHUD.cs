@@ -19,26 +19,53 @@ public class ButtonsHUD : MonoBehaviour
     public Sprite playImage;
 
     private DataManager dataM;
+    private bool isGenerated;
+    private GameObject loadGraph;
+    private int numMethod;
 
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
+        yield return new WaitUntil(() => FindObjectOfType<load>().isGenerated);
+        numMethod = FindObjectOfType<load>().typeMethod;
+
+        switch (numMethod)
+        {
+            case 0: // Method RL
+                yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+                break;
+            case 1: // MAM
+                yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+                break;
+            case 2: // ACO
+                yield return new WaitUntil(() => FindObjectOfType<Manager_ACO>().isReady);
+                break;
+            default:
+                throw new System.Exception("Method num is unknown.");
+                break;
+        }
+        
+        yield return new WaitUntil(() => FindObjectOfType<LoadGraph>().isGenerated);
         dataM = FindObjectOfType<DataManager>();
         playing = true;
         timer = 0;
         speed = 1;
         Time.timeScale = speed;
+        isGenerated = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        string minutes = Mathf.Floor((timer % 3600) / 60).ToString("00");
-        string seconds = (timer % 60).ToString("00");
-        timerText.text = minutes + ":" + seconds;
-        maxIdleValue.text = (Mathf.Round(dataM.maxIdleness)).ToString(); // Recupérer l idleness max
-        averageIdleValue.text = (Mathf.Round(dataM.mediumIdleness)).ToString(); // Recuperer l idleness moyenne
+        if (isGenerated)
+        {
+            timer += Time.deltaTime;
+            string minutes = Mathf.Floor((timer % 3600) / 60).ToString("00");
+            string seconds = (timer % 60).ToString("00");
+            timerText.text = minutes + ":" + seconds;
+            maxIdleValue.text = (Mathf.Round(dataM.maxIdleness)).ToString(); // Recupérer l idleness max
+            averageIdleValue.text = (Mathf.Round(dataM.mediumIdleness)).ToString(); // Recuperer l idleness moyenne
+        }
     }
 
     public void clickPlay()
@@ -59,7 +86,7 @@ public class ButtonsHUD : MonoBehaviour
 
     public void clickx1()
     {
-        speed = 1;
+        speed = 5;
         if (Time.timeScale != 0)
         {
             Time.timeScale = speed;
@@ -68,7 +95,7 @@ public class ButtonsHUD : MonoBehaviour
 
     public void clickx2()
     {
-        speed = 2;
+        speed = 10;
         if (Time.timeScale != 0)
         {
             Time.timeScale = speed;
@@ -77,7 +104,7 @@ public class ButtonsHUD : MonoBehaviour
 
     public void clickx5()
     {
-        speed = 5;
+        speed = 15;
         if (Time.timeScale != 0)
         {
             Time.timeScale = speed;

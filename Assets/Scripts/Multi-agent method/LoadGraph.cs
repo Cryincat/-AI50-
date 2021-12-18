@@ -56,15 +56,18 @@ public class LoadGraph : MonoBehaviour
 
             foreach (var nc in nodeComponentDict.Values)
             {
-                float value = Math.Max(0, 1 - .01f * nc.node.timeSinceLastVisit);
-                Color color = new Color(1, value, value, 1);
-                List<Color> colors = new List<Color>();
-
-                foreach (var v in nc.meshFilter.mesh.vertices)
+                if (nc.meshFilter != null)
                 {
-                    colors.Add(color);
+                    float value = Math.Max(0, 1 - .01f * nc.node.timeSinceLastVisit);
+                    Color color = new Color(1, value, value, 1);
+                    List<Color> colors = new List<Color>();
+
+                    foreach (var v in nc.meshFilter.mesh.vertices)
+                    {
+                        colors.Add(color);
+                    }
+                    nc.meshFilter.mesh.colors = colors.ToArray();
                 }
-                nc.meshFilter.mesh.colors = colors.ToArray();
             }
         }
     }
@@ -124,24 +127,11 @@ public class LoadGraph : MonoBehaviour
         return actualBestPos;
     }
 
-    public void print (Graph graph)
-    {
-        foreach(Node node in graph.nodes.Values)
-        {
-            print("Node : (" + node.pos.Item1 + "," + node.pos.Item2 + ")");
-        }
-        foreach(Edge edge in graph.edges)
-        {
-            print("Edge : from (" + edge.from.pos.Item1 + "," + edge.from.pos.Item2 + ") to (" + edge.to.pos.Item1 + "," + edge.to.pos.Item2 + ") : cost = " + edge.cost);
-        }
-    }
-
     void spawnMap(Graph graph, GameObject parent)
     {
         print("| LoadGraph | Spawning map...");
         foreach (Node node in graph.nodes.Values)
         {
-            
             GameObject gameObject = Instantiate(prefabSol, node.realPos, Quaternion.identity, parent.transform);
             NodeComponent nc = gameObject.GetComponent<NodeComponent>();
             nc.node = node;
@@ -150,7 +140,10 @@ public class LoadGraph : MonoBehaviour
         // Spawn l'edge visuellement
         foreach (Edge edge in graph.edges)
         {
-            spawnEdgeOnMap2(edge.from.realPos, edge.to.realPos);
+            if (Vector3.Distance(edge.to.realPos,edge.from.realPos) >= Mathf.Sqrt(2))
+            {
+                spawnEdgeOnMap2(edge.from.realPos, edge.to.realPos);
+            }
         }
         print("| LoadGraph | Map ready.");
     }

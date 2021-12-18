@@ -46,7 +46,7 @@ public class CompleteGraph : MonoBehaviour
                 (int, int) pos = ((int)item.position.x, (int)item.position.z);
                 Node node = new Node(pos);
                 graph.nodes.Add(pos, node);
-                nc.node = node;
+                //nc.node = node;
                 nodeComponentDict.Add(node, nc);
             }
         }

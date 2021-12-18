@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7582170348405451569}
   - component: {fileID: 7352841568576955479}
+  - component: {fileID: 1227809579918999782}
   m_Layer: 0
   m_Name: ACO
-  m_TagString: Untagged
+  m_TagString: Sols
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,5 +47,27 @@ MonoBehaviour:
   prefabSol: {fileID: 6240385815910075645, guid: a4eeaaa983371c2409c60b13cce8010b, type: 3}
   prefabEdge: {fileID: 622364218807779999, guid: 502494830fb318c4095d6ce680c1c071, type: 3}
   isGenerated: 0
-  parent: {fileID: 4832473718830729635}
-  textFileName: graph_test.txt
+  textFileName: graph_2.txt
+--- !u!114 &1227809579918999782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4832473718830729635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c683f62968f5745a0ebf5a7c13bdf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graphName: 
+  methodName: 
+  maxIdleness: -1
+  mediumIdleness: -1
+  maxIdlenessRealTime: -1
+  mediumIdlenessRealTime: -1
+  numMethod: 0
+  nbAgent: 0
+  simulationTime: 0
+  count: 0
+  nbIterationBeforeStop: 500
