@@ -22,19 +22,34 @@ public class Manager_ACO : MonoBehaviour
 
     public bool colonyGenerated;
 
-    public int nbColony;
     public float costChemin;
+
+    private int numMethod;
+    private int nbAgent;
+    private string pathGraph;
+    private int alpha;
+    private int beta;
+    private int nbColony;
+    private int evaporation;
+    public bool isReady = false;
+
     IEnumerator Start()
     {
-        nbColony = 5;
+
+        GetData();
         costChemin = 0;
         colonyGenerated = false;
 
         //Creer un graph
-        GameObject gameObject = Instantiate(ACO, Vector3.zero, Quaternion.identity); 
+        GameObject gameObject = Instantiate(ACO, Vector3.zero, Quaternion.identity);
+        gameObject.GetComponent<DataManager>().nbAgent = nbAgent;
+        gameObject.GetComponent<DataManager>().graphName = pathGraph;
+        gameObject.GetComponent<DataManager>().numMethod = numMethod;
+        gameObject.GetComponent<LoadGraph>().textFileName = pathGraph;
 
         //Rendre graph complet
         GameObject gameObject1 = Instantiate(complete_graph, Vector3.zero, Quaternion.identity);
+
 
         //lancer colony sur le graph
         for (int i = 0; i < nbColony; i++)
@@ -43,6 +58,10 @@ public class Manager_ACO : MonoBehaviour
             GameObject origin = Instantiate(colony, Vector3.zero, Quaternion.identity);
             origin.name = ("Colony_" + i);
             ColonyMulti colonys = origin.GetComponent<ColonyMulti>();
+            colonys.alpha = alpha;
+            colonys.beta = beta;
+            colonys.nbAgents = nbAgent;
+            colonys.tauxEvap = evaporation;
             yield return new WaitUntil(() => FindObjectOfType<ColonyMulti>().isGenerated);
 
             if (colonys.coutCheminSave < costChemin || costChemin == 0)
@@ -94,6 +113,26 @@ public class Manager_ACO : MonoBehaviour
             agent__.startPoint = startPoint;
             yield return new WaitUntil(() => FindObjectOfType<Agent_ACO>().isGenerated);
         }
+        isReady = true;
+    }
+
+    void GetData()
+    {
+        LevelLoader levelLoader = FindObjectOfType<LevelLoader>();
+        List<object> data = levelLoader.dataScene;
+
+        numMethod = (int)data[0];
+        nbAgent = (int)data[1];
+        pathGraph = data[2] as string;
+        alpha = (int)data[4];
+        beta = (int)data[5];
+        evaporation = (int)data[6];
+        nbColony = (int)data[7];
+
+        evaporation = evaporation / 100;
+
+
+        GameObject.Destroy(levelLoader);
     }
 
 }

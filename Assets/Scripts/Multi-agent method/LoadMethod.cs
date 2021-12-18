@@ -59,8 +59,6 @@ public class LoadMethod : MonoBehaviour
         GameObject eventManager = Instantiate(prefabEventManager);
         eventManager.name = "EventManager";
 
-        
-
         isReady = true;
     }
 

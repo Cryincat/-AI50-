@@ -150,15 +150,22 @@ public class LevelLoader : MonoBehaviour
 
     public void Update()
     {
-        if(nbAgent.text != "" && nbAgent.text != "-")
+        try
         {
-            tmpNbAgent = Mathf.Clamp(float.Parse(nbAgent.text), 1, 15);
-            nbAgent.text = tmpNbAgent.ToString();
-        }
-        if (nbIterations.text != "" && nbIterations.text != "-")
+            if (nbAgent.text != "" && nbAgent.text != "-")
+            {
+                tmpNbAgent = Mathf.Clamp(float.Parse(nbAgent.text), 1, 25);
+                nbAgent.text = tmpNbAgent.ToString();
+            }
+            if (nbIterations.text != "" && nbIterations.text != "-")
+            {
+                float tmpNbIterations = Mathf.Clamp(float.Parse(nbIterations.text), 1, 1000);
+                nbIterations.text = tmpNbIterations.ToString();
+            }
+        } catch (System.Exception e)
         {
-            float tmpNbIterations = Mathf.Clamp(float.Parse(nbIterations.text), 1, 1000);
-            nbIterations.text = tmpNbIterations.ToString();
+
         }
+
     }
 }

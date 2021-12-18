@@ -26,11 +26,6 @@ public class ColonyMulti : MonoBehaviour
     IEnumerator Start()
     {
         yield return new WaitUntil(() => FindObjectOfType<CompleteGraph>().isGenerated);
-
-        nbAgents = 5;
-        alpha = 1;
-        beta = 5;
-        tauxEvap = 0.5f;
         coutCheminSave = Mathf.Infinity;
         listFourmisSAve = new List<fourmis>();
         edgeNormal = new List<Edge>();

@@ -21,12 +21,30 @@ public class ButtonsHUD : MonoBehaviour
     private DataManager dataM;
     private bool isGenerated;
     private GameObject loadGraph;
+    private int numMethod;
 
     // Start is called before the first frame update
     IEnumerator Start()
     {
         yield return new WaitUntil(() => FindObjectOfType<load>().isGenerated);
-        yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+        numMethod = FindObjectOfType<load>().typeMethod;
+
+        switch (numMethod)
+        {
+            case 0: // Method RL
+                yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+                break;
+            case 1: // MAM
+                yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+                break;
+            case 2: // ACO
+                yield return new WaitUntil(() => FindObjectOfType<Manager_ACO>().isReady);
+                break;
+            default:
+                throw new System.Exception("Method num is unknown.");
+                break;
+        }
+        
         yield return new WaitUntil(() => FindObjectOfType<LoadGraph>().isGenerated);
         dataM = FindObjectOfType<DataManager>();
         playing = true;
@@ -68,7 +86,7 @@ public class ButtonsHUD : MonoBehaviour
 
     public void clickx1()
     {
-        speed = 1;
+        speed = 5;
         if (Time.timeScale != 0)
         {
             Time.timeScale = speed;
@@ -77,7 +95,7 @@ public class ButtonsHUD : MonoBehaviour
 
     public void clickx2()
     {
-        speed = 2;
+        speed = 10;
         if (Time.timeScale != 0)
         {
             Time.timeScale = speed;
@@ -86,7 +104,7 @@ public class ButtonsHUD : MonoBehaviour
 
     public void clickx5()
     {
-        speed = 5;
+        speed = 15;
         if (Time.timeScale != 0)
         {
             Time.timeScale = speed;

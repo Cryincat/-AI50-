@@ -6,7 +6,7 @@ public class load : MonoBehaviour
 {
 
     public bool isGenerated = false;
-    private int typeMethod;
+    public int typeMethod;
 
     public GameObject prefabRL;
     public GameObject prefabMAM;

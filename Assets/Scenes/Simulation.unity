@@ -536,7 +536,7 @@ GameObject:
   - component: {fileID: 460318596}
   - component: {fileID: 460318598}
   m_Layer: 0
-  m_Name: ScriptHUD
+  m_Name: Load
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -592,7 +592,7 @@ MonoBehaviour:
   isGenerated: 0
   prefabRL: {fileID: 0}
   prefabMAM: {fileID: 4493055516050113703, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
-  prefabACO: {fileID: 0}
+  prefabACO: {fileID: 1450077331970531272, guid: 0e47e618ea5722249ae4cb7f138213c4, type: 3}
 --- !u!1 &488565072
 GameObject:
   m_ObjectHideFlags: 0
