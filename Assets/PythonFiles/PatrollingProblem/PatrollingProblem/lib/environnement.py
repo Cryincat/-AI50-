@@ -46,12 +46,20 @@ class Environnement:
         to = (posAgent[0] + action[0],posAgent[1] + action[1])
         if(to not in self.nodes):
             to = posAgent
-        self.nodesTimes[to] = 0
+        
+        delta = self.nodesTimes[to] 
         for n in self.GetNeighs(to):
+            delta += self.nodesTimes[n]
             self.nodesTimes[n] = 0
+        
+        self.nodesTimes[to] = 0
+        
+        self.reward = - np.mean(list(self.nodesTimes.values()))
+        
         posAgent = to
         self.nbiter+=1
-        return posAgent
+        return posAgent,self.reward
+
     
     def Flatten(self,posAgent):
         observation = []

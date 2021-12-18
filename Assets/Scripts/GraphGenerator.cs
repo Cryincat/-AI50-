@@ -118,6 +118,7 @@ public class GraphGenerator : MonoBehaviour
                 Edge edge = new Edge(node, to, new Vector2(node.pos.Item1 - to.pos.Item1, node.pos.Item2 - to.pos.Item2).magnitude);
                 node.neighs.Add(edge);
                 graph.edges.Add(edge);
+                print("n" + node.pos + "->" + to.pos);
             }
             /*foreach (var agent in agents)
             {

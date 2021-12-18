@@ -198,6 +198,7 @@ public class LoadGraph : MonoBehaviour
                 Node to = graph.nodes[(x, y)];
                 float cost = Vector3.Distance(from.realPos, to.realPos);
                 Edge edgeToAdd = new Edge(from, to, cost);
+                //print("e" + edgeToAdd.from.pos + "->" + edgeToAdd.to.pos);
                 from.neighs.Add(edgeToAdd);
                 graph.edges.Add(edgeToAdd);
             }

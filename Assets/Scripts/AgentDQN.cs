@@ -73,7 +73,6 @@ public class AgentDQN : Agent
             //else 
             thinking = false;
             action = null;
-            Debug.Log("D : "+ thinking);
             yield break;
         }
     }

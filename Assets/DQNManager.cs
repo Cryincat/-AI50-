@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -30,6 +32,10 @@ public class DQNManager : MonoBehaviour
         udpSocket = GetComponent<UdpSocket>();
 
         yield return new WaitUntil(() => udpSocket.isRunning);
+
+        if(learningFromScratch) fileWeights = Directory.GetCurrentDirectory() + "/Assets/Data/Weights/" + loadGraph.textFileName + 
+                "_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss");
+
         string message = learningFromScratch ? "t" + nbIter + "," + fileWeights : "f" + fileWeights;
         print("Sending infos for init : \n" + message);
         udpSocket.SendData(message);

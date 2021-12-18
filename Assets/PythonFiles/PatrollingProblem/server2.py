@@ -9,8 +9,8 @@ import numpy as np
 import ast
 import time
 import UdpComms as U
-from main import build_model
-from main import build_agent
+# from main import build_model
+# from main import build_agent
 from rl.agents import DQNAgent
 from rl.memory import SequentialMemory
 from rl.policy import LinearAnnealedPolicy, EpsGreedyQPolicy
@@ -18,6 +18,20 @@ from tensorflow.keras.optimizers import Adam
 from PatrollingProblem.lib.environnement import Environnement
 from PatrollingProblem.envs import PatrollingProblemEnv
 from matplotlib import pyplot as plt
+
+from PatrollingProblem.envs import PatrollingProblemEnv
+from PatrollingProblem.lib.environnement import Environnement
+import numpy as np
+
+from rl.agents import DQNAgent
+from rl.memory import SequentialMemory
+from rl.policy import LinearAnnealedPolicy,EpsGreedyQPolicy
+
+from tensorflow import keras
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Activation, Flatten
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import SGD
 
 init = 0
 nb_actions = 8
@@ -32,7 +46,8 @@ sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, tailleBuffer = 10
                   enableRX=True, suppressWarnings=True)
 
 i = 0
-nbiter_per_episode = 100
+nbiter_per_episode = 500
+
 
 while True:
     # sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
@@ -72,6 +87,53 @@ while True:
             env = PatrollingProblemEnv(e, None, nbiter_per_episode)
 
             if(i == 2):
+                
+                def build_model(environnement):
+                    print("Building Model ...")
+                    input_shape = (1,) + (environnement.Shape(),)
+                    model = Sequential()
+                    # model.add(Input(shape = input_shape))
+                    model.add(Flatten(input_shape = input_shape))
+                    model.add(Activation('relu'))
+                    # model.add(Dense(9))
+                    # model.add(Activation('relu'))
+                    # model.add(Dense(10))
+                    model.add(Dense((2*environnement.Shape())))
+                    model.add(Activation('relu'))
+                    # model.add(Dense((environnement.Shape())))
+                    # model.add(Activation('relu'))
+                    model.add(Dense((environnement.Shape())))
+                    model.add(Activation('relu'))
+                    model.add(Dense((environnement.Shape())/2+nb_actions))
+                    model.add(Activation('relu'))
+                    # model.add(Dense(24))
+                    # model.add(Activation('relu'))
+                    model.add(Dense(nb_actions))
+                    model.add(Activation('softmax'))
+                    print(model.summary())
+                    return model
+                
+                def build_agent(model,actions):
+                    print("Building Agent ...")
+                    policy = LinearAnnealedPolicy(inner_policy=EpsGreedyQPolicy(), attr="eps", value_max=1.0,
+                                                  value_min=0.1, value_test=0.2, nb_steps = 10000)
+                    # policy = EpsGreedyQPolicy()
+                    memory = SequentialMemory(limit=10000, window_length=1)
+                    dqn = DQNAgent(model=model,memory=memory,policy=policy,enable_dueling_network=(True),
+                                    dueling_type='avg',nb_actions=nb_actions,nb_steps_warmup=1000)
+                    # dqn = DQNAgent(model=model,memory=memory,policy=policy,nb_actions=nb_actions)
+                    
+                    # initial_learning_rate = 0.1
+                    # lr_schedule = keras.optimizers.schedules.ExponentialDecay(
+                    #     initial_learning_rate,
+                    #     decay_steps=10000,
+                    #     decay_rate=0.96,
+                    #     staircase=False)
+                    lr_schedule = 0.0001
+
+                    dqn.compile(Adam(learning_rate=lr_schedule))#0.0001))
+                    return dqn
+                
                 model = build_model(e)
                 dqn = build_agent(model, Environnement.actions)
 
@@ -100,9 +162,22 @@ while True:
             q_values = np.array(dqn.compute_q_values(state))
             arr = np.array(q_values).astype('float64')
             arr -= np.min(arr)
-            softmax = np.exp(arr)/sum(np.exp(arr))
-
+            
+            for i in range(len(arr)):
+                newPos = (agentPos[0] + Environnement.actions[i][0],agentPos[1] + Environnement.actions[i][1])
+                if(newPos not in e.nodes):
+                    arr[i] = 0
+                    
+            norm =  np.linalg.norm(arr)
+            factor = 20
+            normarr = arr / norm
+            
+                    
+            softmax = np.exp(factor * normarr)/sum(np.exp(factor * normarr))
+            
             def randomChoice(l):
+                for i in range(len(l)):
+                    if(np.isnan(l[i])) : l[i] = 0
                 import random
                 sum = 0
                 accumulatedprobabilities = []
@@ -113,7 +188,7 @@ while True:
                 for i in range(0, len(accumulatedprobabilities)):
                     if accumulatedprobabilities[i] >= r:
                         return i
-
+            
             a = Environnement.actions[randomChoice(softmax)]
             # print(softmax)
             # print(agentPos)
@@ -124,61 +199,3 @@ while True:
             sock.SendData(message)
 
     time.sleep(0.0001)
-
-
-# import time
-# import zmq
-
-# context = zmq.Context()
-# socket = context.socket(zmq.REP)
-# socket.bind("tcp://*:5555")
-
-# while True:
-#     #  Wait for next request from client
-#     message = socket.recv()
-#     message = str(message)
-#     message = message[2:len(message)-1]
-#     print("Received request: %s" % message)
-
-#     if(init == 0):
-#         data = message.split('\\n')
-#         data = data[:len(data)-1]
-#         # data = message.split("\n")
-#         from ast import literal_eval as make_tuple
-#         data = [make_tuple(d) for d in data]
-
-#         e = Environnement(data)
-#             # env = Environnement()
-#             # dqn = DQNAgent()
-#             # dqn.load_weights("Weights/ev2-Grid5v3(corridor)-600k.h5f")
-#     if(init == 1):
-#         model = build_model(e)
-#         dqn = build_agent(model, Environnement.actions)
-#     if(init== 2):
-#         if(message == "learn"):
-#             print("Learning...")
-#             nbiter_per_episode = 500
-#             nb_steps = 150000
-#             dqn.compile(Adam(learning_rate=0.0001))
-#             env = PatrollingProblemEnv(e,None,nbiter_per_episode)
-#             hist = dqn.fit(env, nb_steps=nb_steps, visualize=False, verbose=1)
-#             Y = [i / nbiter_per_episode for i in hist.history['episode_reward']]
-#             X = [x for x in range(len(Y))]
-
-#             from matplotlib import pyplot as plt
-#             plt.plot(X,Y)
-#             dqn.save_weights("Weights/JosseSmaller-150k.h5f",overwrite=True)
-#         else:
-#             print("Loading...")
-#             dqn.load_weights("Weights/JosseSmaller-150k.h5f")
-
-#         #  Do some 'work'.
-#         #  Try reducing sleep time to 0.01 to see how blazingly fast it communicates
-#         #  In the real world usage, you just need to replace time.sleep() with
-#         #  whatever work you want python to do, maybe a machine learning task?
-#     init+=1
-#     time.sleep(1)
-
-#         # #  Send reply back to client
-#         # #  In the real world usage, after you finish your work, send your output here
-#     socket.send(b"World")

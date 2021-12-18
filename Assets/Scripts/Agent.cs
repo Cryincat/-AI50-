@@ -38,7 +38,7 @@ public class Agent : MonoBehaviour
     {
         if (destination != null && destination.realPos != null)
         {
-            Debug.Log(destination.pos);
+            //Debug.Log(destination.pos);
         }
         if (destination != null)
         {

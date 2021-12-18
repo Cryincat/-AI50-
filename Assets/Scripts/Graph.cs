@@ -86,7 +86,7 @@ public class Node
         timeSinceLastVisit = 0;
         foreach(var e in neighs)
         {
-            if (Vector3.Distance(this.realPos, e.to.realPos) <= Mathf.Sqrt(2))
+            if (Vector3.Distance(this.realPos, e.to.realPos) <= Mathf.Sqrt(2) + .1)
             {
                 e.to.timeSinceLastVisit = 0;
             }

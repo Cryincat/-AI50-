@@ -31,11 +31,11 @@ def build_model(environnement):
     # model.add(Activation('relu'))
     # model.add(Dense(10))
     # model.add(Activation('sigmoid'))
-    model.add(Dense((nb_actions+environnement.Shape())*2))
+    # model.add(Dense((environnement.Shape())*2))
+    # model.add(Activation('relu'))
+    model.add(Dense((environnement.Shape())))
     model.add(Activation('relu'))
-    model.add(Dense((nb_actions+environnement.Shape())))
-    model.add(Activation('relu'))
-    model.add(Dense((nb_actions+environnement.Shape())/2))
+    model.add(Dense((environnement.Shape())/2))
     model.add(Activation('relu'))
     # model.add(Dense(24))
     # model.add(Activation('relu'))
@@ -53,7 +53,7 @@ def build_agent(model,actions):
     dqn = DQNAgent(model=model,memory=memory,policy=policy,enable_dueling_network=(True),
                     dueling_type='avg',nb_actions=nb_actions,nb_steps_warmup=10000)
     # dqn = DQNAgent(model=model,memory=memory,policy=policy,nb_actions=nb_actions)
-    dqn.compile(Adam(learning_rate=0.00001))
+    dqn.compile(Adam(learning_rate=0.001))
     return dqn
 
 def main():

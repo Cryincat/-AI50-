@@ -158,9 +158,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0bc8ccad94f40546afa827ae9f409dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  learningFromScratch: 1
-  nbIter: 500000
-  fileWeights: C:\UTBM\INFO6\AI50\AI50\Assets\PythonFiles\PatrollingProblem\Weights\graph_10
+  learningFromScratch: 0
+  nbIter: 1000000
+  fileWeights: C:\UTBM\INFO6\AI50\AI50\Assets\Data\Weights\graph_6.txt_2021-17-12--16-25-29
   nbAgent: 1
   agentPrefab: {fileID: 2235436545955277492, guid: 88ae341033c0af54185720900b26b832, type: 3}
   isGenerated: 0
@@ -180,7 +180,7 @@ MonoBehaviour:
   prefabSol: {fileID: 7936965496669389415, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
   prefabEdge: {fileID: 3523197888291084895, guid: fdc55648484ca0247b7a2979efdbdeff, type: 3}
   isGenerated: 0
-  textFileName: graph_10.txt
+  textFileName: graph_6.txt
 --- !u!1 &1425029125
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,16 +402,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915010, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+      propertyPath: delta
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1160337730520915010, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: speed
-      value: 15
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915010, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915011, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: graphName
-      value: graph_10.txt
+      value: graph_6.txt
       objectReference: {fileID: 0}
     - target: {fileID: 1160337730520915011, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
       propertyPath: nbIterationBeforeStop
@@ -481,7 +485,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sols
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1160337730520915008, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+    - {fileID: 1160337730520915009, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
+    - {fileID: 1160337730520915014, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e1ec4482eac856246897ee6c34b9812d, type: 3}
 --- !u!1001 &1248408183475627635
 PrefabInstance:
