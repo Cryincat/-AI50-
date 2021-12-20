@@ -1,13 +1,4 @@
-Simulation date : 18/12/2021 17:14:12
-
-Method used : MAM
-Graph used : graph_6.txt
-Agent number : 10
-Simulation time : 567,0475
-Maximum idleness reach : 96,92377
-Medium idleness reach : 19,55518
-
-Medium idleness from start to end : (format -> (XX : YY) with X = time in second and Y = value of mediumIdleness at X seconds
+X : Y
 1 : 1,008885
 2 : 2,00729
 3 : 3,007916
