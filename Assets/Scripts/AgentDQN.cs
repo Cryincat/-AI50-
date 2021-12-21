@@ -54,7 +54,11 @@ public class AgentDQN : Agent
         {
             Debug.Log("FindDestination : thinking is " + thinking + " in pos "+ node.pos);
 
-            string message = transform.name + "\n" + node.pos + "\n" + loadGraph.graph.SaveAsStringWithTimes();
+            var agents = "";
+            for (int i = 0; i < manager.nbAgent; i++)
+                agents += udpSocket.agentsDQN[i].node.pos + ";";
+
+            string message = transform.name + "\n" + node.pos + "\n"+ agents + "\n" + loadGraph.graph.SaveAsStringWithTimes();
 
             manager.SendData(message);
             // TODO: udpSocket.SendData(message);

@@ -9,9 +9,9 @@ public class DQNManager : MonoBehaviour
 {
     public bool learningFromScratch;
     public int nbIter;
-    public string fileWeights; 
+    public string fileWeights;
 
-    public int nbAgent = 0;
+    public int nbAgent = 1;
     public GameObject agentPrefab;
 
     private Graph graph;
@@ -31,21 +31,25 @@ public class DQNManager : MonoBehaviour
         yield return new WaitUntil(() => loadGraph.isGenerated);
         graph = loadGraph.graph;
         parent = GameObject.FindGameObjectWithTag("Agents");
+        StartCoroutine(CheckForMessageToSend());
         udpSocket = GetComponent<UdpSocket>();
 
         yield return new WaitUntil(() => udpSocket.isRunning);
 
-        if(learningFromScratch) fileWeights = Directory.GetCurrentDirectory() + "/Assets/Data/Weights/" + loadGraph.textFileName + 
-                "_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss");
+        if (learningFromScratch) fileWeights = Directory.GetCurrentDirectory() + "/Assets/Data/Weights/" + loadGraph.textFileName +
+                 "_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss");
 
-        string message = learningFromScratch ? "t" + nbIter + "," + fileWeights : "f" + fileWeights;
+        string message = learningFromScratch ? "t," + nbAgent + "," + nbIter + "," + fileWeights : "f," + nbAgent + "," + fileWeights;
         print("Sending infos for init : \n" + message);
         udpSocket.SendData(message);
 
         yield return null;
         if (learningFromScratch)
         {
-            message = transform.name + "\n" + (0, 0) + "\n" + loadGraph.graph.SaveAsStringWithTimes();
+            var agents = "";
+            for (int i = 0; i < nbAgent; i++)
+                agents += "(0,0);";
+            message = transform.name + "\n" +  "(0,0)" + "\n" + agents + "\n" + loadGraph.graph.SaveAsStringWithTimes();
             print("Sending Environnement infos for training : \n" + message);
             udpSocket.SendData(message);
             yield return new WaitForSecondsRealtime(1);
@@ -73,14 +77,24 @@ public class DQNManager : MonoBehaviour
         messagesToSend.Add(message);
     }
 
+    IEnumerator CheckForMessageToSend()
+    {
+        while (true)
+        {
+            if (messagesToSend.Count > 0)
+            {
+                string message = messagesToSend.First();
+                udpSocket.SendData(message);
+                messagesToSend.RemoveAt(0);
+                yield return new WaitForSeconds(0.1f);
+            }
+            else yield return null;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if(messagesToSend.Count > 0)
-        {
-            string message = messagesToSend.First();
-            messagesToSend.RemoveAt(0);
-            udpSocket.SendData(message);
-        }
+
     }
 }

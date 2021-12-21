@@ -14,21 +14,23 @@ import random
 class PatrollingProblemEnv(gym.Env):
   """Custom Environment that follows gym interface"""
   metadata = {'render.modes': ['human']}
-  def __init__(self,environnement,posAgent,nbiter_per_episode):
+  def __init__(self,environnement,agents,nbAgent,nbiter_per_episode):
     super(PatrollingProblemEnv, self).__init__()
     # Define action and observation space
     # They must be gym.spaces objects
     # Example when using discrete actions:
+    self.nbAgent = nbAgent
     self.environnement = environnement
-    self.environnement_memory = Environnement(environnement.nodes)
+    self.environnement_memory = Environnement(agents,environnement.nodes)
     
-    if(not(posAgent==None)):
-        self.posAgent = posAgent
-        self.posAgent_memory = posAgent
+    if(not(agents==None)):
+        self.agents = agents
+        self.agents_memory = agents
     else:
-        self.posAgent_memory = None
-        self.posAgent = random.choice(self.environnement.nodes)
-        
+        self.agents_memory = None
+        self.agents = random.sample(self.environnement.nodes, self.nbAgent)#random.choice(self.environnement.nodes)
+    
+    self.playingAgent = 0
     self.nbiter_per_episode = nbiter_per_episode
 
     self.listTimes = [self.environnement.nodesTimes.copy()]
@@ -44,9 +46,9 @@ class PatrollingProblemEnv(gym.Env):
     
   def step(self, action):
        # Execute one time step within the environment
-       self.oldPose = self.posAgent
-       self.posAgent, self.reward = self.environnement.Transition(self.posAgent, Environnement.actions[action])
-       observation = self.environnement.Flatten(self.posAgent)
+       self.reward = self.environnement.Transition(self.playingAgent, Environnement.actions[action])
+       observation = self.environnement.Flatten(self.playingAgent)
+       self.playingAgent = (self.playingAgent+1) % self.nbAgent
        # self.reward = - np.mean(list(self.environnement.nodesTimes.values()))#1.0 / max(0.1,np.mean(list(self.environnement.nodesTimes.values())))
        
        done = self.environnement.nbiter > self.nbiter_per_episode
@@ -56,11 +58,11 @@ class PatrollingProblemEnv(gym.Env):
        
   def reset(self):
      # Reset the state of the environment to an initial state
-     self.environnement = Environnement(self.environnement_memory.nodes)
-     self.posAgent = self.posAgent_memory
-     if(self.posAgent==None):
-         self.posAgent = random.choice(self.environnement.nodes)
-     observation = self.environnement.Flatten(self.posAgent)
+     # self.agents = self.agents_memory.copy() if self.agents_memory != None else None
+     # if(self.agents==None):
+     self.agents = random.sample(self.environnement.nodes, self.nbAgent)
+     self.environnement = Environnement(self.agents,self.environnement_memory.nodes)
+     observation = self.environnement.Flatten(self.playingAgent)
      return observation
 
   def render(self, mode='human', close=False):

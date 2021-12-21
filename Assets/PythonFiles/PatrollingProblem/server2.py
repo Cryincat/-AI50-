@@ -46,7 +46,9 @@ sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, tailleBuffer = 10
                   enableRX=True, suppressWarnings=True)
 
 i = 0
+nbAgent = 1
 nbiter_per_episode = 500
+agents = []
 
 print("Server is now running")
 
@@ -61,17 +63,22 @@ while True:
 
         if(i == 1):
             learningFromScratch = data[0] == "t"
+            data = data.split(",")
+            nbAgent = int(data[1])
             if learningFromScratch:
-                data = data.split(",")
-                nbIter = int(data[0][1:])
-                fileWeights = data[1]
+                nbIter = int(data[2])
+                fileWeights = data[3]
             else:
-                fileWeights = data[1:]
+                fileWeights = data[2]
         else:
             data = data.split('\n')
             agentId = data[0]
             agentPos = ast.literal_eval(data[1])
-            tiles = data[2:]
+            agents = []# agentPos = ast.literal_eval(data[1])
+            agentsStr = data[2].split(";")
+            for d in agentsStr:
+                if d != "" : agents.append(ast.literal_eval(d))
+            tiles = data[3:]
 
             nodes = []
             nodesTimes = {}
@@ -84,8 +91,8 @@ while True:
                     nodesTimes[node] = ast.literal_eval(
                         temp[1][:len(temp[1])-1])
 
-            e = Environnement(nodes, nodesTimes)
-            env = PatrollingProblemEnv(e, None, nbiter_per_episode)
+            e = Environnement(agents,nodes, nodesTimes)
+            env = PatrollingProblemEnv(e, agents ,len(agents), nbiter_per_episode)
 
             if(i == 2):
                 
@@ -156,8 +163,8 @@ while True:
                 # env = PatrollingProblemEnv(e,None,nbiter_per_episode)
                 # scores = dqn.test(env,nb_episodes=1,visualize = True)
 
-            e = Environnement(nodes, nodesTimes)
-            flt = e.Flatten(agentPos)
+            e = Environnement(agents,nodes, nodesTimes)
+            flt = e.Flatten(e.agents.index(agentPos))
 
             state = dqn.memory.get_recent_state(flt)
             q_values = np.array(dqn.compute_q_values(state))

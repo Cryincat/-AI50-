@@ -160,8 +160,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   learningFromScratch: 0
   nbIter: 1000000
-  fileWeights: C:\Users\adrie\GitHub\-AI50-\Assets\Data\Weights\graph_6.txt_2021-17-12--16-25-29
-  nbAgent: 1
+  fileWeights: C:\Users\adrie\GitHub\-AI50-\Assets\Data\Weights\graph_6.txt_2021-22-12--00-09-17
+  nbAgent: 2
   agentPrefab: {fileID: 2235436545955277492, guid: 88ae341033c0af54185720900b26b832, type: 3}
   isGenerated: 0
   areAgentGenerated: 0

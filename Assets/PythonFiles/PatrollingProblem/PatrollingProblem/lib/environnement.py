@@ -13,10 +13,11 @@ class Environnement:
     # 1   6
     # 2 4 7
     
-    def __init__(self,nodes,nodesTimes = None):
+    def __init__(self,agents,nodes,nodesTimes = None):
         self.nbiter = 0
         self.nodes = nodes.copy()
         self.nodesTimes = {}
+        self.agents = agents.copy()
         
         for n in nodes:
             assert n not in self.nodesTimes
@@ -39,13 +40,14 @@ class Environnement:
                 l.append(n)
         return l
     
-    def Transition(self,posAgent,action):
-        inc = 1 if(abs(action[0])+abs(action[1]) < 2) else 1.41
+    def Transition(self,agent,action):
+        inc = 1.0 / len(self.agents) if(abs(action[0])+abs(action[1]) < 2) else 1.41 / len(self.agents)
         for n in self.nodesTimes:
             self.nodesTimes[n] = min(self.nodesTimes[n]+inc,99)
-        to = (posAgent[0] + action[0],posAgent[1] + action[1])
+        to = (self.agents[agent][0] + action[0],self.agents[agent][1] + action[1])
         if(to not in self.nodes):
-            to = posAgent
+            to = self.agents[agent]
+        self.agents[agent] = to
         
         delta = self.nodesTimes[to] 
         for n in self.GetNeighs(to):
@@ -57,17 +59,20 @@ class Environnement:
         self.reward = - np.mean(list(self.nodesTimes.values()))
         
         posAgent = to
-        self.nbiter+=1
-        return posAgent,self.reward
+        self.nbiter+= 1.0 / len(self.agents)
+        return self.reward
 
     
-    def Flatten(self,posAgent):
+    def Flatten(self,playingAgent):
         observation = []
-        observation.append(posAgent[0])
-        observation.append(posAgent[1])
-        for a in Environnement.actions:
-            n = (posAgent[0] + a[0],posAgent[1] + a[1])
-            observation.append(self.nodesTimes[n] if n in self.nodesTimes else -1)
+        observation.append(self.agents[playingAgent][0])
+        observation.append(self.agents[playingAgent][1])
+        for a in self.agents:
+            observation.append(a[0])
+            observation.append(a[1])
+        # for a in Environnement.actions:
+        #     n = (posAgent[0] + a[0],posAgent[1] + a[1])
+        #     observation.append(self.nodesTimes[n] if n in self.nodesTimes else -1)
         for y in range(self.dimY[0],self.dimY[1]+1):
             for x in range(self.dimX[0],self.dimX[1]+1):
                 if((x,y) in self.nodesTimes):
@@ -91,7 +96,7 @@ class Environnement:
             print(ligne)
     
     def Shape(self):
-        return len(self.Flatten((0,0)))
+        return len(self.Flatten(0))
     
 # environnement = Environnement([(0,0),(1,0),(2,0),(3,0),(4,0),
 #                 (0,1),(1,1),(2,1),(4,1),
