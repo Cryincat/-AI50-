@@ -20,11 +20,13 @@ public class DQNManager : MonoBehaviour
     private LoadGraph loadGraph;
     public bool areAgentGenerated = false;
 
+    List<string> messagesToSend;
     UdpSocket udpSocket;
 
     // Start is called before the first frame update
     IEnumerator Start()
     {
+        messagesToSend = new List<string>();
         loadGraph = FindObjectOfType<LoadGraph>();
         yield return new WaitUntil(() => loadGraph.isGenerated);
         graph = loadGraph.graph;
@@ -66,9 +68,19 @@ public class DQNManager : MonoBehaviour
         }
     }
 
+    internal void SendData(string message)
+    {
+        messagesToSend.Add(message);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if(messagesToSend.Count > 0)
+        {
+            string message = messagesToSend.First();
+            messagesToSend.RemoveAt(0);
+            udpSocket.SendData(message);
+        }
     }
 }

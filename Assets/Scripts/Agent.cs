@@ -97,7 +97,6 @@ public class Agent : MonoBehaviour
                 node = destination;
                 node.WarnAgentVisit();
                 destination = null;
-                Debug.Log("Dest" + destination == null);
                 //thinking = false;
                 //StartCoroutine(FindDestination());
                 //GoToDestination(movementLeft);

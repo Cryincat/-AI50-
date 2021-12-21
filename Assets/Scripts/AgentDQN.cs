@@ -11,11 +11,13 @@ public class AgentDQN : Agent
     public (int, int)? action;
     System.Diagnostics.Stopwatch stopwatch;
     MeshRenderer meshRenderer;
+    DQNManager manager;
 
     public override IEnumerator Start()
     {
         loadGraph = FindObjectOfType<LoadGraph>();
         meshRenderer = GetComponentInChildren<MeshRenderer>();
+        manager = FindObjectOfType<DQNManager>();
         while (!loadGraph.isGenerated) yield return null;
 
         StartCoroutine(base.Start());
@@ -53,7 +55,9 @@ public class AgentDQN : Agent
             Debug.Log("FindDestination : thinking is " + thinking + " in pos "+ node.pos);
 
             string message = transform.name + "\n" + node.pos + "\n" + loadGraph.graph.SaveAsStringWithTimes();
-            udpSocket.SendData(message);
+
+            manager.SendData(message);
+            // TODO: udpSocket.SendData(message);
             meshRenderer.material.color = Color.green;
             stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();

@@ -48,6 +48,7 @@ sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, tailleBuffer = 10
 i = 0
 nbiter_per_episode = 500
 
+print("Server is now running")
 
 while True:
     # sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
