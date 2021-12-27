@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class AStar_ACO : MonoBehaviour
+public class AStar_ACO_complete : MonoBehaviour
 {
-    
+
     private Graph graph;
 
     public List<fourmis> list_agent;
@@ -14,80 +14,57 @@ public class AStar_ACO : MonoBehaviour
     public List<Node> chemin_reel;
 
     public bool isGenerated = false;
+    public Node began;
+    public Node Endeuh;
+    public float costeuh;
+
+   
 
     // Start is called before the first frame update
     public IEnumerator Start()
     {
 
-        yield return new WaitUntil(() => FindObjectOfType<Manager_ACO>().colonyGenerated);
+        yield return new WaitUntil(() => FindObjectOfType<LoadGraph>().isGenerated);
         co_graph = FindObjectOfType<LoadGraph>();
         graph = co_graph.graph;
-        list_agent = new List<fourmis>(); 
-
-        colonyM = FindObjectOfType<ColonyMulti>(); // cas où il y a plusieurs colony a gérer
-
-        foreach (var fourm in colonyM.listFourmisSAve)
-        {
-            list_agent.Add(fourm);          
-        }// Il y a bien les 50 nodes du graph repartis
-        
-        
-     
-        foreach (var agent in list_agent) // pour chaque agent
-        {
-             
-            for (int i =0; i< agent.listChemin.Count;i++) // pour chaque node
-            {
-               
-                if (i < (agent.listChemin.Count - 1)){
-                   
-                    List<Node> a = new List<Node>();
-                   
-                    a = this.GetShortestPathAstar(agent.listChemin[i], agent.listChemin[(i+1)],graph); // calcul du chemin reel
-                   
-                    foreach (var tab in a) agent.listCheminReel.Add(tab);
-                    
-                   
-                }
-                else
-                {
-                    
-                    List<Node> a = new List<Node>();
-                    
-                    a = this.GetShortestPathAstar(agent.listChemin[i], agent.listChemin[0], graph);
-                    
-                    foreach (var tab in a) agent.listCheminReel.Add(tab); 
-                    
-                }
-            }
-            
-        }
-        //print("// fin a star //");
-        
+        costeuh = (float)GetCostShortestPath(began, Endeuh);  
         isGenerated = true;
         yield return null;
     }
 
+    public double GetCostShortestPath (Node begin, Node end)
+    {
+        List<Node> a = new List<Node>();
+
+        double costrealPath = 0;
+
+        a = this.GetShortestPathAstar(begin, end, graph);
+
+        for (int i = 0; i < (a.Count() - 1); i++)
+        {
+            costrealPath += new Vector2(a[i].pos.Item1 - a[i + 1].pos.Item1, a[i].pos.Item2 - a[i + 1].pos.Item2).magnitude;
+        }
+        return costrealPath;
+    }
+
     public List<Node> GetShortestPathAstar(Node begin, Node end, Graph graph)
     {
-        //print("BEGIN : " + begin.neighs.Count() + "END :" + end.neighs.Count());// LE BEGIN ET END ONT 3 VOISINS
-        //foreach (var f in graph.nodes) print("HAAAAAAA" + f.Value.neighs.Count()); // LE GRAPH LES NODES ONT QUE 2 VOISINS
-        
+
         Node beginReal = graph.nodes[begin.pos];
+        //Node beginReal = begin;
         Node endReal = graph.nodes[end.pos];
-        //print("begin de base : " + end.pos + "voisins :" + end.neighs.Count());
-        //print("begin REAL : " + endReal.pos + "voisins REAL:" + endReal.neighs.Count());
+        //Node endReal = end;
         foreach (Node node in graph.nodes.Values)
         {
-           
+
             node.StraightLineDistanceToEnd = Vector3.Distance(node.realPos, end.realPos);
-      
+
             node.Visited = false;
             node.MinCostToStart = null;
             node.NearestToStart = null;
         }
         //print("count graph value" + graph.nodes.Values.Count);
-        
+
         AstarSearch(beginReal, endReal);
         List<Node> shortestPath = new List<Node>();
         //shortestPath.Clear();
@@ -100,7 +77,7 @@ public class AStar_ACO : MonoBehaviour
         //foreach (var t in shortestPath) print(t.pos);
         //print("---");
         return shortestPath;
-        
+
     }
     private void BuildShortestPath(List<Node> list, Node node)
     {

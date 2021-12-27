@@ -42,6 +42,13 @@ public class ColonyMulti : MonoBehaviour
 
         launch();
 
+        
+        foreach (var g in listFourmisSAve)
+        {
+            print("CHEMIN VIRTUEL");
+            foreach (var f in g.listChemin) print(f.pos);
+        }
+
         isGenerated = true;
         yield return null;
 
@@ -172,7 +179,7 @@ public class ColonyMulti : MonoBehaviour
                 Edge edgeHinsh = listEdge.Find(x => (x.from == pos && x.to == teo) || (x.from == teo && x.to == pos));
                 EdgesSelect.Add(edgeHinsh);
                 float probs = 0;
-                probs = (float)(((Mathf.Pow((float)edgeHinsh.pheromone,alpha) * Mathf.Pow((float)(1 / edgeHinsh.cost), beta)) / totalCost));
+                probs = (float)((((Mathf.Pow((float)edgeHinsh.pheromone,alpha) * Mathf.Pow((float)(1 / edgeHinsh.cost), beta))) / totalCost));
 
                 probaEdges.Add(probs);
             }

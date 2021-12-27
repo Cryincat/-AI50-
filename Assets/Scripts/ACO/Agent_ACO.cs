@@ -74,7 +74,7 @@ public class Agent_ACO : MonoBehaviour
 
         manag = FindObjectOfType<Manager_ACO>();
 
-        print("NEW AGENT");
+        print("CHEMIN REEL");
         foreach (var s in manag.realTimeNodes)
         {
             pathToNode.Add(s);
@@ -127,7 +127,7 @@ public class Agent_ACO : MonoBehaviour
                 node.agentPresence = false;
                 node = destination;
                 node.WarnAgentVisit();
-                pathToNode.Add(pathToNode[0]);
+                pathToNode.Add(pathToNode[0]); // roulement de la liste de patrouille
                 pathToNode.RemoveAt(0);
                 destination = null;
                

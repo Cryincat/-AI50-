@@ -14,18 +14,24 @@ public class CompleteGraph : MonoBehaviour
     public Graph graph;
     //public bool isGenerated;
     public bool isGenerated = false;
+    public bool generateGood;
+    public LoadGraph co_graph;
+    private Graph graph2;
+    public int nbEdgeModif;
+    public GameObject Astar_complete;
 
     // Start is called before the first frame update
     IEnumerator Start()
     {
         yield return new WaitUntil(() => FindObjectOfType<LoadGraph>().isGenerated);
-        Generate();
-        isGenerated = true;
-        yield return null;
-    }
+        co_graph = FindObjectOfType<LoadGraph>();
+        graph2 = co_graph.graph;
+        nbEdgeModif = 0;
+        //generateGood = false;
 
-    public void Generate()
-    {
+
+        //Generate();
+
         graph = new Graph();
 
         sol = FindObjectOfType<LoadGraph>().gameObject;
@@ -75,9 +81,20 @@ public class CompleteGraph : MonoBehaviour
 
             foreach (Node to in neighs)
             {
-                Edge edge = new Edge(node, to, new Vector2(node.pos.Item1 - to.pos.Item1, node.pos.Item2 - to.pos.Item2).magnitude);
+                GameObject gameObject1 = Instantiate(Astar_complete, Vector3.zero, Quaternion.identity);
+                AStar_ACO_complete Astareuh = gameObject1.GetComponent<AStar_ACO_complete>();
+                Astareuh.name = ("Astar_complete");
+                Astareuh.began = node;
+                Astareuh.Endeuh = to;
+                yield return new WaitUntil(() => FindObjectOfType<AStar_ACO_complete>().isGenerated);
+
+                //print("Calculating ...");
+                Edge edge = new Edge(node, to, Astareuh.costeuh);// Il faut surtout que cost != 0
                 node.neighs.Add(edge);
                 graph.edges.Add(edge);
+                nbEdgeModif++;
+                Destroy(gameObject1);
+
             }
             //Debug.Log("Voisins de Node" + numNode + " (posX: " + node.pos.Item1 + ", posY:" + node.pos.Item2 + "): " + neighs.Count);
             numNode++;
@@ -86,9 +103,18 @@ public class CompleteGraph : MonoBehaviour
                 agent.node = graph.nodes.Values.OrderBy(x => Vector3.Distance(agent.transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
             }*/
         }
-        
+
+        //while (generateGood == false) { }
+        isGenerated = true;
+        yield return null;
     }
 
+    public IEnumerator Generate()
+    {
+        yield return null;
+        //isGenerated = true;
+    }
+    
     // Update is called once per frame
     void Update()
     {
