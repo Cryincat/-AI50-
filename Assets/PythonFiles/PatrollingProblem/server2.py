@@ -112,8 +112,8 @@ while True:
                     # model.add(Activation('relu'))
                     model.add(Dense((2*environnement.Shape())))
                     model.add(Activation('relu'))
-                    # model.add(Dense((environnement.Shape())))
-                    # model.add(Activation('relu'))
+                    model.add(Dense((environnement.Shape())))
+                    model.add(Activation('relu'))
                     # model.add(Dense((environnement.Shape())/2+nb_actions))
                     # model.add(Activation('relu'))
                     # model.add(Dense(24))
@@ -128,7 +128,7 @@ while True:
                     policy = LinearAnnealedPolicy(inner_policy=EpsGreedyQPolicy(), attr="eps", value_max=1.0,
                                                   value_min=0.1, value_test=0.2, nb_steps = 10000)
                     # policy = EpsGreedyQPolicy()
-                    memory = SequentialMemory(limit=10000, window_length=1)
+                    memory = SequentialMemory(limit=100000, window_length=1)
                     dqn = DQNAgent(model=model,memory=memory,policy=policy,enable_dueling_network=(True),
                                     dueling_type='avg',nb_actions=nb_actions,nb_steps_warmup=1000)
                     # dqn = DQNAgent(model=model,memory=memory,policy=policy,nb_actions=nb_actions)
@@ -139,7 +139,7 @@ while True:
                     #     decay_steps=10000,
                     #     decay_rate=0.96,
                     #     staircase=False)
-                    lr_schedule = 0.0001
+                    lr_schedule = 0.00001
 
                     dqn.compile(Adam(learning_rate=lr_schedule))#0.0001))
                     return dqn

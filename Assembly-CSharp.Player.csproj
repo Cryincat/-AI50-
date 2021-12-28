@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,9 +53,6 @@
     <UnityVersion>2020.3.18f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Assets\Scripts\DataQLearning.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\DataButtons.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\ParamBtnACO.cs" />
@@ -95,6 +92,7 @@
     <Compile Include="Assets\Scripts\Multi-agent method\AgentManageur.cs" />
     <Compile Include="Assets\Scripts\GraphGenerator.cs" />
     <Compile Include="Assets\DQNManager.cs" />
+    <Compile Include="Assets\Scripts\ACO\AStar_ACO_complete.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -351,12 +349,6 @@
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Scripting.Python.Editor.PlatformCheck">
-      <HintPath>Library\ScriptAssemblies\Unity.Scripting.Python.Editor.PlatformCheck.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Scripting.Python.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Scripting.Python.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
