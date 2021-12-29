@@ -14,7 +14,7 @@ import random
 class PatrollingProblemEnv(gym.Env):
   """Custom Environment that follows gym interface"""
   metadata = {'render.modes': ['human']}
-  def __init__(self,environnement,agents,nbAgent,nbiter_per_episode):
+  def __init__(self,environnement,agents,agentPos,nbAgent,nbiter_per_episode):
     super(PatrollingProblemEnv, self).__init__()
     # Define action and observation space
     # They must be gym.spaces objects
@@ -30,7 +30,8 @@ class PatrollingProblemEnv(gym.Env):
         self.agents_memory = None
         self.agents = random.sample(self.environnement.nodes, self.nbAgent)#random.choice(self.environnement.nodes)
     
-    self.playingAgent = 0
+    self.playingAgent = 0 if agentPos == None else agents.index(agentPos)
+    
     self.nbiter_per_episode = nbiter_per_episode
 
     self.listTimes = [self.environnement.nodesTimes.copy()]

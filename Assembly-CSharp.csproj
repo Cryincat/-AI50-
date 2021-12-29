@@ -59,9 +59,9 @@
     <Compile Include="Assets\Scripts\Utilities.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\LevelLoader.cs" />
     <Compile Include="Assets\Scripts\MDP.cs" />
-    <Compile Include="Assets\Scripts\load.cs" />
+    <Compile Include="Assets\Scripts\Load.cs" />
     <Compile Include="Assets\Scripts\ACO\ColonyMulti.cs" />
-    <Compile Include="Assets\Extensions.cs" />
+    <Compile Include="Assets\Scripts\Extensions.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\ParamBtnQLearning.cs" />
     <Compile Include="Assets\Scripts\Multi-agent method\DataManager.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\Launcher.cs" />
@@ -78,7 +78,7 @@
     <Compile Include="Assets\Scripts\UdpSocket.cs" />
     <Compile Include="Assets\Scripts\ACO\Manager_ACO.cs" />
     <Compile Include="Assets\Scripts\StartMethod.cs" />
-    <Compile Include="Assets\GreedyAlgorithmSimplifiedGraphGenerator.cs" />
+    <Compile Include="Assets\Scripts\GreedyAlgorithmSimplifiedGraphGenerator.cs" />
     <Compile Include="Assets\Scripts\HamiltonianPathGenerator.cs" />
     <Compile Include="Assets\Scripts\ACO\Agent_ACO.cs" />
     <Compile Include="Assets\Scripts\ACO\CompleteGraph.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Assets\Scripts\Agent.cs" />
     <Compile Include="Assets\Scripts\Multi-agent method\AgentManageur.cs" />
     <Compile Include="Assets\Scripts\GraphGenerator.cs" />
-    <Compile Include="Assets\DQNManager.cs" />
+    <Compile Include="Assets\Scripts\DQNManager.cs" />
     <Compile Include="Assets\Scripts\ACO\AStar_ACO_complete.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +102,7 @@
     <None Include="Assets\Data\graph_3.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\Data\ShortestPathData\data_3.txt" />
+    <None Include="Assets\Data\DataSimulation\Simulation_29_12_2021__19-20-10.txt" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\SOURCES.txt" />
     <None Include="Assets\Data\graph_2.txt" />
     <None Include="Assets\Data\DataSimulation\Simulation_18_12_2021__16-13-52.txt" />
@@ -132,6 +133,7 @@
     <None Include="Assets\Data\DataSimulation\Simulation_18_12_2021__16-16-06.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\Data\ShortestPathData\data_1.txt" />
+    <None Include="Assets\Data\DataSimulation\Simulation_29_12_2021__18-06-08.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\requires.txt" />

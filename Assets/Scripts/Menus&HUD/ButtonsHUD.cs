@@ -23,16 +23,20 @@ public class ButtonsHUD : MonoBehaviour
     private GameObject loadGraph;
     private int numMethod;
 
+    private Load load;
+
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        yield return new WaitUntil(() => FindObjectOfType<load>().isGenerated);
-        numMethod = FindObjectOfType<load>().typeMethod;
+        yield return new WaitUntil(() => FindObjectOfType<Load>().isGenerated);
+        load = FindObjectOfType<Load>();
+        yield return new WaitUntil(() => load.isGenerated);
+        numMethod = load.typeMethod;
 
         switch (numMethod)
         {
             case 0: // Method RL
-                yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+                yield return new WaitUntil(() => FindObjectOfType<DQNManager>().isReady);
                 break;
             case 1: // MAM
                 yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
@@ -45,7 +49,6 @@ public class ButtonsHUD : MonoBehaviour
                 break;
         }
         
-        yield return new WaitUntil(() => FindObjectOfType<LoadGraph>().isGenerated);
         dataM = FindObjectOfType<DataManager>();
         playing = true;
         timer = 0;
@@ -57,7 +60,7 @@ public class ButtonsHUD : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isGenerated)
+        if (isGenerated && dataM)
         {
             timer += Time.deltaTime;
             string minutes = Mathf.Floor((timer % 3600) / 60).ToString("00");

@@ -20,7 +20,7 @@ public class LoadMethod : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        yield return new WaitUntil(() => FindObjectOfType<load>().isGenerated);
+        yield return new WaitUntil(() => FindObjectOfType<Load>().isGenerated);
         GetData();
         LaunchMAM();
     }

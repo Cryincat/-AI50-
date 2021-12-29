@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 924bf887a8791ed4095ea6b6673bb74c, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -590,7 +590,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isGenerated: 0
-  prefabRL: {fileID: 0}
+  typeMethod: 0
+  prefabRL: {fileID: 6123353333046924488, guid: c8803f2e211dcc646a2ff76f5c8bb8c5, type: 3}
   prefabMAM: {fileID: 4493055516050113703, guid: 191f9e2e2966bb54faebb7c713e98326, type: 3}
   prefabACO: {fileID: 1450077331970531272, guid: 0e47e618ea5722249ae4cb7f138213c4, type: 3}
 --- !u!1 &488565072

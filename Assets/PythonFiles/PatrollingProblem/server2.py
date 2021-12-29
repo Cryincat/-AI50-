@@ -70,6 +70,8 @@ while True:
                 fileWeights = data[3]
             else:
                 fileWeights = data[2]
+            fileWeights = fileWeights[:-6]
+            
         else:
             data = data.split('\n')
             agentId = data[0]
@@ -92,7 +94,7 @@ while True:
                         temp[1][:len(temp[1])-1])
 
             e = Environnement(agents,nodes, nodesTimes)
-            env = PatrollingProblemEnv(e, agents ,len(agents), nbiter_per_episode)
+            env = PatrollingProblemEnv(e, agents ,agentPos,len(agents), nbiter_per_episode)
 
             if(i == 2):
                 
@@ -128,7 +130,7 @@ while True:
                     policy = LinearAnnealedPolicy(inner_policy=EpsGreedyQPolicy(), attr="eps", value_max=1.0,
                                                   value_min=0.1, value_test=0.2, nb_steps = 10000)
                     # policy = EpsGreedyQPolicy()
-                    memory = SequentialMemory(limit=100000, window_length=1)
+                    memory = SequentialMemory(limit=1000000, window_length=1)
                     dqn = DQNAgent(model=model,memory=memory,policy=policy,enable_dueling_network=(True),
                                     dueling_type='avg',nb_actions=nb_actions,nb_steps_warmup=1000)
                     # dqn = DQNAgent(model=model,memory=memory,policy=policy,nb_actions=nb_actions)
@@ -139,7 +141,7 @@ while True:
                     #     decay_steps=10000,
                     #     decay_rate=0.96,
                     #     staircase=False)
-                    lr_schedule = 0.00001
+                    lr_schedule = 0.001
 
                     dqn.compile(Adam(learning_rate=lr_schedule))#0.0001))
                     return dqn
