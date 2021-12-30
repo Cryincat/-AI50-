@@ -20,6 +20,7 @@ public class DQNManager : MonoBehaviour
     public bool areAgentGenerated = false;
 
     List<string> messagesToSend;
+    private bool firstMessageTosSendDone;
     UdpSocket udpSocket;
     internal bool isReady;
 
@@ -91,6 +92,7 @@ public class DQNManager : MonoBehaviour
                 Node startPoint = graph.nodes.Values.ToList<Node>()[randomNode];
                 AgentDQN agentScript = agent.GetComponent<AgentDQN>();
                 agentScript.transform.position = startPoint.realPosFromAgentHeights;
+                //if (i == 0) yield return new WaitForSeconds(2);
             }
             areAgentGenerated = true;
         }
@@ -100,6 +102,7 @@ public class DQNManager : MonoBehaviour
     internal void SendData(string message)
     {
         messagesToSend.Add(message);
+
     }
 
     IEnumerator CheckForMessageToSend()
@@ -110,7 +113,13 @@ public class DQNManager : MonoBehaviour
             {
                 string message = messagesToSend.First();
                 udpSocket.SendData(message);
+                Debug.Log(message.Substring(0, 20));
                 messagesToSend.RemoveAt(0);
+                if(!firstMessageTosSendDone) 
+                {
+                    firstMessageTosSendDone = true;
+                    yield return new WaitForSeconds(2);
+                }
                 yield return new WaitForSeconds(1f / nbAgent);
             }
             else yield return null;

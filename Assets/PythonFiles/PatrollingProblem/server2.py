@@ -57,10 +57,12 @@ while True:
 
     data = sock.ReadReceivedData()  # read data
 
+    
     if data != None:  # if NEW data has been received since last ReadReceivedData function call
         i += 1
         print("iter "+str(i) + " message received is : "+data)
-
+        save = data
+        
         if(i == 1):
             learningFromScratch = data[0] == "t"
             data = data.split(",")
@@ -141,7 +143,7 @@ while True:
                     #     decay_steps=10000,
                     #     decay_rate=0.96,
                     #     staircase=False)
-                    lr_schedule = 0.001
+                    lr_schedule = 0.0001
 
                     dqn.compile(Adam(learning_rate=lr_schedule))#0.0001))
                     return dqn

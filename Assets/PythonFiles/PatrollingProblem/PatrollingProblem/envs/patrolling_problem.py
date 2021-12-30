@@ -37,13 +37,12 @@ class PatrollingProblemEnv(gym.Env):
     self.listTimes = [self.environnement.nodesTimes.copy()]
     
     self.action_space = spaces.Discrete(8)
-    # Example for using image as input:
-    self.observation_space = spaces.Tuple((spaces.Discrete(self.environnement.nbX)
-                                          ,spaces.Discrete(self.environnement.nbY)
-                                          ,spaces.Box(-1, 100, shape = (8,), dtype=np.uint8)
-                                          ,spaces.Box(-1, 100, shape = (self.environnement.nbX,self.environnement.nbY), dtype=np.uint8)
-                                          ))
-    #spaces.Box(low=-1, high=100, shape=(3,3,3,3), dtype=np.uint8)
+    self.observation_space = self.environnement.Space()
+    # spaces.Tuple((spaces.Discrete(self.environnement.nbX)
+    #                                       ,spaces.Discrete(self.environnement.nbY)
+    #                                       ,spaces.Box(-1, 100, shape = (8,), dtype=np.uint8)
+    #                                       ,spaces.Box(-1, 100, shape = (self.environnement.nbX,self.environnement.nbY), dtype=np.uint8)
+    #                                       ))
     
   def step(self, action):
        # Execute one time step within the environment

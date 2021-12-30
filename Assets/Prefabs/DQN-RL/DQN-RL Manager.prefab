@@ -67,7 +67,7 @@ MonoBehaviour:
   learningFromScratch: 0
   nbIter: 100000000
   fileWeights: C:\Users\adrie\GitHub\-AI50-\Assets\Data\Weights\graph_6.txt_2021-27-12--16-23-11
-  nbAgent: 2
+  nbAgent: 1
   agentPrefab: {fileID: 2235436545955277492, guid: 88ae341033c0af54185720900b26b832, type: 3}
   areAgentGenerated: 0
   graphName: 

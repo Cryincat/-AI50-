@@ -17,7 +17,7 @@ public class ParamBtnQLearning : MonoBehaviour
 
     public void LoadWeightFile()
     {
-        fileToLoad = EditorUtility.OpenFilePanel("Select weight file", "", "txt");
+        fileToLoad = EditorUtility.OpenFilePanel("Select weight file", "", "index");
         if (fileToLoad != "")
         {
             weightField.textComponent.SetText(fileToLoad);
@@ -46,7 +46,7 @@ public class ParamBtnQLearning : MonoBehaviour
     {
         if (nbIterations.text != "" && nbIterations.text != "-")
         {
-            float tmpNbAgent = Mathf.Clamp(float.Parse(nbIterations.text), 1, 10000);
+            float tmpNbAgent = Mathf.Clamp(float.Parse(nbIterations.text), 1, 100000000);
             nbIterations.text = tmpNbAgent.ToString();
         }
 

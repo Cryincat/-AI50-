@@ -6,6 +6,7 @@ Created on Tue Nov  9 00:20:22 2021
 """
 
 import numpy as np
+from gym import spaces
 
 class Environnement:
     actions = [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]
@@ -18,6 +19,7 @@ class Environnement:
         self.nodes = nodes.copy()
         self.nodesTimes = {}
         self.agents = agents.copy()
+        # self.agents = sorted(self.agents, key=lambda tup: (tup[0],tup[1]) )
         
         for n in nodes:
             assert n not in self.nodesTimes
@@ -60,6 +62,8 @@ class Environnement:
         
         posAgent = to
         self.nbiter+= 1.0 / len(self.agents)
+        
+        # self.agents = sorted(self.agents, key=lambda tup: (tup[0],tup[1]) )
         return self.reward
 
     
@@ -97,6 +101,15 @@ class Environnement:
     
     def Shape(self):
         return len(self.Flatten(0))
+    
+    def Space(self):
+        space = []
+        space.extend([spaces.Discrete(self.nbX),spaces.Discrete(self.nbY)])
+        for i in self.agents:
+            space.extend([spaces.Discrete(self.nbX),spaces.Discrete(self.nbY)])
+        space.append(spaces.Box(-1, 100, shape = (self.nbX,self.nbY), dtype=np.uint8))
+        space = tuple(space)
+        return space
     
 # environnement = Environnement([(0,0),(1,0),(2,0),(3,0),(4,0),
 #                 (0,1),(1,1),(2,1),(4,1),
