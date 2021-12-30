@@ -24,10 +24,13 @@ public class ButtonsHUD : MonoBehaviour
     private int numMethod;
 
     private Load load;
+    private bool agentSpawn = false;
 
     // Start is called before the first frame update
     IEnumerator Start()
     {
+        speed = 0;
+        Time.timeScale = speed;
         yield return new WaitUntil(() => FindObjectOfType<Load>().isGenerated);
         load = FindObjectOfType<Load>();
         yield return new WaitUntil(() => load.isGenerated);
@@ -48,12 +51,12 @@ public class ButtonsHUD : MonoBehaviour
                 throw new System.Exception("Method num is unknown.");
                 break;
         }
-        
+
         dataM = FindObjectOfType<DataManager>();
         playing = true;
-        timer = 0;
-        speed = 1;
+        speed = 5;
         Time.timeScale = speed;
+        timer = 0;
         isGenerated = true;
     }
 
@@ -62,6 +65,14 @@ public class ButtonsHUD : MonoBehaviour
     {
         if (isGenerated && dataM)
         {
+            /*
+            if(agentSpawn == false)
+            {
+                speed = 5;
+                Time.timeScale = speed;
+                agentSpawn = true;
+            }
+            */
             timer += Time.deltaTime;
             string minutes = Mathf.Floor((timer % 3600) / 60).ToString("00");
             string seconds = (timer % 60).ToString("00");

@@ -95,6 +95,7 @@
     <Compile Include="Assets\Scripts\DQNManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Data\ShortestPathData\data_7.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Materials\TileShader.shader" />
     <None Include="Assets\Data\graph_1.txt" />
@@ -118,6 +119,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets\Data\ShortestPathData\data_8.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
@@ -125,6 +127,7 @@
     <None Include="Assets\Data\DataSimulation\Simulation_18_12_2021__16-18-09.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\Data\graph_7.txt" />
+    <None Include="Assets\Data\DataSimulation\Simulation_30_12_2021__20-28-30.txt" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\dependency_links.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Data\graph_6.txt" />
