@@ -24,6 +24,7 @@ public class ParamBtnQLearning : MonoBehaviour
         }
         else
         {
+            weightField.textComponent.SetText("");
             throw new Exception("File not found");
         }
     }

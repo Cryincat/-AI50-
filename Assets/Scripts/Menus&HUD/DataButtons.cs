@@ -1,14 +1,28 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class DataButtons : MonoBehaviour
 {
+
+    public TextMeshProUGUI algo;
+    public TextMeshProUGUI avIdleValue;
+    public TextMeshProUGUI maxIdleValue;
+    private DataManager dataManager;
+    private LevelLoader levelLoader;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        dataManager = FindObjectOfType<DataManager>();
+        algo.text = dataManager.methodName;
+        avIdleValue.text = Math.Round(dataManager.mediumIdleness).ToString();
+        maxIdleValue.text = Math.Round(dataManager.maxIdleness).ToString();
+
     }
 
     // Update is called once per frame
@@ -19,6 +33,8 @@ public class DataButtons : MonoBehaviour
 
     public void newSimulation()
     {
+        Destroy(dataManager);
+        Destroy(levelLoader);
         SceneManager.LoadScene("Parameters");
     }
 

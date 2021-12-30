@@ -27,8 +27,14 @@ public class LoadGraph : MonoBehaviour
         nodeComponentDict = new Dictionary<Node, NodeComponent>();
         string path = Directory.GetCurrentDirectory() + "/Assets/Data/";
 
-        path = path + textFileName;
-
+        if (textFileName.Contains("/") || textFileName.Contains("\\"))
+        {
+            path = textFileName;
+        }
+        else
+        {
+            path = path + textFileName;
+        }
         graph = createGraph(path);
         spawnMap(graph, parent);
         setupCamera();
@@ -140,7 +146,7 @@ public class LoadGraph : MonoBehaviour
         // Spawn l'edge visuellement
         foreach (Edge edge in graph.edges)
         {
-            if (Vector3.Distance(edge.to.realPos,edge.from.realPos) >= Mathf.Sqrt(2))
+            if (Vector3.Distance(edge.to.realPos,edge.from.realPos) > Mathf.Sqrt(2))
             {
                 spawnEdgeOnMap2(edge.from.realPos, edge.to.realPos);
             }

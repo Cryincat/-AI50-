@@ -32,7 +32,7 @@ public class LoadMethod : MonoBehaviour
         nbAgent = (int) levelLoader.dataScene[1];
         graphName= levelLoader.dataScene[2] as string;
         nbIterationBeforeStop = (int) levelLoader.dataScene[3];
-        GameObject.Destroy(levelLoader);
+        //GameObject.Destroy(levelLoader);
     }
 
     void LaunchMAM()
