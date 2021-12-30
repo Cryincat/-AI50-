@@ -132,7 +132,7 @@ public class Manager_ACO : MonoBehaviour
         evaporation = evaporation / 100;
 
 
-        GameObject.Destroy(levelLoader);
+        //GameObject.Destroy(levelLoader);
     }
 
 }

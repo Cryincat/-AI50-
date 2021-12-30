@@ -17,6 +17,7 @@ public class LoadMethod : MonoBehaviour
     public GameObject prefabAgents;
     public GameObject prefabLoadGraph;
 
+
     // Start is called before the first frame update
     IEnumerator Start()
     {
@@ -32,7 +33,7 @@ public class LoadMethod : MonoBehaviour
         nbAgent = (int) levelLoader.dataScene[1];
         graphName= levelLoader.dataScene[2] as string;
         nbIterationBeforeStop = (int) levelLoader.dataScene[3];
-        GameObject.Destroy(levelLoader);
+        //GameObject.Destroy(levelLoader);
     }
 
     void LaunchMAM()
