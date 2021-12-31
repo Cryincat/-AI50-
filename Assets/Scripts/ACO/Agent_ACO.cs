@@ -74,13 +74,6 @@ public class Agent_ACO : MonoBehaviour
 
         manag = FindObjectOfType<Manager_ACO>();
 
-        print("CHEMIN REEL");
-        foreach (var s in manag.realTimeNodes)
-        {
-            pathToNode.Add(s);
-            print(s.pos);
-        }
-
         destination = null;
         startIsDOne = true;
         isGenerated = true;
