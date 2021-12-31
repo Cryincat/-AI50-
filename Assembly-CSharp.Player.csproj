@@ -95,58 +95,62 @@
     <Compile Include="Assets\Scripts\DQNManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Data\ShortestPathData\data_7.txt" />
+    <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_7.txt" />
+    <None Include="Assets\Data\graph_7.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Materials\TileShader.shader" />
-    <None Include="Assets\Data\graph_1.txt" />
-    <None Include="Assets\Data\DataSimulation\Simulation_18_12_2021__17-14-12.txt" />
-    <None Include="Assets\Data\graph_3.txt" />
+    <None Include="Assets\StreamingAssets\Data\graph_1.txt" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_18_12_2021__17-14-12.txt" />
+    <None Include="Assets\StreamingAssets\Data\graph_3.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
-    <None Include="Assets\Data\ShortestPathData\data_3.txt" />
-    <None Include="Assets\Data\DataSimulation\Simulation_29_12_2021__19-20-10.txt" />
+    <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_3.txt" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_29_12_2021__19-20-10.txt" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\SOURCES.txt" />
-    <None Include="Assets\Data\graph_2.txt" />
-    <None Include="Assets\Data\DataSimulation\Simulation_18_12_2021__16-13-52.txt" />
+    <None Include="Assets\StreamingAssets\Data\graph_2.txt" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_18_12_2021__16-13-52.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\Data\DataSimulation\2agent4x2x1lr0,0001(2).txt" />
-    <None Include="Assets\Data\ShortestPathData\data_2.txt" />
+    <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_2.txt" />
+    <None Include="Assets\SmartExplorer.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
-    <None Include="Assets\Data\ShortestPathData\data_6.txt" />
-    <None Include="Assets\Data\graph_4.txt" />
+    <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_6.txt" />
+    <None Include="Assets\StreamingAssets\Data\graph_4.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
-    <None Include="Assets\Data\graph_5.txt" />
-    <None Include="Assets\Data\ShortestPathData\data_0.txt" />
+    <None Include="Assets\StreamingAssets\Data\graph_5.txt" />
+    <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_0.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
-    <None Include="Assets\Data\ShortestPathData\data_8.txt" />
+    <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_8.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
-    <None Include="Assets\Data\DataSimulation\Simulation_30_12_2021__19-42-06.txt" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_30_12_2021__19-42-06.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
-    <None Include="Assets\Data\DataSimulation\Simulation_18_12_2021__16-18-09.txt" />
+    <None Include="Assets\Data\graph_8.txt" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_18_12_2021__16-18-09.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
-    <None Include="Assets\Data\graph_7.txt" />
-    <None Include="Assets\Data\DataSimulation\Simulation_30_12_2021__20-28-30.txt" />
+    <None Include="Assets\StreamingAssets\Data\graph_7.txt" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_30_12_2021__20-28-30.txt" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\dependency_links.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-    <None Include="Assets\Data\graph_6.txt" />
-    <None Include="Assets\Data\graph_test.txt" />
-    <None Include="Assets\Data\ShortestPathData\data_4.txt" />
-    <None Include="Assets\Data\ShortestPathData\data_5.txt" />
-    <None Include="Assets\Data\DataSimulation\Simulation_18_12_2021__16-16-06.txt" />
+    <None Include="Assets\StreamingAssets\Data\graph_6.txt" />
+    <None Include="Assets\StreamingAssets\Data\graph_test.txt" />
+    <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_4.txt" />
+    <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_5.txt" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_18_12_2021__16-16-06.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
-    <None Include="Assets\Data\ShortestPathData\data_1.txt" />
-    <None Include="Assets\Data\DataSimulation\Simulation_29_12_2021__18-06-08.txt" />
+    <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_1.txt" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_29_12_2021__18-06-08.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_30_12_2021__22-41-41.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\requires.txt" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\top_level.txt" />
-    <None Include="Assets\Data\DataSimulation\Simulation_17_12_2021__19-28-25.txt" />
+    <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_17_12_2021__19-28-25.txt" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
-    <None Include="Assets\Data\graph_8.txt" />
+    <None Include="Assets\StreamingAssets\Data\graph_8.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>
@@ -369,6 +373,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\AOT\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SmartExplorer">
+      <HintPath>Assets\SmartExplorer.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.18f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\mscorlib.dll</HintPath>
