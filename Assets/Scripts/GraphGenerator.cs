@@ -53,6 +53,7 @@ public class GraphGenerator : MonoBehaviour
 
     private void Generate()
     {
+
         graph = new Graph();
         nodeComponentDict = new Dictionary<Node, NodeComponent>();
         agents = FindObjectsOfType<Agent>().ToList();
