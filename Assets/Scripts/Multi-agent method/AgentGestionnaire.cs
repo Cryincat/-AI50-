@@ -23,7 +23,6 @@ public class AgentGestionnaire : MonoBehaviour
     private Dictionary<(Node, Node), List<Node>> shortestPathData;
 
     private LoadGraph loadGraph;
-    private Graph graph;
 
     private bool shortestPathUpdated = false;
 
@@ -48,7 +47,6 @@ public class AgentGestionnaire : MonoBehaviour
 
         // Attente de l'initialisation complète du loadGraph afin de récupérer le graph.
         yield return new WaitUntil(() => loadGraph.isGenerated);
-        graph = loadGraph.graph;
 
         // Initialisation des variables
         hasToBeVisited = new List<Node>();

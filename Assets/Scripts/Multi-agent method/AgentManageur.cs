@@ -19,7 +19,7 @@ public class AgentManageur : MonoBehaviour
     private int maxPriority = 8;
 
 
-    string path = Directory.GetCurrentDirectory() + "/Assets/Data/ShortestPathData/";
+    string path = Directory.GetCurrentDirectory() + "/AI50_Data/StreamingAssets/Data/ShortestPathData/";
     public bool isGenerated = false;
     private GameObject parent;
     public GameObject agentPrefab;
@@ -318,9 +318,6 @@ public class AgentManageur : MonoBehaviour
                 // Updating new priority
                 nodePriority[node] = priority;
 
-                //print("Le node (" + node.pos.Item1 + "," + node.pos.Item2 + ") à oisiveté = " + node.timeSinceLastVisit + " et donc une priorité de " + priority);
-
-                print("node :" + node.realPos + " is priority : " + priority + " with time : " + node.timeSinceLastVisit + " and treshhold : " + threshold);
                 if (priority > 1)
                 {
                     // Si le node est en cours de visite mais que sa priorité doit être revu à la hausse, on le fait quand même passé dans l'évent pour prévenir le gestionnaire.

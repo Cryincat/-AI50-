@@ -25,7 +25,7 @@ public class LoadGraph : MonoBehaviour
         //yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
         parent = GameObject.FindGameObjectWithTag("Sols");
         nodeComponentDict = new Dictionary<Node, NodeComponent>();
-        string path = Directory.GetCurrentDirectory() + "/Assets/Data/";
+        string path = Directory.GetCurrentDirectory() + "/AI50_Data/StreamingAssets/Data/";
 
         if (textFileName.Contains("/") || textFileName.Contains("\\"))
         {

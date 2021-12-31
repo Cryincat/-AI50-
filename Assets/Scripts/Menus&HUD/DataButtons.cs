@@ -38,6 +38,11 @@ public class DataButtons : MonoBehaviour
         SceneManager.LoadScene("Parameters");
     }
 
+    public void quitSimulation()
+    {
+        Application.Quit();
+    }
+
     public void exportData()
     {
         DataManager dataManager = FindObjectOfType<DataManager>();
