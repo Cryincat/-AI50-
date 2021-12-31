@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
-using UnityEditor;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
+using SmartDLL;
 
 public class ParamBtnQLearning : MonoBehaviour
 {
@@ -13,11 +13,18 @@ public class ParamBtnQLearning : MonoBehaviour
     public TMP_InputField nbIterations;
     public TMP_InputField weightField;
     public Button weightBtn;
+    public SmartFileExplorer fileExplorer = new SmartFileExplorer();
     //public GameObject MapSelection;
 
     public void LoadWeightFile()
     {
-        fileToLoad = EditorUtility.OpenFilePanel("Select weight file", "", "index");
+
+        string initialDir = Directory.GetCurrentDirectory() + "/AI50_Data/StreamingAssets/Data/";
+        bool restoreDir = true;
+        string title = "Select weight file";
+
+        fileExplorer.OpenExplorer(initialDir, restoreDir, title, null, null);
+        fileToLoad = fileExplorer.fileName;
         if (fileToLoad != "")
         {
             weightField.textComponent.SetText(fileToLoad);

@@ -26,8 +26,7 @@ public class DataManager : MonoBehaviour
     private static string MAM = "Multi-Agent Method";
     private float nbNodes;
     private Dictionary<int, float> dataRealTime;
-    string pathForSave = Directory.GetCurrentDirectory() + "/Assets/Data/DataSimulation";
-
+    string pathForSave = Directory.GetCurrentDirectory() + "/DataSimulation";
     public float simulationTime = 0;
     public int count = 0;
     public int nbIterationBeforeStop = 500;
@@ -38,7 +37,6 @@ public class DataManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
         dataRealTime = new Dictionary<int, float>();
-        //nbIterationBeforeStop = FindObjectOfType<LoadMethod>().nbIterationBeforeStop;
         loadGraph = FindObjectOfType<LoadGraph>();
         yield return new WaitUntil(() => loadGraph.isGenerated);
         determineMethodName(numMethod);
