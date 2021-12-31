@@ -43,6 +43,7 @@ public class ButtonsHUD : MonoBehaviour
                 break;
             case 1: // MAM
                 yield return new WaitUntil(() => FindObjectOfType<LoadMethod>().isReady);
+                yield return new WaitUntil(() => FindObjectOfType<AgentManageur>().isGenerated);
                 break;
             case 2: // ACO
                 yield return new WaitUntil(() => FindObjectOfType<Manager_ACO>().isReady);
