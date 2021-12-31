@@ -61,6 +61,7 @@ public class AgentDQN : Agent
             string message = transform.name + "\n" + node.pos + "\n"+ agents + "\n" + loadGraph.graph.SaveAsStringWithTimes();
 
             manager.SendData(message);
+            //yield return new WaitForSeconds(0.1f);
             // TODO: udpSocket.SendData(message);
             meshRenderer.material.color = Color.green;
             stopwatch = new System.Diagnostics.Stopwatch();
@@ -68,6 +69,14 @@ public class AgentDQN : Agent
 
             while (action == null)
             {
+                if (stopwatch.ElapsedMilliseconds > 1000)
+                {
+                    message = transform.name + "\n" + node.pos + "\n" + agents + "\n" + loadGraph.graph.SaveAsStringWithTimes();
+                    manager.SendData(message);
+                    Debug.LogWarning(transform.name + " didn't received a msg from the server ... resending ...");
+                    stopwatch = new System.Diagnostics.Stopwatch();
+                    stopwatch.Start();
+                }
                 yield return new WaitForSeconds(0.001f);
             }
 
