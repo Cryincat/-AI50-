@@ -62,21 +62,16 @@ public class AStar_ACO : MonoBehaviour
             }
             
         }
-        //print("// fin a star //");
+     
         
         isGenerated = true;
         yield return null;
     }
 
     public List<Node> GetShortestPathAstar(Node begin, Node end, Graph graph)
-    {
-        //print("BEGIN : " + begin.neighs.Count() + "END :" + end.neighs.Count());// LE BEGIN ET END ONT 3 VOISINS
-        //foreach (var f in graph.nodes) print("HAAAAAAA" + f.Value.neighs.Count()); // LE GRAPH LES NODES ONT QUE 2 VOISINS
-        
+    {       
         Node beginReal = graph.nodes[begin.pos];
         Node endReal = graph.nodes[end.pos];
-        //print("begin de base : " + end.pos + "voisins :" + end.neighs.Count());
-        //print("begin REAL : " + endReal.pos + "voisins REAL:" + endReal.neighs.Count());
         foreach (Node node in graph.nodes.Values)
         {
            
@@ -85,20 +80,13 @@ public class AStar_ACO : MonoBehaviour
             node.Visited = false;
             node.MinCostToStart = null;
             node.NearestToStart = null;
-        }
-        //print("count graph value" + graph.nodes.Values.Count);
-        
+        }  
         AstarSearch(beginReal, endReal);
         List<Node> shortestPath = new List<Node>();
-        //shortestPath.Clear();
         shortestPath.Add(endReal);
         BuildShortestPath(shortestPath, endReal);
         shortestPath.Reverse();
 
-        //print("---");
-        //print("node a :" + begin.pos+ "node b :" +end.pos);
-        //foreach (var t in shortestPath) print(t.pos);
-        //print("---");
         return shortestPath;
         
     }
@@ -107,8 +95,6 @@ public class AStar_ACO : MonoBehaviour
         if (node.NearestToStart == null)
             return;
         list.Add(node.NearestToStart);
-        //print("nod : "+ node.pos + "node nearest :" + node.NearestToStart.pos);
-        //print("NODE NEAREST TO START" + node.NearestToStart.MinCostToStart);
         BuildShortestPath(list, node.NearestToStart);
     }
 
@@ -117,15 +103,12 @@ public class AStar_ACO : MonoBehaviour
         begin.MinCostToStart = 0;
         var prioQueue = new List<Node>();
         prioQueue.Add(begin);
-        //print("BEGIN :" + begin.neighs.Count());
         do
         {
             prioQueue = prioQueue.OrderBy(x => x.MinCostToStart + x.StraightLineDistanceToEnd).ToList();
             var node = prioQueue.First();
-            //print("noide :" + node.pos);
             prioQueue.Remove(node);
 
-            //print("ET LA LE DRAME :" + node.neighs.Count());
             foreach (var cnn in node.neighs.OrderBy(x => x.cost))
             {
                 var childNode = cnn.to;
@@ -134,8 +117,6 @@ public class AStar_ACO : MonoBehaviour
                 if (childNode.MinCostToStart == null || node.MinCostToStart + cnn.cost < childNode.MinCostToStart)
                 {
                     childNode.MinCostToStart = node.MinCostToStart + cnn.cost;
-                    //print("min cost tostart" + childNode.MinCostToStart);
-                    //print("NODDDESSSSS : " + node.pos);
                     childNode.NearestToStart = node;
                     if (!prioQueue.Contains(childNode))
                         prioQueue.Add(childNode);
@@ -145,7 +126,6 @@ public class AStar_ACO : MonoBehaviour
             if (node == end)
                 return;
         } while (prioQueue.Any());
-        //print("///" + graph.nodes.Where(x => x.Value.Visited && x.Value.MinCostToStart == 0).Count());
     }
 }
 

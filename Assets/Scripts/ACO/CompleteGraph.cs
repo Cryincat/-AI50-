@@ -37,17 +37,14 @@ public class CompleteGraph : MonoBehaviour
         sol = FindObjectOfType<LoadGraph>().gameObject;
 
         nodeComponentDict = new Dictionary<Node, NodeComponent>();
-        //agents = FindObjectsOfType<Agent>().ToList();
         int numNode = 0;
 
         //Case where the map is already existing
         foreach (Transform item in sol.transform)
         {
-            //print("there is a a transform");
             var nc = item.GetComponent<NodeComponent>();
             if (nc)
             {
-                //print("there is a a nc");
                 //If the object has a NodeComponent, we generate a node in the graph at its position
                 (int, int) pos = ((int)item.position.x, (int)item.position.z);
                 Node node = new Node(pos);
@@ -58,7 +55,6 @@ public class CompleteGraph : MonoBehaviour
         }
 
         Debug.Log("Nombre de nodes : " + graph.nodes.Count);
-        //print("nb node :" + graph.nodes.Count);
 
         foreach (Node node in graph.nodes.Values)
         {
@@ -88,7 +84,6 @@ public class CompleteGraph : MonoBehaviour
                 Astareuh.Endeuh = to;
                 yield return new WaitUntil(() => FindObjectOfType<AStar_ACO_complete>().isGenerated);
 
-                //print("Calculating ...");
                 Edge edge = new Edge(node, to, Astareuh.costeuh);// Il faut surtout que cost != 0
                 node.neighs.Add(edge);
                 graph.edges.Add(edge);
@@ -96,12 +91,7 @@ public class CompleteGraph : MonoBehaviour
                 Destroy(gameObject1);
 
             }
-            //Debug.Log("Voisins de Node" + numNode + " (posX: " + node.pos.Item1 + ", posY:" + node.pos.Item2 + "): " + neighs.Count);
             numNode++;
-            /*foreach (var agent in agents)
-            {
-                agent.node = graph.nodes.Values.OrderBy(x => Vector3.Distance(agent.transform.position, new Vector3(x.pos.Item1, 0, x.pos.Item2))).First();
-            }*/
         }
 
         //while (generateGood == false) { }
@@ -112,7 +102,6 @@ public class CompleteGraph : MonoBehaviour
     public IEnumerator Generate()
     {
         yield return null;
-        //isGenerated = true;
     }
     
     // Update is called once per frame

@@ -39,16 +39,7 @@ public class ColonyMulti : MonoBehaviour
             
         } // copie de tout les edges
         foreach (var no in graph_complet.nodes) { graphNormal.Add(no.Value); } // copie de tout les nodes
-
         launch();
-
-        
-        foreach (var g in listFourmisSAve)
-        {
-            print("CHEMIN VIRTUEL");
-            foreach (var f in g.listChemin) print(f.pos);
-        }
-
         isGenerated = true;
         yield return null;
 
@@ -193,7 +184,7 @@ public class ColonyMulti : MonoBehaviour
             sum += probaEdges[i];
             accumulatedprobabilities.Add(sum);
         }
-        //print("-------");
+
         int randFF = aleat.Next(100);
         int databased = (int)System.DateTime.Now.Ticks;
         System.Random randTest = new System.Random(databased + randFF);

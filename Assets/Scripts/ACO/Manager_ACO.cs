@@ -102,7 +102,6 @@ public class Manager_ACO : MonoBehaviour
             
             foreach(var b in ListAgent[i].listCheminReel) { 
                 realTimeNodes.Add(b);
-                //print(b.pos);
             }
 
             GameObject Agent = Instantiate(Agents, Vector3.zero, Quaternion.identity);
