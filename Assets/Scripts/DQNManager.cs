@@ -65,6 +65,7 @@ public class DQNManager : MonoBehaviour
         string message = learningFromScratch ? "t," + nbAgent + "," + nbIter + "," + fileWeights : "f," + nbAgent + "," + fileWeights;
         print("Sending infos for init : \n" + message);
         udpSocket.SendData(message);
+        yield return new WaitForSecondsRealtime(0.1f);
 
         yield return null;
         if (learningFromScratch)
