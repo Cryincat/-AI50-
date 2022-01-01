@@ -19,6 +19,8 @@ public class DQNManager : MonoBehaviour
     private LoadGraph loadGraph;
     public bool areAgentGenerated = false;
 
+    public GameObject prefabLoadGraph;
+
     List<string> messagesToSend;
     private bool firstMessageTosSendDone;
     UdpSocket udpSocket;
@@ -31,15 +33,17 @@ public class DQNManager : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
-        messagesToSend = new List<string>();
-        loadGraph = FindObjectOfType<LoadGraph>();
-        yield return new WaitUntil(() => loadGraph.isGenerated);
-
         LevelLoader levelLoader = FindObjectOfType<LevelLoader>();
         numMethod = (int)levelLoader.dataScene[0];
         nbAgent = (int)levelLoader.dataScene[1];
         graphName = levelLoader.dataScene[2] as string;
         nbIterationBeforeStop = (int)levelLoader.dataScene[3];
+
+        messagesToSend = new List<string>();
+        GameObject loadGraph = Instantiate(prefabLoadGraph);
+        loadGraph.name = "LoadGraph";
+        loadGraph.GetComponent<LoadGraph>().textFileName = graphName;
+        yield return new WaitUntil(() => loadGraph.GetComponent<LoadGraph>().isGenerated);
 
         learningFromScratch = levelLoader.dataScene[4] is int;
         if (!learningFromScratch) fileWeights = (string)levelLoader.dataScene[4];
@@ -52,14 +56,14 @@ public class DQNManager : MonoBehaviour
         dataManager.graphName = graphName;
         
 
-        graph = loadGraph.graph;
+        graph = loadGraph.GetComponent<LoadGraph>().graph;
         parent = GameObject.FindGameObjectWithTag("Agents");
         StartCoroutine(CheckForMessageToSend());
         udpSocket = GetComponent<UdpSocket>();
 
         yield return new WaitUntil(() => udpSocket.isRunning);
 
-        if (learningFromScratch) fileWeights = Directory.GetCurrentDirectory() + "/Assets/Data/Weights/" + loadGraph.textFileName +
+        if (learningFromScratch) fileWeights = Directory.GetCurrentDirectory() + "/Assets/Data/Weights/" + loadGraph.GetComponent<LoadGraph>().textFileName +
                  "_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss");
 
         string message = learningFromScratch ? "t," + nbAgent + "," + nbIter + "," + fileWeights : "f," + nbAgent + "," + fileWeights;
@@ -73,7 +77,7 @@ public class DQNManager : MonoBehaviour
             var agents = "";
             for (int i = 0; i < nbAgent; i++)
                 agents += "(0,0);";
-            message = transform.name + "\n" +  "(0,0)" + "\n" + agents + "\n" + loadGraph.graph.SaveAsStringWithTimes();
+            message = transform.name + "\n" +  "(0,0)" + "\n" + agents + "\n" + loadGraph.GetComponent<LoadGraph>().graph.SaveAsStringWithTimes();
             print("Sending Environnement infos for training : \n" + message);
             udpSocket.SendData(message);
             yield return new WaitForSecondsRealtime(1);

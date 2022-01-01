@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6123353333046924490}
   - component: {fileID: 6123353332393809295}
   - component: {fileID: 6123353332393809294}
-  - component: {fileID: 6123353332393809301}
   - component: {fileID: 4855422298007024534}
   m_Layer: 0
   m_Name: DQN-RL Manager
@@ -70,25 +69,10 @@ MonoBehaviour:
   nbAgent: 1
   agentPrefab: {fileID: 2235436545955277492, guid: 88ae341033c0af54185720900b26b832, type: 3}
   areAgentGenerated: 0
+  prefabLoadGraph: {fileID: 1643975808585745035, guid: d52d34c5f07524e439308da6434f1f5a, type: 3}
   graphName: 
   nbIterationBeforeStop: 0
   numMethod: 0
---- !u!114 &6123353332393809301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6123353333046924488}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea1889825a2666345ac223e723e9235e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefabSol: {fileID: 7936965496669389415, guid: 241853ce2c3f71e408d5aad6530850f6, type: 3}
-  prefabEdge: {fileID: 3523197888291084895, guid: fdc55648484ca0247b7a2979efdbdeff, type: 3}
-  isGenerated: 0
-  textFileName: graph_6.txt
 --- !u!114 &4855422298007024534
 MonoBehaviour:
   m_ObjectHideFlags: 0
