@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,13 +53,16 @@
     <UnityVersion>2020.3.18f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Assets\Scripts\DataQLearning.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\DataButtons.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\ParamBtnACO.cs" />
     <Compile Include="Assets\Scripts\Utilities.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\LevelLoader.cs" />
     <Compile Include="Assets\Scripts\MDP.cs" />
-    <Compile Include="Assets\Scripts\load.cs" />
+    <Compile Include="Assets\Scripts\Load.cs" />
     <Compile Include="Assets\Scripts\ACO\ColonyMulti.cs" />
     <Compile Include="Assets\Scripts\Extensions.cs" />
     <Compile Include="Assets\Scripts\Menus&amp;HUD\ParamBtnQLearning.cs" />
@@ -114,6 +117,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\StreamingAssets\Data\ShortestPathData\data_6.txt" />
+    <None Include="Assets\Data\graph_7.txt" />
     <None Include="Assets\StreamingAssets\Data\graph_4.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\StreamingAssets\Data\graph_5.txt" />
@@ -127,11 +131,13 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\Data\graph_8.txt" />
     <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_18_12_2021__16-18-09.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\StreamingAssets\Data\graph_7.txt" />
     <None Include="Assets\StreamingAssets\Data\DataSimulation\Simulation_30_12_2021__20-28-30.txt" />
     <None Include="Assets\PythonFiles\PatrollingProblem\PatrollingProblem.egg-info\dependency_links.txt" />
+    <None Include="Assets\Data\graph_7_old.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\StreamingAssets\Data\graph_6.txt" />
     <None Include="Assets\StreamingAssets\Data\graph_test.txt" />

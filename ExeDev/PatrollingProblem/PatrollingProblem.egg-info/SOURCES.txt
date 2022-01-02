@@ -1,0 +1,6 @@
+setup.py
+PatrollingProblem.egg-info/PKG-INFO
+PatrollingProblem.egg-info/SOURCES.txt
+PatrollingProblem.egg-info/dependency_links.txt
+PatrollingProblem.egg-info/requires.txt
+PatrollingProblem.egg-info/top_level.txt
