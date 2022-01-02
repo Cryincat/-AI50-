@@ -63,7 +63,7 @@ public class DQNManager : MonoBehaviour
 
         yield return new WaitUntil(() => udpSocket.isRunning);
 
-        if (learningFromScratch) fileWeights = Directory.GetCurrentDirectory() + "/Assets/Data/Weights/" + loadGraph.GetComponent<LoadGraph>().textFileName +
+        if (learningFromScratch) fileWeights = Directory.GetCurrentDirectory() + "/Assets/Data/Weights/" + graphName.Split('\\').ToList().Last() +
                  "_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss");
 
         string message = learningFromScratch ? "t," + nbAgent + "," + nbIter + "," + fileWeights : "f," + nbAgent + "," + fileWeights;
